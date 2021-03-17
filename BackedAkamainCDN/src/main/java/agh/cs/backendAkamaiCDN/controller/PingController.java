@@ -1,4 +1,4 @@
-package agh.cs.BackedAkamaiCDN.controller;
+package agh.cs.backendAkamaiCDN.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

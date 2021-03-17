@@ -1,13 +1,13 @@
-package agh.cs.BackedAkamaiCDN;
+package agh.cs.backendAkamaiCDN;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BackedAkamaiCdnApplication {
+public class BackendAkamaiCdnApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BackedAkamaiCdnApplication.class, args);
+		SpringApplication.run(BackendAkamaiCdnApplication.class, args);
 	}
 
 }

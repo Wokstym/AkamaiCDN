@@ -1,8 +1,8 @@
-package agh.cs.BackedAkamaiCDN;
+package agh.cs.backendAkamaiCDN;
 
 import org.junit.jupiter.api.Test;
 
-class BackedAkamaiCdnApplicationTests {
+class BackendAkamaiCdnApplicationTests {
 
 	@Test
 	void contextLoads() {

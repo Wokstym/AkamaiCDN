@@ -9,9 +9,9 @@
 		<relativePath/>
 	</parent>
 	<groupId>agh.cs</groupId>
-	<artifactId>BackedAkamaiCDN</artifactId>
+	<artifactId>backendAkamaiCDN</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>BackedAkamaiCDN</name>
+	<name>BackendAkamaiCDN</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
