@@ -12,7 +12,7 @@ import java.util.Date;
 public class PingController {
 
     @GetMapping
-    public ResponseEntity<String> addIngredient() {
+    public ResponseEntity<String> ping() {
         Date date = new Date(System.currentTimeMillis());
         String result = String.format("Server time: %s", date);
         return ResponseEntity.ok(result);
