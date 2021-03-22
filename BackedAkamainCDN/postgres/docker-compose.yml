@@ -1,0 +1,10 @@
+version: '3.5'
+
+services:
+  akamai-cdn-db:
+    container_name: akamai-cdn-postgres
+    build: .
+    ports:
+      - 2173:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
