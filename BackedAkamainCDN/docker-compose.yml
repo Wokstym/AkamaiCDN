@@ -1,0 +1,19 @@
+version: '3.5'
+
+services:
+  akamai_cdn:
+    container_name: akamai_cdn
+    build:
+      context: .
+    # requires 20.04< version od docker engine, needed for linux connection to host.docker.internal,
+    # can be commented out on windows and mac
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 8090:8090
+      - 8091:8000
+    environment:
+      - TZ=Europe/Warsaw
+      - spring.profiles.active=development
+      - spring.liquibase.contexts=development
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:2173/postgres
