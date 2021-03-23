@@ -6,9 +6,9 @@ Build project with `mvn clean install` or `mvn clean install -DskipTests` to ski
 
 ## Run
 
-In postgres directory run `run.sh` script to start database
+In postgres directory run `./run.sh` script to start database
 
-To start application run `run.sh` in a main directory. To debug application load located in `.run` directory
+To start application run `./run.sh` in a main directory. To debug application load located in `.run` directory
 `Attach Debug.run.xml`, start with elier mentioned script application and click Debug button in right upper corner in
 Intellij
 
