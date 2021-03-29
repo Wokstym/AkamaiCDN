@@ -9,14 +9,16 @@ import java.util.Date;
 @Setter
 @Getter
 @Entity
+@Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class PingEntity {
 
     @Id
     private Date id;
 
+    private String site;
     private Double minTime;
     private Double maxTime;
     private Double averageTime;

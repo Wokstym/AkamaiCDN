@@ -1,89 +1,85 @@
 package agh.cs.backendAkamaiCDN.ping.service;
 
 import agh.cs.backendAkamaiCDN.ping.entity.PingEntity;
+import agh.cs.backendAkamaiCDN.ping.utils.TcpingExecutor;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 
+@Slf4j
+@Service
 @NoArgsConstructor
 public class TcpingResultsService {
-    private final int numberOfProbes = 100;
 
-    public PingEntity executeTcping(String siteName) {
+    private static final int PROBES = 100;
+
+    public Optional<PingEntity> executeTcping(String siteName) {
         try {
-            Process p = Runtime.getRuntime().exec(
-                    "tcping -n " + numberOfProbes
-                    + " -i 0,01 " + //Interval
-                    siteName);
-            
-            BufferedReader inputStream = new BufferedReader(
-                    new InputStreamReader(p.getInputStream()));
+            log.info("Executing ping");
 
-            ArrayList<Double> times = getTimesOfProbesArray(inputStream);
+            TcpingExecutor parser = TcpingExecutor.builder()
+                    .probes(PROBES)
+                    .siteName(siteName)
+                    .interval(0.01)
+                    .execute()
+                    .parseResult();
 
-            int successfulProbes = getNumberOfSuccessfulProbes(inputStream);
-            int failedProbes = numberOfProbes - successfulProbes;
-            double packetLoss = (double) failedProbes / (successfulProbes + failedProbes);
+            ArrayList<Double> times = parser.getTimes();
+            double packetLoss = parser.getPacketLoss();
 
-            Double minTime = times.stream().min(Double::compare).orElseGet(() -> (double) -1);
-            Double maxTime = times.stream().max(Double::compare).orElseGet(() -> (double) -1);
-            Double avgTime = times.stream().mapToDouble(Double::doubleValue).average().orElseGet(() -> (double) -1);
+            log.info("Ping successful with packet loss: " + packetLoss);
+
+            Double minTime = getMinTime(times);
+            Double maxTime = getMaxTime(times);
+            Double avgTime = getAvgTime(times);
             Double stdDivTime = getStandardDiv(times, avgTime);
             Date date = new Date(System.currentTimeMillis());
 
-            return PingEntity.builder().
-                    id(date).
-                    minTime(minTime).
-                    maxTime(maxTime).
-                    averageTime(avgTime).
-                    standardDeviationTime(stdDivTime).
-                    packetLoss(packetLoss).
-                    build();
+            return Optional.of(PingEntity.builder()
+                    .site(siteName)
+                    .id(date)
+                    .minTime(minTime)
+                    .maxTime(maxTime)
+                    .averageTime(avgTime)
+                    .standardDeviationTime(stdDivTime)
+                    .packetLoss(packetLoss)
+                    .build());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new PingEntity();
+        return Optional.empty();
     }
 
-    public Double getStandardDiv(ArrayList<Double> values, Double avg){
-        double variance = values.stream().
-                map(x -> x - avg).
-                map(x -> x * x).
-                mapToDouble(Double::doubleValue).
-                average().orElseGet(() -> (double) 0);
+    private Double getMinTime(ArrayList<Double> times) {
+        return times.stream()
+                .min(Double::compare)
+                .orElse(-1.0);
+    }
+
+    private Double getMaxTime(ArrayList<Double> times) {
+        return times.stream()
+                .max(Double::compare)
+                .orElse(-1.0);
+    }
+
+    private double getAvgTime(ArrayList<Double> times) {
+        return times.stream()
+                .mapToDouble(Double::doubleValue)
+                .average()
+                .orElse(-1.0);
+    }
+
+    public Double getStandardDiv(ArrayList<Double> values, Double avg) {
+        double variance = values.stream()
+                .map(x -> x - avg)
+                .map(x -> x * x)
+                .mapToDouble(Double::doubleValue)
+                .average()
+                .orElse(0.0);
         return Math.sqrt(variance);
-    }
-
-    private ArrayList<Double> getTimesOfProbesArray(BufferedReader inputStream) throws IOException {
-        String input;
-        ArrayList<Double> times = new ArrayList<>();
-        int countProbes = 0;
-        while ((input = inputStream.readLine()) != null && countProbes < numberOfProbes) {
-            String[] time = input.split("time=");
-            try{
-                times.add(Double.parseDouble(time[1].split("ms")[0]));
-            }catch (Exception e){
-                System.out.println("times");
-            }
-            countProbes++;
-        }
-        return times;
-    }
-
-    private int getNumberOfSuccessfulProbes(BufferedReader inputStream) throws IOException {
-        String input;
-        int successful = 0;
-        while ((input = inputStream.readLine()) != null) {
-            String[] successfulResult = input.split(" successful");
-            try{
-                successful = Integer.parseInt(successfulResult[0].replace(" ", ""));
-            }catch (Exception ex){
-            }
-        }
-        return successful;
     }
 }
