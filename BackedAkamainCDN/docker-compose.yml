@@ -6,10 +6,9 @@ services:
     container_name: akamai_cdn
     build:
       context: .
-    # requires 20.04< version od docker engine, needed for linux connection to host.docker.internal,
-    # can be commented out on windows and mac
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    # uncomment 2 lines below on linux, requires 20.04< version od docker engine
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
     ports:
       - 8090:8090
       - 8091:8000
