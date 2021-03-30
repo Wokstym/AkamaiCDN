@@ -21,15 +21,13 @@ public class TcpingResultsService {
         try {
             log.info("Executing ping");
 
-            TcpingExecutor parser = TcpingExecutor.builder()
+            TcpingExecutor executor = TcpingExecutor.builder(siteName)
                     .probes(PROBES)
-                    .siteName(siteName)
                     .interval(0.01)
-                    .execute()
-                    .parseResult();
+                    .execute();
 
-            ArrayList<Double> times = parser.getTimes();
-            double packetLoss = parser.getPacketLoss();
+            ArrayList<Double> times = executor.getTimes();
+            double packetLoss = executor.getPacketLoss();
 
             log.info("Ping successful with packet loss: " + packetLoss);
 

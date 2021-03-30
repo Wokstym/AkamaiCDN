@@ -1,9 +1,8 @@
 package agh.cs.backendAkamaiCDN.ping.utils;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,23 +11,21 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TcpingExecutor {
-    private final int probes;
-    private final BufferedReader inputStream;
-
     @Getter
     private final ArrayList<Double> times;
+    private final int probes;
     private int successfulProbes;
 
-    public static TcpingExecutorBuilder builder() {
-        return new TcpingExecutorBuilder();
+    public static TcpingExecutorBuilder builder(@NonNull String siteName) {
+        return new TcpingExecutorBuilder(siteName);
     }
 
-    public TcpingExecutor parseResult() throws IOException {
-        parseIndividualResults();
-        parseNumberOfSuccessfulProbes();
-        return this;
+    private TcpingExecutor(int probes, BufferedReader inputStream) throws IOException {
+        this.probes = probes;
+        this.times = new ArrayList<>();
+        this.successfulProbes = 0;
+        parseResult(inputStream);
     }
 
     public double getPacketLoss() {
@@ -36,7 +33,12 @@ public class TcpingExecutor {
         return (double) failedProbes / (successfulProbes + failedProbes);
     }
 
-    private void parseIndividualResults() throws IOException {
+    private void parseResult(BufferedReader inputStream) throws IOException {
+        parseIndividualResults(inputStream);
+        parseNumberOfSuccessfulProbes(inputStream);
+    }
+
+    private void parseIndividualResults(BufferedReader inputStream) throws IOException {
         Pattern pattern = Pattern.compile("time=" + "(.*?)" + "ms", Pattern.DOTALL);
         String input;
         while ((input = inputStream.readLine()) != null && times.size() < probes) {
@@ -47,7 +49,7 @@ public class TcpingExecutor {
         }
     }
 
-    private void parseNumberOfSuccessfulProbes() throws IOException {
+    private void parseNumberOfSuccessfulProbes(BufferedReader inputStream) throws IOException {
         String input;
         Pattern successfulPattern = Pattern.compile("\\s*" + "(.*?)" + " successful", Pattern.DOTALL);
 
@@ -59,16 +61,11 @@ public class TcpingExecutor {
         }
     }
 
-    @NoArgsConstructor
+    @RequiredArgsConstructor
     public static class TcpingExecutorBuilder {
-        private String siteName;
-        private int probes;
-        private double interval;
-
-        public TcpingExecutorBuilder siteName(String siteName) {
-            this.siteName = siteName;
-            return this;
-        }
+        private final String siteName;
+        private int probes = 1;
+        private double interval = 3;
 
         public TcpingExecutorBuilder interval(double interval) {
             this.interval = interval;
@@ -86,11 +83,8 @@ public class TcpingExecutor {
             Process p = Runtime.getRuntime().exec(command);
             BufferedReader inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-            return new TcpingExecutor(probes, inputStream, new ArrayList<>(), 0);
+            return new TcpingExecutor(probes, inputStream);
         }
 
     }
 }
-
-
-
