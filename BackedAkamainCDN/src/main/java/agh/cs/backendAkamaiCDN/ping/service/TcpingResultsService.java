@@ -15,7 +15,7 @@ import java.util.Optional;
 @NoArgsConstructor
 public class TcpingResultsService {
 
-    private static final int PROBES = 5;
+    private static final int PROBES = 100;
 
     public Optional<PingEntity> executeTcping(String siteName) {
         try {
@@ -23,7 +23,7 @@ public class TcpingResultsService {
 
             TcpingExecutor executor = TcpingExecutor.builder(siteName)
                     .probes(PROBES)
-                    .interval(0.01)
+                    .interval(1000) //1 packet every 1 ms
                     .execute();
 
             ArrayList<Double> times = executor.getTimes();
