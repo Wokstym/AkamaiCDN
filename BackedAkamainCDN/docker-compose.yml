@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
   akamai_cdn:
-    network_mode: host
+    #network_mode: host
     container_name: akamai_cdn
     build:
       context: .
