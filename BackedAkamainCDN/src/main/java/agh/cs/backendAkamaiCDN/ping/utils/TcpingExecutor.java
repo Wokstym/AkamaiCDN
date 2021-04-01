@@ -64,7 +64,7 @@ public class TcpingExecutor {
         }
 
         public TcpingExecutor execute() throws IOException {
-            String command = String.format("sudo hping3 -c %s -V -S -p 80 %s", probes, siteName);
+            String command = String.format("sudo hping3 -c %s -V -S -p 80 -i u%s %s", probes, interval, siteName);
 
             Process p = Runtime.getRuntime().exec(command);
             BufferedReader inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
