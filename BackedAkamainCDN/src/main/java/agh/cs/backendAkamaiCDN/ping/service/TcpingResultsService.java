@@ -15,7 +15,7 @@ import java.util.Optional;
 @NoArgsConstructor
 public class TcpingResultsService {
 
-    private static final int PROBES = 100;
+    private static final int PROBES = 5;
 
     public Optional<PingEntity> executeTcping(String siteName) {
         try {

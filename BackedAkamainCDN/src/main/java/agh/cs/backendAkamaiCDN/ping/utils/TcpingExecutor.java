@@ -15,7 +15,8 @@ public class TcpingExecutor {
     @Getter
     private final ArrayList<Double> times;
     private final int probes;
-    private int successfulProbes;
+    @Getter
+    private double packetLoss;
 
     public static TcpingExecutorBuilder builder(@NonNull String siteName) {
         return new TcpingExecutorBuilder(siteName);
@@ -24,39 +25,24 @@ public class TcpingExecutor {
     private TcpingExecutor(int probes, BufferedReader inputStream) throws IOException {
         this.probes = probes;
         this.times = new ArrayList<>();
-        this.successfulProbes = 0;
+        this.packetLoss = 0;
         parseResult(inputStream);
     }
 
-    public double getPacketLoss() {
-        int failedProbes = probes - successfulProbes;
-        return (double) failedProbes / (successfulProbes + failedProbes);
-    }
-
     private void parseResult(BufferedReader inputStream) throws IOException {
-        parseIndividualResults(inputStream);
-        parseNumberOfSuccessfulProbes(inputStream);
-    }
+        Pattern patternRtt = Pattern.compile("rtt=" + "(.*?)" + " ms", Pattern.DOTALL);
+        Pattern patternPacketLoss = Pattern.compile("received, " + "(.*?)" + "% packet loss", Pattern.DOTALL);
 
-    private void parseIndividualResults(BufferedReader inputStream) throws IOException {
-        Pattern pattern = Pattern.compile("time=" + "(.*?)" + "ms", Pattern.DOTALL);
         String input;
-        while ((input = inputStream.readLine()) != null && times.size() < probes) {
-            Matcher matcher = pattern.matcher(input);
-            if (matcher.find()) {
-                times.add(Double.parseDouble(matcher.group(1)));
-            }
-        }
-    }
-
-    private void parseNumberOfSuccessfulProbes(BufferedReader inputStream) throws IOException {
-        String input;
-        Pattern successfulPattern = Pattern.compile("\\s*" + "(.*?)" + " successful", Pattern.DOTALL);
-
         while ((input = inputStream.readLine()) != null) {
-            Matcher matcher = successfulPattern.matcher(input);
-            if (matcher.find()) {
-                successfulProbes = Integer.parseInt(matcher.group(1));
+            Matcher matcherRtt = patternRtt.matcher(input);
+            if (matcherRtt.find()) {
+                times.add(Double.parseDouble(matcherRtt.group(1)));
+            }
+
+            Matcher matcherPacketLoss = patternPacketLoss.matcher(input);
+            if (matcherPacketLoss.find()) {
+                this.packetLoss = Double.parseDouble(matcherPacketLoss.group(1));
             }
         }
     }
