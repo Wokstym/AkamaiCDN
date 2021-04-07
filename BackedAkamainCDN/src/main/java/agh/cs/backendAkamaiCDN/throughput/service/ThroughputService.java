@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +29,12 @@ public class ThroughputService {
         } else {
             log.error("Server error");
         }
+    }
+
+    public List<ThroughputEntity> getAllBetweenDates(Date start, Date end){
+        log.info(start.toString());
+        log.info(end.toString());
+        return repository.findAllByStartDateIsAfterAndEndDateIsBefore(start, end);
     }
 
     public List<ThroughputEntity> getAll() {

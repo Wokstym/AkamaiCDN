@@ -28,4 +28,8 @@ public class ThroughputEntity {
     public long min;
     public long avg;
     public String host;
+
+    public boolean isBetween(Date start, Date end){
+        return startDate.after(start) && endDate.before(end);
+    }
 }

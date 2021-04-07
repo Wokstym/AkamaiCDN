@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Service
@@ -21,14 +22,18 @@ public class ThroughputResultsService {
             TcpdumpExecutor executor = TcpdumpExecutor.builder(host).execute();
             Date endStamp = new Date();
             List<Long> results = executor.getResults();
-            return Optional.of(ThroughputEntity.builder()
-                    .startDate(startStamp)
-                    .endDate(endStamp)
-                    .max(getMaxValue(results))
-                    .min(getMinValue(results))
-                    .avg(getAvgValue(results))
-                    .build());
-        } catch (IOException e) {
+            log.info(host);
+            if(getMaxValue(results) > 0) {
+                return Optional.of(ThroughputEntity.builder()
+                        .host(host)
+                        .startDate(startStamp)
+                        .endDate(endStamp)
+                        .max(getMaxValue(results))
+                        .min(getMinValue(results))
+                        .avg(getAvgValue(results))
+                        .build());
+            }
+        } catch (IOException | ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return Optional.empty();
