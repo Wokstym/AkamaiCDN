@@ -88,7 +88,7 @@ public class TcpdumpExecutor {
     @RequiredArgsConstructor
     public static class TcpdumpExecutorBuilder{
         private final String host;
-        private int duration = 1 * 60000;
+        private int duration = 5 * 60000;
         private int step = 1000;
 
         public TcpdumpExecutorBuilder duration(int duration){
