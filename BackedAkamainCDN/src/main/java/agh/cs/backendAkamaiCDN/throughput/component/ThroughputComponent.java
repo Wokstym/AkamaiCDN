@@ -1,6 +1,6 @@
 package agh.cs.backendAkamaiCDN.throughput.component;
 
-import agh.cs.backendAkamaiCDN.throughput.service.ThroughputService;
+import agh.cs.backendAkamaiCDN.throughput.config.ThroughputConfig;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +15,15 @@ import javax.annotation.PostConstruct;
 @Slf4j
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ThroughputComponent {
-    private final ThroughputService service;
-    private final ApplicationContext context;
     private final TaskExecutor executor;
+    private final ThroughputConfig config;
+    private final ApplicationContext applicationContext;
 
     @PostConstruct
-    private void runThroughputTest(){
-        log.info("test");
-        while(true){
-            service.measureAndSaveThroughput("facebook.com");
-        }
+    private void runThroughputTest() {
+        log.info("Post construct init, sites: " + config.getSites().stream().reduce((sum, el) -> sum + " " + el).orElse(""));
+        config.getSites().stream()
+                .map(host -> ThroughputTaskComponent.from(applicationContext, host))
+                .forEach(executor::execute);
     }
 }

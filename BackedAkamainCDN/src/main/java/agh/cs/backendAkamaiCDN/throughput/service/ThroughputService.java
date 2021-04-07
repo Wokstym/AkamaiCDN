@@ -1,6 +1,5 @@
 package agh.cs.backendAkamaiCDN.throughput.service;
 
-import agh.cs.backendAkamaiCDN.ping.entity.PingEntity;
 import agh.cs.backendAkamaiCDN.throughput.entity.ThroughputEntity;
 import agh.cs.backendAkamaiCDN.throughput.repository.ThroughputRepository;
 import lombok.AllArgsConstructor;
@@ -15,19 +14,23 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ThroughputService {
-    private ThroughputResultsService service;
-    private ThroughputRepository repository;
+    private final ThroughputResultsService service;
+    private final ThroughputRepository repository;
 
-    public String measureAndSaveThroughput(String host){
+    public void measureAndSaveThroughput(String host) {
+        log.info("Starting measuring for: " + host);
         Optional<ThroughputEntity> throughputEntity = service.measureThroughput(host);
-        throughputEntity.ifPresent(s -> {
-            repository.save(s);
-            log.info("Saving throughput: " + s);
-        });
-        return throughputEntity.map(ThroughputEntity::toString).orElse("Server error");
+
+        if (throughputEntity.isPresent()) {
+            ThroughputEntity entity = throughputEntity.get();
+            repository.save(entity);
+            log.info("Saving throughput: " + entity);
+        } else {
+            log.error("Server error");
+        }
     }
 
-    public List<ThroughputEntity> getAll(){
+    public List<ThroughputEntity> getAll() {
         return repository.findAll();
     }
 }
