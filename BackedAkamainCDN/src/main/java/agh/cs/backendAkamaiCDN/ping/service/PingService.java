@@ -1,6 +1,6 @@
 package agh.cs.backendAkamaiCDN.ping.service;
 
-import agh.cs.backendAkamaiCDN.ping.config.PingConfig;
+import agh.cs.backendAkamaiCDN.common.CDNConfig;
 import agh.cs.backendAkamaiCDN.ping.entity.PingEntity;
 import agh.cs.backendAkamaiCDN.ping.repository.PingRepository;
 import lombok.AllArgsConstructor;
@@ -20,15 +20,15 @@ public class PingService {
 
     private final PingRepository repository;
     private final TcpingResultsService tcpingResultsService;
-    private final PingConfig pingConfig;
+    private final CDNConfig cdnConfig;
 
     public List<PingEntity> savePing() {
-        return pingConfig.getSites().stream().
-                map(tcpingResultsService::executeTcping).
-                filter(Optional::isPresent).
-                map(Optional::get).
-                map(repository::save).
-                collect(Collectors.toList());
+        return cdnConfig.getSites().stream()
+                .map(tcpingResultsService::executeTcping)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(repository::save)
+                .collect(Collectors.toList());
     }
 
     public List<PingEntity> getAll() {

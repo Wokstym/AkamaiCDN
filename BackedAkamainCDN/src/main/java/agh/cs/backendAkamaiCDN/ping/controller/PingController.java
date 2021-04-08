@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,21 +24,26 @@ public class PingController {
     private final PingService service;
 
     @GetMapping("/save")
-    public List<PingEntity> pingSite() {
+    public ResponseEntity<List<PingEntity>> pingSite() {
         log.info("Ping request");
-        return service.savePing();
+        return ResponseEntity.ok(service.savePing());
     }
 
     @GetMapping("/all")
-    public List<PingEntity> getAll() {
-        return service.getAll();
+    public ResponseEntity<List<PingEntity>> getAll() {
+        List<PingEntity> entities = service.getAll();
+        if (entities.isEmpty()) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(entities);
     }
 
     @GetMapping(value = {"/rtt", "/packetLoss"})
-    public List<PingEntity> getAllBetweenDates(
+    public ResponseEntity<List<PingEntity>> getAllBetweenDates(
             @RequestParam(name = "start_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date start,
             @RequestParam(name = "end_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date end
     ){
-        return service.getAllBetweenDates(start, end);
+        if (start.after(end)) return ResponseEntity.badRequest().build();
+        List<PingEntity> entities = service.getAllBetweenDates(start, end);
+        if (entities.isEmpty()) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(entities);
     }
 }
