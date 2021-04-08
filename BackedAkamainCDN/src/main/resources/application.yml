@@ -15,3 +15,10 @@ throughput:
     - akamai.com
     - netflix.com
     - facebook.com
+
+ping:
+  sites:
+    - youtube.com
+    - akamai.com
+    - netflix.com
+    - facebook.com
