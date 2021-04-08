@@ -5,12 +5,13 @@ import agh.cs.backendAkamaiCDN.ping.service.PingService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 
 @Log4j2
@@ -21,15 +22,22 @@ public class PingController {
 
     private final PingService service;
 
-    @GetMapping("/{siteName}")
-    public ResponseEntity<String> pingSite(@PathVariable String siteName) {
-        log.info("Ping request for " + siteName);
-        String response = service.savePing(siteName);
-        return ResponseEntity.ok(response);
+    @GetMapping("/save")
+    public List<PingEntity> pingSite() {
+        log.info("Ping request");
+        return service.savePing();
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<PingEntity> getAll() {
         return service.getAll();
+    }
+
+    @GetMapping(value = {"/rtt", "/packetLoss"})
+    public List<PingEntity> getAllBetweenDates(
+            @RequestParam(name = "start_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date start,
+            @RequestParam(name = "end_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date end
+    ){
+        return service.getAllBetweenDates(start, end);
     }
 }

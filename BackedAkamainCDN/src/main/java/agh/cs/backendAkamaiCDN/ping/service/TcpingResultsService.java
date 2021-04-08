@@ -20,6 +20,7 @@ public class TcpingResultsService {
     public Optional<PingEntity> executeTcping(String siteName) {
         try {
             log.info("Executing ping");
+            Date startDate = new Date();
 
             TcpingExecutor executor = TcpingExecutor.builder(siteName)
                     .probes(PROBES)
@@ -31,15 +32,16 @@ public class TcpingResultsService {
 
             log.info("Ping successful with packet loss: " + packetLoss);
 
+            Date endDate = new Date();
             Double minTime = getMinTime(times);
             Double maxTime = getMaxTime(times);
             Double avgTime = getAvgTime(times);
             Double stdDivTime = getStandardDiv(times, avgTime);
-            Date date = new Date(System.currentTimeMillis());
 
             return Optional.of(PingEntity.builder()
+                    .startDate(startDate)
+                    .endDate(endDate)
                     .site(siteName)
-                    .id(date)
                     .minTime(minTime)
                     .maxTime(maxTime)
                     .averageTime(avgTime)
