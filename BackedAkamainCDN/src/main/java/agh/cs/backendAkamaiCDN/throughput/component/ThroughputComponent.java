@@ -1,6 +1,6 @@
 package agh.cs.backendAkamaiCDN.throughput.component;
 
-import agh.cs.backendAkamaiCDN.throughput.config.ThroughputConfig;
+import agh.cs.backendAkamaiCDN.common.CDNConfig;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import javax.annotation.PostConstruct;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ThroughputComponent {
     private final TaskExecutor executor;
-    private final ThroughputConfig config;
+    private final CDNConfig config;
     private final ApplicationContext applicationContext;
 
     @PostConstruct
