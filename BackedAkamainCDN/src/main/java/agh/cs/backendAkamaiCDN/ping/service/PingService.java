@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,10 +29,13 @@ public class PingService {
                 map(Optional::get).
                 map(repository::save).
                 collect(Collectors.toList());
-
     }
 
     public List<PingEntity> getAll() {
         return repository.findAll();
+    }
+
+    public List<PingEntity> getAllBetweenDates(Date start, Date end) {
+        return repository.getAllByStartDateIsAfterAndEndDateIsBefore(start, end);
     }
 }
