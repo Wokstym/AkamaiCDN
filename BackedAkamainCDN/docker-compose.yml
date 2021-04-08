@@ -13,4 +13,4 @@ services:
       - TZ=Europe/Warsaw
       - spring.profiles.active=development
       - spring.liquibase.contexts=development
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:2173/postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://172.18.0.1:2173/postgres
