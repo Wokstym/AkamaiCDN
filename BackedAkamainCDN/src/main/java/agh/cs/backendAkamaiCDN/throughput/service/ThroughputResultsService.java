@@ -16,16 +16,16 @@ import java.util.concurrent.ExecutionException;
 @Service
 @NoArgsConstructor
 public class ThroughputResultsService {
-    public Optional<ThroughputEntity> measureThroughput(String host) {
+    public Optional<ThroughputEntity> measureThroughput(List<String> hosts, String name) {
         Date startStamp = new Date();
         try {
-            TcpdumpExecutor executor = TcpdumpExecutor.builder(host).execute();
+            TcpdumpExecutor executor = TcpdumpExecutor.builder(hosts).execute();
             Date endStamp = new Date();
             List<Long> results = executor.getResults();
-            log.info(host);
+            log.info(hosts.toString());
             if(getMaxValue(results) > 0) {
                 return Optional.of(ThroughputEntity.builder()
-                        .host(host)
+                        .host(name)
                         .startDate(startStamp)
                         .endDate(endStamp)
                         .max(getMaxValue(results))

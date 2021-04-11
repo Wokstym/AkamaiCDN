@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "CDN")
+@ConfigurationProperties(prefix = "cdn")
 public class CDNConfig {
     private List<String> sites;
 }

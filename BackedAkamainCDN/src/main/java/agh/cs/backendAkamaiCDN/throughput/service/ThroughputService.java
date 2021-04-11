@@ -18,9 +18,9 @@ public class ThroughputService {
     private final ThroughputResultsService service;
     private final ThroughputRepository repository;
 
-    public void measureAndSaveThroughput(String host) {
-        log.info("Starting measuring for: " + host);
-        Optional<ThroughputEntity> throughputEntity = service.measureThroughput(host);
+    public void measureAndSaveThroughput(List<String> hosts, String name) {
+        log.info("Starting measuring for: " + name);
+        Optional<ThroughputEntity> throughputEntity = service.measureThroughput(hosts, name);
 
         if (throughputEntity.isPresent()) {
             ThroughputEntity entity = throughputEntity.get();
