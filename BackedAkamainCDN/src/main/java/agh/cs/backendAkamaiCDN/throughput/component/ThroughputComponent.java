@@ -9,6 +9,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.stream.Stream;
 
 
 @Component
@@ -21,9 +22,10 @@ public class ThroughputComponent {
 
     @PostConstruct
     private void runThroughputTest() {
-        log.info("Post construct init, sites: " + config.getSites().stream().reduce((sum, el) -> sum + " " + el).orElse(""));
-        config.getSites().stream()
-                .map(host -> ThroughputTaskComponent.from(applicationContext, host))
+        log.info("Post construct init");
+         config.getSites().stream()
+                .map(site ->  ThroughputTaskComponent.from(applicationContext, site.getHosts(), site.getGeneralHost()))
                 .forEach(executor::execute);
+
     }
 }

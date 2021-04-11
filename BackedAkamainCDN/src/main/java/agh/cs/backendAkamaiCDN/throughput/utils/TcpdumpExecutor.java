@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,8 +27,8 @@ public class TcpdumpExecutor {
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
-    public static TcpdumpExecutorBuilder builder(@NonNull String host) {
-        return new TcpdumpExecutorBuilder(host);
+    public static TcpdumpExecutorBuilder builder(@NonNull List<String> hosts) {
+        return new TcpdumpExecutorBuilder(hosts);
     }
 
     public TcpdumpExecutor(int duration, int interval, InputStream stream) throws IOException, InterruptedException, ExecutionException {
@@ -87,7 +89,7 @@ public class TcpdumpExecutor {
 
     @RequiredArgsConstructor
     public static class TcpdumpExecutorBuilder{
-        private final String host;
+        private final List<String> hosts;
         private int duration = 5 * 60000;
         private int step = 1000;
 
@@ -102,17 +104,22 @@ public class TcpdumpExecutor {
         }
 
         public TcpdumpExecutor execute() throws IOException, ExecutionException, InterruptedException {
-            InetAddress[] addresses = InetAddress.getAllByName(this.host);
+            List<InetAddress> addresses = new ArrayList<>();
+
+            for(String host : this.hosts){
+                addresses.addAll(Arrays.asList(InetAddress.getAllByName(host)));
+            }
+
             String hosts = "";
-            for(int i = 0; i < addresses.length; i++){
+            for(int i = 0; i < addresses.size(); i++){
                 if(i == 0){
-                    hosts += addresses[i].getHostAddress();
+                    hosts += addresses.get(i).getHostAddress();
                 }
                 else{
-                    hosts += " or host " + addresses[i].getHostAddress();
+                    hosts += " or host " + addresses.get(i).getHostAddress();
                 }
             }
-            log.info("IPs from " + this.host + " :" + hosts.replaceAll("or host", ""));
+            log.info("IPs from current host"   + " :" + hosts.replaceAll("or host", ""));
             String cmd = "tcpdump -n host " + hosts;
             Process process = Runtime.getRuntime().exec(cmd);
             InputStream stream = process.getInputStream();
