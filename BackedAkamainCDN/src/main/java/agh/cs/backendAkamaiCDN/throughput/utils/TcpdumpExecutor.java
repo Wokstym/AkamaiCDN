@@ -2,7 +2,6 @@ package agh.cs.backendAkamaiCDN.throughput.utils;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 
@@ -11,11 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -123,9 +120,12 @@ public class TcpdumpExecutor {
 
         }
 
-        @SneakyThrows
         private List<InetAddress> getInetAddresses(String host) {
-            return Arrays.asList(InetAddress.getAllByName(host));
+            try {
+                return Arrays.asList(InetAddress.getAllByName(host));
+            } catch (UnknownHostException e) {
+                return Collections.emptyList();
+            }
         }
     }
 }
