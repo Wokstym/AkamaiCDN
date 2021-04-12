@@ -24,6 +24,7 @@ public class PingService {
 
     public List<PingEntity> savePing() {
         return cdnConfig.getSites().stream()
+                .map(CDNConfig.Site::getGeneralHost)
                 .map(tcpingResultsService::executeTcping)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
