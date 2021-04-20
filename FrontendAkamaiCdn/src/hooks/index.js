@@ -1,0 +1,37 @@
+import {useEffect, useState} from "react";
+
+function buildQs(obj){
+    return '?' + Object.entries(obj).map(([param, value]) => `${param}=${value}`).join('&');
+}
+
+export function useFetch(endpoint, queryParams={}, deps){
+    const [status, setStatus] = useState('idle');
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        if (!endpoint) return;
+        const fetchData = async () => {
+            setStatus('fetching');
+            try {
+                const url = `http://localhost:8090` +
+                    endpoint +
+                    buildQs(queryParams);
+                console.log(url);
+                const response = await fetch(url);
+                console.log(response);
+                if(response.ok) {
+                    const data = await response.json();
+                    setData(data);
+                    setStatus('fetched');
+                }
+                else setStatus('failed');
+            }
+            catch (e) {
+                setStatus('failed');
+            }
+        };
+        fetchData();
+    }, deps || []);
+
+    return {status, data}
+}
