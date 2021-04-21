@@ -3,6 +3,7 @@ package agh.cs.backendAkamaiCDN.ping.service;
 import agh.cs.backendAkamaiCDN.ping.entity.PingEntity;
 import agh.cs.backendAkamaiCDN.ping.utils.TcpingExecutor;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,16 +16,15 @@ import java.util.Optional;
 @NoArgsConstructor
 public class TcpingResultsService {
 
-    private static final int PROBES = 100;
-
-    public Optional<PingEntity> executeTcping(String siteName) {
+    public Optional<PingEntity> executeTcping(Integer numberOfProbes, Integer interval, @NonNull String host) {
         try {
-            log.info("Executing ping");
+            log.info("Executing ping for : " + host);
             Date startDate = new Date();
 
-            TcpingExecutor executor = TcpingExecutor.builder(siteName)
-                    .probes(PROBES)
-                    .interval(1000) //1 packet every 1 ms
+            TcpingExecutor executor = TcpingExecutor.builder()
+                    .probes(numberOfProbes)
+                    .interval(interval)
+                    .host(host)
                     .execute();
 
             ArrayList<Double> times = executor.getTimes();
@@ -41,7 +41,7 @@ public class TcpingResultsService {
             return Optional.of(PingEntity.builder()
                     .startDate(startDate)
                     .endDate(endDate)
-                    .site(siteName)
+                    .host(host)
                     .minTime(minTime)
                     .maxTime(maxTime)
                     .averageTime(avgTime)

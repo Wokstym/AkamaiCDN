@@ -22,10 +22,10 @@ public class PingService {
     private final TcpingResultsService tcpingResultsService;
     private final CDNConfig cdnConfig;
 
-    public List<PingEntity> savePing() {
+    public List<PingEntity> savePing(Integer numberOfProbes, Integer interval) {
         return cdnConfig.getSites().stream()
                 .map(CDNConfig.Site::getGeneralHost)
-                .map(tcpingResultsService::executeTcping)
+                .map(host -> tcpingResultsService.executeTcping(numberOfProbes, interval, host))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .map(repository::save)

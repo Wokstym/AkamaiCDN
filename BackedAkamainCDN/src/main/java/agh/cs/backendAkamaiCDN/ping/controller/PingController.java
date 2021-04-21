@@ -24,9 +24,14 @@ public class PingController {
     private final PingService service;
 
     @GetMapping("/save")
-    public ResponseEntity<List<PingEntity>> pingSite() {
+    public ResponseEntity<List<PingEntity>> pingSite(
+            @RequestParam(name = "numberOfProbes") Integer numberOfProbes,
+            @RequestParam(name = "interval") Integer interval
+    )
+    {
+        if (numberOfProbes <= 0 || interval <= 0) return ResponseEntity.badRequest().build();
         log.info("Ping request");
-        return ResponseEntity.ok(service.savePing());
+        return ResponseEntity.ok(service.savePing(numberOfProbes, interval));
     }
 
     @GetMapping("/all")
