@@ -7,5 +7,5 @@ import java.util.Date;
 import java.util.List;
 
 public interface PingRepository extends JpaRepository<PingEntity, Date> {
-    List<PingEntity> getAllByStartDateIsAfterAndEndDateIsBefore(Date startDate, Date endDate);
+    List<PingEntity> getAllByStartDateIsAfterAndEndDateIsBeforeOrderByStartDate(Date startDate, Date endDate);
 }

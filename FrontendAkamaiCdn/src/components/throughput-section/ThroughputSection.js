@@ -4,6 +4,8 @@ import {useState} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Typography from '@material-ui/core/Typography';
+import './ThroughputSection.css'
+import { withStyles } from "@material-ui/core/styles";
 
 const ThroughputSection = (props) => {
     const [startDate, setStartDate] = useState(new Date());
@@ -28,11 +30,17 @@ const ThroughputSection = (props) => {
         return reducer;
     }, {}));
 
+    const GreyTextTypography = withStyles({
+        root: {
+          color: "#929596"
+        }
+      })(Typography);
+
     return (
-        <div>
-            <Typography variant={"h3"} gutterBottom>
+        <div className="card">
+            <GreyTextTypography variant={"h3"}  gutterBottom>
                 Throughput
-            </Typography>
+            </GreyTextTypography>
             <DatePicker
             selected={startDate}
             onChange={date => setStartDate(date)}
@@ -60,7 +68,7 @@ const ThroughputSection = (props) => {
                 Error! start datetime is greater than end datetime!
                 </Typography>
         }
-        <TestChart width={1000} height={500} data={parsedData}/>
+        <TestChart width={1000} height={600} data={parsedData} ylabel="Max" xlabel="Time"/>
     </div>
     )
 }

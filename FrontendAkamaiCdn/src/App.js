@@ -1,9 +1,10 @@
 import { ThroughputSection } from './components';
+import './App.css'
 
 function App() {
 
     return (
-        <main>
+        <main  className="main" >
             <ThroughputSection/>
         </main>
   );
