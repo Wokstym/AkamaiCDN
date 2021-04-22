@@ -37,6 +37,6 @@ public class PingService {
     }
 
     public List<PingEntity> getAllBetweenDates(Date start, Date end) {
-        return repository.getAllByStartDateIsAfterAndEndDateIsBefore(start, end);
+        return repository.getAllByStartDateIsAfterAndEndDateIsBeforeOrderByStartDate(start, end);
     }
 }
