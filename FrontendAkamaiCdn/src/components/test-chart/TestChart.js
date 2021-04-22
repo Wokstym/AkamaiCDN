@@ -6,11 +6,12 @@ import {
     XYPlot,
     YAxis,
     ChartLabel,
+    Crosshair
   } from "react-vis";
   import "react-vis/dist/style.css";
   import './TestChart.css'
   
-  const TestChart = ({ width, height, data, ylabel, xlabel }) => {
+  const TestChart = ({ width, height, data, ylabel, xlabel,  onNearestXY }) => {
     let xLabelComponent = (
       <ChartLabel
         style={{
@@ -53,7 +54,8 @@ import {
         {yLabelComponent}
   
         {data.map(([key, value], index) => (
-          <LineMarkSeries key={index} data={value} />
+          <LineMarkSeries curve={'curveMonotoneX'} key={index} data={value}  onNearestXY ={onNearestXY}/> 
+          // todo fix onNearest pointing only at one graph, showing only data from one line
         ))}
       </XYPlot>
     ) : (
