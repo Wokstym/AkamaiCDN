@@ -1,4 +1,4 @@
-export function groupBy(arr, field){
+export function groupBy(arr, field) {
     return Object.entries(
         arr.reduce((reducer, next) => {
             reducer[next[field]] = reducer[next[field]] || [];
