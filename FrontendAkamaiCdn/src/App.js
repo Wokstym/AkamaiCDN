@@ -1,13 +1,58 @@
-import { ThroughputSection, PacketLossSection, RttSection } from './components';
+import { Section, PacketLossSection, RttSection } from './components';
 import './App.css'
 
 function App() {
 
     return (
         <main  className="main" >
-            <ThroughputSection/>
-            <PacketLossSection/>
-            <RttSection/>
+            <Section
+                title={"Throughput"}
+                endpoint={"/throughput"}
+                getX={(data) => new Date(data.startDate)}
+                getY={(data) => data.max}
+                groupBy={"host"}
+                stats={[
+                    ["Host", "host"],
+                    ["Max", "max"],
+                    ["Min", "min"],
+                    ["Average", "avg"],
+                    ["Start date", "startDate", (startDate) => new Date(startDate).toLocaleString("pol-PL")],
+                    ["End date", "endDate", (endDate) => new Date(endDate).toLocaleString("pol-PL")]
+                ]}
+            />
+            <Section
+                title={"Round trip time"}
+                endpoint={"/ping/rtt"}
+                getX={(data) => new Date(data.startDate)}
+                getY={(data) => data.averageTime}
+                groupBy={"host"}
+                stats={[
+                    ["Host", "host"],
+                    ["Max", "maxTime"],
+                    ["Min", "minTime"],
+                    ["Average", "averageTime"],
+                    ["Standard deviation", "standardDeviationTime"],
+                    ["Start date", "startDate", (startDate) => new Date(startDate).toLocaleString("pol-PL")],
+                    ["End date", "endDate", (endDate) => new Date(endDate).toLocaleString("pol-PL")],
+                ]}
+            />
+            <Section
+                title={"Packet loss"}
+                endpoint={"/ping/packetLoss"}
+                getX={(data) => new Date(data.startDate)}
+                getY={(data) => data.packetLoss}
+                groupBy={"host"}
+                stats={[
+                    ["Host", "host"],
+                    ["Max", "maxTime"],
+                    ["Min", "minTime"],
+                    ["Average", "averageTime"],
+                    ["Standard deviation", "standardDeviationTime"],
+                    ["Packet loss", "packetLoss"],
+                    ["Start date", "startDate", (startDate) => new Date(startDate).toLocaleString("pol-PL")],
+                    ["End date", "endDate", (endDate) => new Date(endDate).toLocaleString("pol-PL")],
+                ]}
+            />
         </main>
   );
 }

@@ -4,34 +4,28 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Typography from "@material-ui/core/Typography";
-import "./ThroughputSection.css";
+import "./Section.css";
 import { withStyles } from "@material-ui/core/styles";
+import {groupBy} from "../../utils";
 
-const ThroughputSection = (props) => {
+const Section = (props) => {
 	const [startDate, setStartDate] = useState(new Date());
 	const [endDate, setEndDate] = useState(new Date());
 	let queryParams = {
 		start_date: startDate.toJSON(),
 		end_date: endDate.toJSON(),
 	};
-	const { status, data } = useFetch("/throughput", queryParams, [
+	const { status, data } = useFetch(props.endpoint, queryParams, [
 		startDate,
 		endDate,
 	]);
 
 	const [hoveredPoint, setHoveredPoint] = useState({});
 
-	const parsedData = Object.entries(
-		data.reduce((reducer, next) => {
-			reducer[next.host] = reducer[next.host] || [];
-			reducer[next.host].push({
-				...next,
-				x: new Date(next.startDate),
-				y: next.max,
-			});
-			return reducer;
-		}, {})
-	);
+	const parsedData = groupBy(data, props.groupBy).map(([key, value]) => {
+		return [key, value.map(data => ({...data, x: props.getX(data), y: props.getY(data)}))]
+	})
+	console.log(parsedData);
 
 	const GreyTextTypography = withStyles({
 		root: {
@@ -42,7 +36,7 @@ const ThroughputSection = (props) => {
 	return (
 		<div className="card">
 			<GreyTextTypography variant={"h3"} gutterBottom>
-				Throughput
+				{props.title}
 			</GreyTextTypography>
 
 			<div className="grid-container">
@@ -89,29 +83,17 @@ const ThroughputSection = (props) => {
 							Error! start datetime is greater than end datetime!
 						</Typography>
 					)}
-
-					<Typography display={"block"} gutterBottom>
-						Host: {hoveredPoint.host}
-					</Typography>
-					<Typography display={"block"} gutterBottom>
-						Max: {hoveredPoint.max}
-					</Typography>
-					<Typography display={"block"} gutterBottom>
-						Min: {hoveredPoint.min}
-					</Typography>
-					<Typography display={"block"} gutterBottom>
-						Start date: {new Date(hoveredPoint.startDate).toLocaleString("pol-PL")}
-					</Typography>
-					<Typography display={"block"} type="date" gutterBottom>
-						End date: {new Date(hoveredPoint.endDate).toLocaleString("pol-PL")}
-					</Typography>
-					<Typography display={"block"} gutterBottom>
-						Average: {hoveredPoint.avg}
-					</Typography>
+					{props.stats.map(([text, field, fn], index) => {
+						return (
+							<Typography key={index} display={"block"} gutterBottom>
+								{text}: {fn ? fn(hoveredPoint[field]) : hoveredPoint[field]}
+							</Typography>
+						)
+					})}
 				</div>
 			</div>
 		</div>
 	);
 };
 
-export default ThroughputSection;
+export default Section;
