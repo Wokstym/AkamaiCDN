@@ -1,12 +1,13 @@
-import {PacketLossSection, RttSection, ThroughputSection} from './components';
+import { ThroughputSection, PacketLossSection, RttSection } from './components';
+import './App.css'
 
 function App() {
 
     return (
-        <main>
+        <main  className="main" >
             <ThroughputSection/>
-            <RttSection/>
             <PacketLossSection/>
+            <RttSection/>
         </main>
   );
 }

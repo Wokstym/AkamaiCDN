@@ -23,7 +23,7 @@ const RttSection = (props) => {
         reducer[next.host].push({
             ...next,
             x: new Date(next.startDate),
-            y: next.max
+            y: next.averageTime
         });
         return reducer;
     }, {}));
