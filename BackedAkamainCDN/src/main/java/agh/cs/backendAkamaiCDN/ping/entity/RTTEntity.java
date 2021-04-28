@@ -15,7 +15,7 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class PingEntity {
+public class RTTEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -27,6 +27,4 @@ public class PingEntity {
     private Double maxTime;
     private Double averageTime;
     private Double standardDeviationTime;
-
-    private Double packetLoss;
 }
