@@ -106,7 +106,7 @@ const ThroughputSection = (props) => {
 						End date: {new Date(hoveredPoint.endDate).toLocaleString("pol-PL")}
 					</Typography>
 					<Typography display={"block"} gutterBottom>
-						Average date: {hoveredPoint.avg}
+						Average: {hoveredPoint.avg}
 					</Typography>
 				</div>
 			</div>

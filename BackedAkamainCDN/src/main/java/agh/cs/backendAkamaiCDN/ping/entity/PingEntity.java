@@ -22,7 +22,7 @@ public class PingEntity {
 
     private Date startDate;
     private Date endDate;
-    private String site;
+    private String host;
     private Double minTime;
     private Double maxTime;
     private Double averageTime;

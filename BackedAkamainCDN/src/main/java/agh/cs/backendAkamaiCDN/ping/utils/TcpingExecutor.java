@@ -2,7 +2,6 @@ package agh.cs.backendAkamaiCDN.ping.utils;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.lang.NonNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,19 +10,16 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Getter
 public class TcpingExecutor {
-    @Getter
     private final ArrayList<Double> times;
-    private final int probes;
-    @Getter
     private double packetLoss;
 
-    public static TcpingExecutorBuilder builder(@NonNull String siteName) {
-        return new TcpingExecutorBuilder(siteName);
+    public static TcpingExecutorBuilder builder() {
+        return new TcpingExecutorBuilder();
     }
 
-    private TcpingExecutor(int probes, BufferedReader inputStream) throws IOException {
-        this.probes = probes;
+    private TcpingExecutor(BufferedReader inputStream) throws IOException {
         this.times = new ArrayList<>();
         this.packetLoss = 0;
         parseResult(inputStream);
@@ -49,9 +45,9 @@ public class TcpingExecutor {
 
     @RequiredArgsConstructor
     public static class TcpingExecutorBuilder {
-        private final String siteName;
-        private int probes = 1;
-        private double interval = 3;
+        private String siteName;
+        private int probes = 100;
+        private double interval = 1000;
 
         public TcpingExecutorBuilder interval(double interval) {
             this.interval = interval;
@@ -63,13 +59,18 @@ public class TcpingExecutor {
             return this;
         }
 
+        public TcpingExecutorBuilder host(String siteName) {
+            this.siteName = siteName;
+            return this;
+        }
+
         public TcpingExecutor execute() throws IOException {
             String command = String.format("sudo hping3 -c %s -V -S -p 80 -i u%s %s", probes, interval, siteName);
 
             Process p = Runtime.getRuntime().exec(command);
             BufferedReader inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-            return new TcpingExecutor(probes, inputStream);
+            return new TcpingExecutor(inputStream);
         }
 
     }
