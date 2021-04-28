@@ -1,10 +1,10 @@
-import { Section, PacketLossSection, RttSection } from './components';
+import {Section} from './components';
 import './App.css'
 
 function App() {
 
     return (
-        <main  className="main" >
+        <main className="main">
             <Section
                 title={"Throughput"}
                 endpoint={"/throughput"}
@@ -54,6 +54,7 @@ function App() {
                 ]}
             />
         </main>
-  );
+    );
 }
+
 export default App;

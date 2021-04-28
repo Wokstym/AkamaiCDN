@@ -4,11 +4,13 @@
     padding: 2%;
     margin-bottom: 2%;
 }
+
 .grid-container {
     display: grid;
     grid-template-columns: auto auto;
 }
+
 .grid-item {
-    display:inline-block;
-    vertical-align: top; 
+    display: inline-block;
+    vertical-align: top;
 }
