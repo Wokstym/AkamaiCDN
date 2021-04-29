@@ -6,41 +6,17 @@ import lombok.RequiredArgsConstructor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Getter
 public class TcpingExecutor {
-    private final ArrayList<Double> times;
-    private double packetLoss;
+    private BufferedReader bufferedReader;
 
     public static TcpingExecutorBuilder builder() {
         return new TcpingExecutorBuilder();
     }
 
     private TcpingExecutor(BufferedReader inputStream) throws IOException {
-        this.times = new ArrayList<>();
-        this.packetLoss = 0;
-        parseResult(inputStream);
-    }
-
-    private void parseResult(BufferedReader inputStream) throws IOException {
-        Pattern patternRtt = Pattern.compile("rtt=" + "(.*?)" + " ms", Pattern.DOTALL);
-        Pattern patternPacketLoss = Pattern.compile("received, " + "(.*?)" + "% packet loss", Pattern.DOTALL);
-
-        String input;
-        while ((input = inputStream.readLine()) != null) {
-            Matcher matcherRtt = patternRtt.matcher(input);
-            if (matcherRtt.find()) {
-                times.add(Double.parseDouble(matcherRtt.group(1)));
-            }
-
-            Matcher matcherPacketLoss = patternPacketLoss.matcher(input);
-            if (matcherPacketLoss.find()) {
-                this.packetLoss = Double.parseDouble(matcherPacketLoss.group(1));
-            }
-        }
+        this.bufferedReader = inputStream;
     }
 
     @RequiredArgsConstructor

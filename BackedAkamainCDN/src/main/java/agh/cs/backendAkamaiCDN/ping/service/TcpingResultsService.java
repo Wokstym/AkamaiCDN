@@ -1,6 +1,8 @@
 package agh.cs.backendAkamaiCDN.ping.service;
 
-import agh.cs.backendAkamaiCDN.ping.entity.PingEntity;
+import agh.cs.backendAkamaiCDN.ping.entity.PacketLossEntity;
+import agh.cs.backendAkamaiCDN.ping.entity.RTTEntity;
+import agh.cs.backendAkamaiCDN.ping.utils.ResultsParser;
 import agh.cs.backendAkamaiCDN.ping.utils.TcpingExecutor;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -16,9 +18,9 @@ import java.util.Optional;
 @NoArgsConstructor
 public class TcpingResultsService {
 
-    public Optional<PingEntity> executeTcping(Integer numberOfProbes, Integer interval, @NonNull String host) {
+    public Optional<RTTEntity> execTcpingForRTT(Integer numberOfProbes, Integer interval, @NonNull String host) {
         try {
-            log.info("Executing ping for : " + host);
+            log.info("Executing ping for RTT calling : " + host);
             Date startDate = new Date();
 
             TcpingExecutor executor = TcpingExecutor.builder()
@@ -27,10 +29,7 @@ public class TcpingResultsService {
                     .host(host)
                     .execute();
 
-            ArrayList<Double> times = executor.getTimes();
-            double packetLoss = executor.getPacketLoss();
-
-            log.info("Ping successful with packet loss: " + packetLoss);
+            ArrayList<Double> times = ResultsParser.parseRTT(executor.getBufferedReader());
 
             Date endDate = new Date();
             Double minTime = getMinTime(times);
@@ -38,7 +37,7 @@ public class TcpingResultsService {
             Double avgTime = getAvgTime(times);
             Double stdDivTime = getStandardDiv(times, avgTime);
 
-            return Optional.of(PingEntity.builder()
+            return Optional.of(RTTEntity.builder()
                     .startDate(startDate)
                     .endDate(endDate)
                     .host(host)
@@ -46,6 +45,31 @@ public class TcpingResultsService {
                     .maxTime(maxTime)
                     .averageTime(avgTime)
                     .standardDeviationTime(stdDivTime)
+                    .build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+    public Optional<PacketLossEntity> execTcpingForPacketLoss(Integer numberOfProbes, Integer interval, @NonNull String host) {
+        try {
+            log.info("Executing ping for Packet Loss calling : " + host);
+            Date startDate = new Date();
+
+            TcpingExecutor executor = TcpingExecutor.builder()
+                    .probes(numberOfProbes)
+                    .interval(interval)
+                    .host(host)
+                    .execute();
+
+            double packetLoss = ResultsParser.parsePacketLoss(executor.getBufferedReader());
+            Date endDate = new Date();
+
+            return Optional.of(PacketLossEntity.builder()
+                    .startDate(startDate)
+                    .endDate(endDate)
+                    .host(host)
                     .packetLoss(packetLoss)
                     .build());
         } catch (Exception e) {

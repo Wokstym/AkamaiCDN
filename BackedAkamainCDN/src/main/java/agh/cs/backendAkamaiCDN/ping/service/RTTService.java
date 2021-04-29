@@ -1,8 +1,8 @@
 package agh.cs.backendAkamaiCDN.ping.service;
 
 import agh.cs.backendAkamaiCDN.common.CDNConfig;
-import agh.cs.backendAkamaiCDN.ping.entity.PingEntity;
-import agh.cs.backendAkamaiCDN.ping.repository.PingRepository;
+import agh.cs.backendAkamaiCDN.ping.entity.RTTEntity;
+import agh.cs.backendAkamaiCDN.ping.repository.RTTRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,27 +16,26 @@ import java.util.stream.Collectors;
 @Log4j2
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class PingService {
-
-    private final PingRepository repository;
+public class RTTService {
+    private final RTTRepository repository;
     private final TcpingResultsService tcpingResultsService;
     private final CDNConfig cdnConfig;
 
-    public List<PingEntity> savePing(Integer numberOfProbes, Integer interval) {
+    public List<RTTEntity> saveRTTEntity(Integer numberOfProbes, Integer interval) {
         return cdnConfig.getSites().stream()
                 .map(CDNConfig.Site::getGeneralHost)
-                .map(host -> tcpingResultsService.executeTcping(numberOfProbes, interval, host))
+                .map(host -> tcpingResultsService.execTcpingForRTT(numberOfProbes, interval, host))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .map(repository::save)
                 .collect(Collectors.toList());
     }
 
-    public List<PingEntity> getAll() {
+    public List<RTTEntity> getAll() {
         return repository.findAll();
     }
 
-    public List<PingEntity> getAllBetweenDates(Date start, Date end) {
+    public List<RTTEntity> getAllBetweenDates(Date start, Date end) {
         return repository.getAllByStartDateIsAfterAndEndDateIsBeforeOrderByStartDate(start, end);
     }
 }

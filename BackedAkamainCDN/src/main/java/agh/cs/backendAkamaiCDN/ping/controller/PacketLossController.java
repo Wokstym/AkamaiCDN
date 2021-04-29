@@ -1,7 +1,7 @@
 package agh.cs.backendAkamaiCDN.ping.controller;
 
-import agh.cs.backendAkamaiCDN.ping.entity.PingEntity;
-import agh.cs.backendAkamaiCDN.ping.service.PingService;
+import agh.cs.backendAkamaiCDN.ping.entity.PacketLossEntity;
+import agh.cs.backendAkamaiCDN.ping.service.PacketLossService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,37 +17,37 @@ import java.util.List;
 
 @Log4j2
 @RestController
-@RequestMapping("/ping")
+@RequestMapping("/packet_loss")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class PingController {
+public class PacketLossController {
 
-    private final PingService service;
+    private final PacketLossService service;
 
     @GetMapping("/save")
-    public ResponseEntity<List<PingEntity>> pingSite(
-            @RequestParam(name = "numberOfProbes") Integer numberOfProbes,
-            @RequestParam(name = "interval") Integer interval
+    public ResponseEntity<List<PacketLossEntity>> pingSite(
+            @RequestParam(name = "numberOfProbes", defaultValue = "100") Integer numberOfProbes,
+            @RequestParam(name = "interval", defaultValue = "1000") Integer interval
     )
     {
         if (numberOfProbes <= 0 || interval <= 0) return ResponseEntity.badRequest().build();
-        log.info("Ping request");
-        return ResponseEntity.ok(service.savePing(numberOfProbes, interval));
+        log.info("Packet Loss request");
+        return ResponseEntity.ok(service.savePacketLossEntity(numberOfProbes, interval));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<PingEntity>> getAll() {
-        List<PingEntity> entities = service.getAll();
+    public ResponseEntity<List<PacketLossEntity>> getAll() {
+        List<PacketLossEntity> entities = service.getAll();
         if (entities.isEmpty()) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(entities);
     }
 
-    @GetMapping(value = {"/rtt", "/packetLoss"})
-    public ResponseEntity<List<PingEntity>> getAllBetweenDates(
+    @GetMapping("")
+    public ResponseEntity<List<PacketLossEntity>> getAllBetweenDates(
             @RequestParam(name = "start_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date start,
             @RequestParam(name = "end_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date end
     ){
         if (start.after(end)) return ResponseEntity.badRequest().build();
-        List<PingEntity> entities = service.getAllBetweenDates(start, end);
+        List<PacketLossEntity> entities = service.getAllBetweenDates(start, end);
         if (entities.isEmpty()) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(entities);
     }
