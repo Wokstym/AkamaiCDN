@@ -1,6 +1,6 @@
 import {DataChart} from "../../components";
 import {useFetch} from "../../hooks";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Typography from "@material-ui/core/Typography";
@@ -32,6 +32,18 @@ const Section = (props) => {
             color: "#929596",
         },
     })(Typography);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const url = new URL("https://localhost:8080" + props.endpoint),
+                params = {numberOfProbes : numberOfProbes, interval : intervalBetweenProbes};
+            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+            fetch(url).then(res => res.json()).then(data => {
+
+            })
+        }, 60000);
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <div className="card">

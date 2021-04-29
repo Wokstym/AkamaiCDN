@@ -1,5 +1,6 @@
-import {Section} from './components';
+import {Section,} from './components';
 import './App.css'
+import ParamsSection from "./components/params-section/ParamsSection";
 
 function App() {
 
@@ -36,6 +37,9 @@ function App() {
                     ["End date", "endDate", (endDate) => new Date(endDate).toLocaleString("pol-PL")],
                 ]}
             />
+            <ParamsSection
+                endpoint={"/rtt/save"}
+            />
             <Section
                 title={"Packet loss"}
                 endpoint={"/packet_loss"}
@@ -52,6 +56,9 @@ function App() {
                     ["Start date", "startDate", (startDate) => new Date(startDate).toLocaleString("pol-PL")],
                     ["End date", "endDate", (endDate) => new Date(endDate).toLocaleString("pol-PL")],
                 ]}
+            />
+            <ParamsSection
+                endpoint={"/packet_loss/save"}
             />
         </main>
     );
