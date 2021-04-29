@@ -22,7 +22,7 @@ function App() {
             />
             <Section
                 title={"Round trip time"}
-                endpoint={"/ping/rtt"}
+                endpoint={"/rtt"}
                 getX={(data) => new Date(data.startDate)}
                 getY={(data) => data.averageTime}
                 groupBy={"host"}
@@ -38,7 +38,7 @@ function App() {
             />
             <Section
                 title={"Packet loss"}
-                endpoint={"/ping/packetLoss"}
+                endpoint={"/packet_loss"}
                 getX={(data) => new Date(data.startDate)}
                 getY={(data) => data.packetLoss}
                 groupBy={"host"}
