@@ -61,10 +61,12 @@ const DataChart = ({width, height, data, ylabel, xlabel, onNearestXY}) => {
             {xLabelComponent}
             {yLabelComponent}
 
-            {data.map(([key, value], index) => (
+            {data.map(([key, value], index) => {
+                console.log([key, value]);
+                return(
                 <LineMarkSeries curve={'curveMonotoneX'} key={index} data={value} onNearestXY={onNearestXY}/>
                 // todo fix onNearest pointing only at one graph, showing only data from one line
-            ))}
+            )})}
         </XYPlot>
     ) : (
         <div>

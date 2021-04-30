@@ -1,13 +1,5 @@
 import {useEffect, useState} from "react";
-
-function buildQs(obj) {
-    return (
-        "?" +
-        Object.entries(obj)
-            .map(([param, value]) => `${param}=${value}`)
-            .join("&")
-    );
-}
+import {buildQs} from "../utils";
 
 export function useFetch(endpoint, queryParams = {}, deps) {
     const [status, setStatus] = useState("idle");
@@ -37,5 +29,5 @@ export function useFetch(endpoint, queryParams = {}, deps) {
         };
         fetchData();
     }, deps || []);
-    return {status, data};
+    return {status, data, setData};
 }

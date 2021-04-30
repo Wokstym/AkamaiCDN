@@ -15,7 +15,7 @@ const Section = (props) => {
         start_date: startDate.toJSON(),
         end_date: endDate.toJSON(),
     };
-    const {status, data} = useFetch(props.endpoint, queryParams, [
+    const {status, data, setData} = useFetch(props.endpoint, queryParams, [
         startDate,
         endDate,
     ]);
@@ -25,7 +25,6 @@ const Section = (props) => {
     const parsedData = groupBy(data, props.groupBy).map(([key, value]) => {
         return [key, value.map(data => ({...data, x: props.getX(data), y: props.getY(data)}))]
     })
-    console.log(parsedData);
 
     const GreyTextTypography = withStyles({
         root: {
@@ -33,24 +32,12 @@ const Section = (props) => {
         },
     })(Typography);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const url = new URL("https://localhost:8080" + props.endpoint),
-                params = {numberOfProbes : numberOfProbes, interval : intervalBetweenProbes};
-            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-            fetch(url).then(res => res.json()).then(data => {
-
-            })
-        }, 60000);
-        return () => clearInterval(interval);
-    }, []);
-
     return (
         <div className="card">
             <GreyTextTypography variant={"h3"} gutterBottom>
                 {props.title}
             </GreyTextTypography>
-
+            {props.renderParamsSection ? props.renderParamsSection(props.endpoint) : undefined}
             <div className="grid-container">
                 <div className="grid-item">
                     <DataChart

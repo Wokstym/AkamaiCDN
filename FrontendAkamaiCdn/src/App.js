@@ -36,9 +36,9 @@ function App() {
                     ["Start date", "startDate", (startDate) => new Date(startDate).toLocaleString("pol-PL")],
                     ["End date", "endDate", (endDate) => new Date(endDate).toLocaleString("pol-PL")],
                 ]}
-            />
-            <ParamsSection
-                endpoint={"/rtt/save"}
+                renderParamsSection={
+                    (endpoint) => (<ParamsSection endpoint={endpoint}/>)
+                }
             />
             <Section
                 title={"Packet loss"}
@@ -56,9 +56,9 @@ function App() {
                     ["Start date", "startDate", (startDate) => new Date(startDate).toLocaleString("pol-PL")],
                     ["End date", "endDate", (endDate) => new Date(endDate).toLocaleString("pol-PL")],
                 ]}
-            />
-            <ParamsSection
-                endpoint={"/packet_loss/save"}
+                renderParamsSection={
+                        (endpoint) => (<ParamsSection endpoint={endpoint}/>)
+                }
             />
         </main>
     );
