@@ -12,7 +12,7 @@ const ParamsSection = (props) => {
             let params = {numberOfProbes : numberOfProbes, interval : intervalBetweenProbes};
             url += buildQs(params);
             fetch(url);
-        }, 6000);
+        }, 60000);
         return () => clearInterval(interval);
     }, [numberOfProbes, intervalBetweenProbes, props]);
 

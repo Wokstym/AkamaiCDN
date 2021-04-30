@@ -11,9 +11,7 @@ export function useFetch(endpoint, queryParams = {}, deps) {
             setStatus("fetching");
             try {
                 const url = `http://localhost:8090` + endpoint + buildQs(queryParams);
-                console.log(url);
                 const response = await fetch(url);
-                console.log(response);
                 if (response.ok) {
                     const data = await response.json();
                     setData(data);
