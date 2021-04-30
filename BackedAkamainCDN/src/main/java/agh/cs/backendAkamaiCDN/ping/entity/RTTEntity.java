@@ -27,4 +27,7 @@ public class RTTEntity {
     private Double maxTime;
     private Double averageTime;
     private Double standardDeviationTime;
+
+    private int probes;
+    private double interval;
 }

@@ -23,5 +23,8 @@ public class PacketLossEntity {
     private Date endDate;
     private String host;
     private Double packetLoss;
+
+    private int probes;
+    private double interval;
 }
 

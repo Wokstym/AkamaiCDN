@@ -2,7 +2,6 @@ package agh.cs.backendAkamaiCDN.ping.service;
 
 import agh.cs.backendAkamaiCDN.ping.entity.PacketLossEntity;
 import agh.cs.backendAkamaiCDN.ping.entity.RTTEntity;
-import agh.cs.backendAkamaiCDN.ping.utils.ResultsParser;
 import agh.cs.backendAkamaiCDN.ping.utils.TcpingExecutor;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -29,7 +28,7 @@ public class TcpingResultsService {
                     .host(host)
                     .execute();
 
-            ArrayList<Double> times = ResultsParser.parseRTT(executor.getBufferedReader());
+            ArrayList<Double> times = executor.getRTT();
 
             Date endDate = new Date();
             Double minTime = getMinTime(times);
@@ -41,6 +40,8 @@ public class TcpingResultsService {
                     .startDate(startDate)
                     .endDate(endDate)
                     .host(host)
+                    .probes(numberOfProbes)
+                    .interval(interval)
                     .minTime(minTime)
                     .maxTime(maxTime)
                     .averageTime(avgTime)
@@ -63,13 +64,15 @@ public class TcpingResultsService {
                     .host(host)
                     .execute();
 
-            double packetLoss = ResultsParser.parsePacketLoss(executor.getBufferedReader());
+            double packetLoss = executor.getPacketLoss();
             Date endDate = new Date();
 
             return Optional.of(PacketLossEntity.builder()
                     .startDate(startDate)
                     .endDate(endDate)
                     .host(host)
+                    .probes(numberOfProbes)
+                    .interval(interval)
                     .packetLoss(packetLoss)
                     .build());
         } catch (Exception e) {
