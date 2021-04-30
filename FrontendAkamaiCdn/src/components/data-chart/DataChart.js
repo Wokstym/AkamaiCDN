@@ -5,10 +5,11 @@ import {
     XAxis,
     XYPlot,
     YAxis,
-    ChartLabel
+    ChartLabel, DiscreteColorLegend
 } from "react-vis";
 import "react-vis/dist/style.css";
 import './DataChart.css'
+import Typography from "@material-ui/core/Typography";
 
 const DataChart = ({width, height, data, ylabel, xlabel, onNearestXY}) => {
 
@@ -40,36 +41,53 @@ const DataChart = ({width, height, data, ylabel, xlabel, onNearestXY}) => {
     );
 
     let render = data.length ? (
-        <XYPlot
-            width={width}
-            height={height}
-            xType={"time"}
-            margin={{bottom: 100, left: 100}}
-        >
-            <XAxis/>
-            <YAxis
-                tickFormat={(el) => {
-                    if (typeof el.getMonth !== 'function') {
-                        el = Math.round(el / 1024 * 10) / 10
-                        return el + " kb"
-                    }
-                    return el
-                }}
-            />
-            <HorizontalGridLines/>
-            <VerticalGridLines/>
-            {xLabelComponent}
-            {yLabelComponent}
+        <div id="container">
+            <DiscreteColorLegend className="legend" height={200} width={300} items={data.map(([key,]) => {
+                return key
+            })}/>
+            <XYPlot
+                width={width}
+                height={height}
+                xType={"time"}
+                margin={{bottom: 100, left: 100}}
+            >
+                <XAxis/>
+                <YAxis
+                    tickFormat={(el) => {
+                        if (typeof el.getMonth !== 'function') {
+                            if (el < 512) {
+                                return el + " b"
+                            }
+                            el = Math.round(el / 1024 * 10) / 10
+                            return el + " kb"
+                        }
+                        return el
+                    }}
+                />
+                <HorizontalGridLines/>
+                <VerticalGridLines/>
+                {xLabelComponent}
+                {yLabelComponent}
 
-            {data.map(([key, value], index) => {
-                return(
-                <LineMarkSeries curve={'curveMonotoneX'} key={index} data={value} onNearestXY={onNearestXY}/>
-                // todo fix onNearest pointing only at one graph, showing only data from one line
-            )})}
-        </XYPlot>
+                {data.map(([key, value], index) => (
+                    <LineMarkSeries
+                        wobbly
+                        curve={'curveMonotoneX'}
+                        key={index}
+                        data={value}
+                        onNearestXY={onNearestXY}
+                    />
+
+                    // todo fix onNearest pointing only at one graph, showing only data from one line
+                ))
+                }
+            </XYPlot>
+        </div>
     ) : (
-        <div>
-            {/* todo insert on top of graph info that no data */}
+        <div id="container">
+            <Typography className="error" display={"block"} gutterBottom>
+                No data for chosen date range!
+            </Typography>
             <XYPlot
                 width={width}
                 height={height}
@@ -80,7 +98,7 @@ const DataChart = ({width, height, data, ylabel, xlabel, onNearestXY}) => {
                 dontCheckIfEmpty
             >
                 <XAxis/>
-                <YAxis/>
+                <YAxis tickFormat={() => ""}/>
                 <HorizontalGridLines/>
                 <VerticalGridLines/>
                 {xLabelComponent}
