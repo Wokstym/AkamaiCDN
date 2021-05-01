@@ -1,4 +1,4 @@
-import {Section,} from './components';
+import {Section} from './components';
 import './App.css'
 import ParamsSection from "./components/params-section/ParamsSection";
 
@@ -20,6 +20,8 @@ function App() {
                     ["Start date", "startDate", (startDate) => new Date(startDate).toLocaleString("pol-PL")],
                     ["End date", "endDate", (endDate) => new Date(endDate).toLocaleString("pol-PL")]
                 ]}
+                timeIntervals={5}
+                valueFields={["min", "max", "avg"]}
             />
             <Section
                 title={"Round trip time"}
@@ -39,6 +41,8 @@ function App() {
                 renderParamsSection={
                     (endpoint) => (<ParamsSection endpoint={endpoint}/>)
                 }
+                valueFields={["maxTime", "minTime", "averageTime", "standardDeviationTime"]}
+                timeIntervals={10}
             />
             <Section
                 title={"Packet loss"}
@@ -48,17 +52,15 @@ function App() {
                 groupBy={"host"}
                 stats={[
                     ["Host", "host"],
-                    ["Max", "maxTime"],
-                    ["Min", "minTime"],
-                    ["Average", "averageTime"],
-                    ["Standard deviation", "standardDeviationTime"],
                     ["Packet loss", "packetLoss"],
                     ["Start date", "startDate", (startDate) => new Date(startDate).toLocaleString("pol-PL")],
                     ["End date", "endDate", (endDate) => new Date(endDate).toLocaleString("pol-PL")],
                 ]}
                 renderParamsSection={
-                        (endpoint) => (<ParamsSection endpoint={endpoint}/>)
+                    (endpoint) => (<ParamsSection endpoint={endpoint}/>)
                 }
+                valueFields={["packetLoss"]}
+                timeIntervals={10}
             />
         </main>
     );
