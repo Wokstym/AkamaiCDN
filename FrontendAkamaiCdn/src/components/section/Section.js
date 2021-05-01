@@ -1,6 +1,6 @@
 import {DataChart} from "../../components";
 import {useFetch} from "../../hooks";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Typography from "@material-ui/core/Typography";
@@ -15,7 +15,7 @@ const Section = (props) => {
         start_date: startDate.toJSON(),
         end_date: endDate.toJSON(),
     };
-    const {status, data} = useFetch(props.endpoint, queryParams, [
+    const {status, data, setData} = useFetch(props.endpoint, queryParams, [
         startDate,
         endDate,
     ]);
@@ -25,7 +25,6 @@ const Section = (props) => {
     const parsedData = groupBy(data, props.groupBy).map(([key, value]) => {
         return [key, value.map(data => ({...data, x: props.getX(data), y: props.getY(data)}))]
     })
-    console.log(parsedData);
 
     const GreyTextTypography = withStyles({
         root: {
@@ -38,7 +37,7 @@ const Section = (props) => {
             <GreyTextTypography variant={"h3"} gutterBottom>
                 {props.title}
             </GreyTextTypography>
-
+            {props.renderParamsSection ? props.renderParamsSection(props.endpoint) : undefined}
             <div className="grid-container">
                 <div className="grid-item">
                     <DataChart

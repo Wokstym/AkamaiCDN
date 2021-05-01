@@ -1,5 +1,6 @@
-import {Section} from './components';
+import {Section,} from './components';
 import './App.css'
+import ParamsSection from "./components/params-section/ParamsSection";
 
 function App() {
 
@@ -35,6 +36,9 @@ function App() {
                     ["Start date", "startDate", (startDate) => new Date(startDate).toLocaleString("pol-PL")],
                     ["End date", "endDate", (endDate) => new Date(endDate).toLocaleString("pol-PL")],
                 ]}
+                renderParamsSection={
+                    (endpoint) => (<ParamsSection endpoint={endpoint}/>)
+                }
             />
             <Section
                 title={"Packet loss"}
@@ -52,6 +56,9 @@ function App() {
                     ["Start date", "startDate", (startDate) => new Date(startDate).toLocaleString("pol-PL")],
                     ["End date", "endDate", (endDate) => new Date(endDate).toLocaleString("pol-PL")],
                 ]}
+                renderParamsSection={
+                        (endpoint) => (<ParamsSection endpoint={endpoint}/>)
+                }
             />
         </main>
     );

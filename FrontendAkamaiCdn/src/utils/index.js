@@ -9,3 +9,12 @@ export function groupBy(arr, field) {
         }, {})
     );
 }
+
+export function buildQs(obj) {
+    return (
+        "?" +
+        Object.entries(obj)
+            .map(([param, value]) => `${param}=${value}`)
+            .join("&")
+    );
+}
