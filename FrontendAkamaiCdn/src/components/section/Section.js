@@ -1,4 +1,4 @@
-import {DataChart} from "../../components";
+import {DataChart, GranularityPicker} from "../../components";
 import {useFetch} from "../../hooks";
 import {useEffect, useState} from "react";
 import DatePicker from "react-datepicker";
@@ -9,20 +9,59 @@ import {withStyles} from "@material-ui/core/styles";
 import {groupBy} from "../../utils";
 
 const Section = (props) => {
+    const granularityStartDate = new Date();
+    granularityStartDate.setHours(0, props.timeIntervals);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
+    const [granularity, setGranularity] = useState(granularityStartDate);
+    const [hoveredPoint, setHoveredPoint] = useState({});
+
     let queryParams = {
         start_date: startDate.toJSON(),
         end_date: endDate.toJSON(),
     };
+
     const {status, data, setData} = useFetch(props.endpoint, queryParams, [
         startDate,
         endDate,
     ]);
 
-    const [hoveredPoint, setHoveredPoint] = useState({});
-
     const parsedData = groupBy(data, props.groupBy).map(([key, value]) => {
+        let newValue = [];
+        let pointsToTake = (granularity.getHours() * 60 + granularity.getMinutes()) / props.timeIntervals;
+        if(pointsToTake === 0){
+            return [key, value];
+        }
+        for(let i = 0; i < value.length; i+= pointsToTake){
+            let currentPoints = [];
+            let j = i;
+            while (currentPoints.length < pointsToTake && j < value.length){
+                currentPoints.push(value[j]);
+                j++;
+            }
+            let firstPoint = currentPoints[0];
+            if(currentPoints.length === 1){
+                newValue.push(firstPoint);
+                continue;
+            }
+            let startReducer = {}
+            props.valueFields.forEach(field => startReducer[field] = 0);
+
+            let summedValues = currentPoints.reduce((reducer, next) => {
+                let ret = {};
+                props.valueFields.forEach(field => ret[field] = reducer[field] + next[field]);
+                return ret;
+            })
+
+            let finalValues = Object.fromEntries(
+                Object.entries(summedValues)
+                    .map(([key, value]) => ([key, value / currentPoints.length]))
+            );
+            newValue.push({...firstPoint, ...finalValues})
+        }
+
+        return [key, newValue];
+    }).map(([key, value]) => {
         return [key, value.map(data => ({...data, x: props.getX(data), y: props.getY(data)}))]
     })
 
@@ -60,7 +99,7 @@ const Section = (props) => {
                         timeIntervals={15}
                         timeCaption={"time"}
                         label={"From"}
-                        dateFormat={"MMMM d, yyyy h:mm aa"}
+                        dateFormat={"MMMM d, yyyy HH:mm"}
                     />
                     <DatePicker
                         selected={endDate}
@@ -70,7 +109,7 @@ const Section = (props) => {
                         timeFormat={"HH:mm"}
                         timeIntervals={15}
                         timeCaption={"time"}
-                        dateFormat={"MMMM d, yyyy h:mm aa"}
+                        dateFormat={"MMMM d, yyyy HH:mm"}
                     />
                     {startDate.getTime() > endDate.getTime() && (
                         <Typography
@@ -91,6 +130,15 @@ const Section = (props) => {
                     })}
                 </div>
             </div>
+            <GranularityPicker
+                time={granularity}
+                onTimeSelected={(time) => {
+                    let newTime = granularityStartDate;
+                    newTime.setHours(time.getHours(), time.getMinutes())
+                    setGranularity(newTime);
+                }}
+                timeIntervals={props.timeIntervals}
+            />
         </div>
     );
 };

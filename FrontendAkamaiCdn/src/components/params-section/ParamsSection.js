@@ -11,8 +11,8 @@ const ParamsSection = (props) => {
             let url = "http://localhost:8090" + props.endpoint + '/save';
             let params = {numberOfProbes : numberOfProbes, interval : intervalBetweenProbes};
             url += buildQs(params);
-            fetch(url);
-        }, 60000);
+            fetch(url).then(res => console.log(props.endpoint + " saved"));
+        }, 600000);
         return () => clearInterval(interval);
     }, [numberOfProbes, intervalBetweenProbes, props]);
 
