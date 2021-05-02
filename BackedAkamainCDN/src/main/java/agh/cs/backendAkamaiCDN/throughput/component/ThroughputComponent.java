@@ -19,7 +19,7 @@ public class ThroughputComponent {
     private final CDNConfig config;
     private final ApplicationContext applicationContext;
 
-    //@PostConstruct
+    @PostConstruct
     private void runThroughputTest() {
         log.info("Post construct init");
         config.getSites().stream()
