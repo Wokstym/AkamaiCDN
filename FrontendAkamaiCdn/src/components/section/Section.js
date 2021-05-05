@@ -26,21 +26,43 @@ const Section = (props) => {
         endDate,
     ]);
 
+    let points = []
+
     const parsedData = groupBy(data, props.groupBy).map(([key, value]) => {
+        // if()
+
+        for (let i = 0; i < value.length; i++) {
+            if (value[i].probes !== undefined) {
+                if (i + 1 < value.length && ((value[i].probes !== value[i + 1].probes) || (value[i].interval !== value[i + 1].interval))) {
+                    let firstDate = value[i].startDate;
+                    let secondX = value[i + 1].startDate;
+                    let middleX = (secondX + firstDate) / 2
+                    // console.log(value[i])
+                    points.push({
+                        newProbes: value[i + 1].probes,
+                        newInterval: value[i + 1].interval,
+                        x: new Date(middleX),
+                        host:value[i].host
+                    })
+                }
+            }
+        }
+
+
         let newValue = [];
         let pointsToTake = (granularity.getHours() * 60 + granularity.getMinutes()) / props.timeIntervals;
-        if(pointsToTake === 0){
+        if (pointsToTake === 0) {
             return [key, value];
         }
-        for(let i = 0; i < value.length; i+= pointsToTake){
+        for (let i = 0; i < value.length; i += pointsToTake) {
             let currentPoints = [];
             let j = i;
-            while (currentPoints.length < pointsToTake && j < value.length){
+            while (currentPoints.length < pointsToTake && j < value.length) {
                 currentPoints.push(value[j]);
                 j++;
             }
             let firstPoint = currentPoints[0];
-            if(currentPoints.length === 1){
+            if (currentPoints.length === 1) {
                 newValue.push(firstPoint);
                 continue;
             }
@@ -65,6 +87,7 @@ const Section = (props) => {
         return [key, value.map(data => ({...data, x: props.getX(data), y: props.getY(data)}))]
     })
 
+
     const GreyTextTypography = withStyles({
         root: {
             color: "#929596",
@@ -88,6 +111,7 @@ const Section = (props) => {
                         onNearestXY={(val) => {
                             setHoveredPoint(val);
                         }}
+                        probeChanges={points}
                     />
                 </div>
                 <div className="grid-item stats">

@@ -5,13 +5,13 @@ import {
     XAxis,
     XYPlot,
     YAxis,
-    ChartLabel, DiscreteColorLegend
+    ChartLabel, DiscreteColorLegend, Crosshair
 } from "react-vis";
 import "react-vis/dist/style.css";
 import './DataChart.css'
 import Typography from "@material-ui/core/Typography";
 
-const DataChart = ({width, height, data, ylabel, xlabel, onNearestXY}) => {
+const DataChart = ({width, height, data, ylabel, xlabel, onNearestXY, probeChanges}) => {
 
     let xLabelComponent = (
         <ChartLabel
@@ -68,7 +68,19 @@ const DataChart = ({width, height, data, ylabel, xlabel, onNearestXY}) => {
                 <VerticalGridLines/>
                 {xLabelComponent}
                 {yLabelComponent}
-
+                {
+                    probeChanges.map((val, index) => {
+                        return (<Crosshair
+                            titleFormat={(d) => (
+                                {title: "Change", value: ""})}
+                            itemsFormat={(d) => {
+                                return [{title: 'Probes', value: d[0].newProbes},
+                                    {title: 'Interval', value: d[0].newInterval}]
+                            }}
+                            key={index}
+                            values={[val]}/>)
+                    })
+                }
                 {data.map(([key, value], index) => (
                     <LineMarkSeries
                         wobbly
