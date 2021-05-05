@@ -1,5 +1,6 @@
 package agh.cs.backendAkamaiCDN.ping.service;
 
+import agh.cs.backendAkamaiCDN.common.CDNConfig;
 import agh.cs.backendAkamaiCDN.ping.entity.PacketLossEntity;
 import agh.cs.backendAkamaiCDN.ping.entity.RTTEntity;
 import agh.cs.backendAkamaiCDN.ping.utils.TcpingExecutor;
@@ -53,32 +54,40 @@ public class TcpingResultsService {
         return Optional.empty();
     }
 
-    public Optional<PacketLossEntity> execTcpingForPacketLoss(Integer numberOfProbes, Integer interval, @NonNull String host) {
-        try {
-            log.info("Executing ping for Packet Loss calling : " + host);
-            Date startDate = new Date();
+    public ArrayList<PacketLossEntity> execTcpingForPacketLoss(Integer numberOfProbes, Integer interval, @NonNull CDNConfig.Site site) {
+        String mainHost = site.getGeneralHost();
+        ArrayList<String> hosts = (ArrayList<String>) site.getHosts();
+        log.info("Executing ping for Packet Loss for host : " + mainHost);
+        ArrayList<PacketLossEntity> toRet = new ArrayList<>();
+        for( String url : hosts){
+            try {
+                log.info("Executing ping for Packet Loss calling url : " + url);
+                Date startDate = new Date();
 
-            TcpingExecutor executor = TcpingExecutor.builder()
-                    .probes(numberOfProbes)
-                    .interval(interval)
-                    .host(host)
-                    .execute();
+                TcpingExecutor executor = TcpingExecutor.builder()
+                        .probes(numberOfProbes)
+                        .interval(interval)
+                        .host(url)
+                        .execute();
 
-            double packetLoss = executor.getPacketLoss();
-            Date endDate = new Date();
+                double packetLoss = executor.getPacketLoss();
+                Date endDate = new Date();
 
-            return Optional.of(PacketLossEntity.builder()
-                    .startDate(startDate)
-                    .endDate(endDate)
-                    .host(host)
-                    .probes(numberOfProbes)
-                    .interval(interval)
-                    .packetLoss(packetLoss)
-                    .build());
-        } catch (Exception e) {
-            e.printStackTrace();
+                toRet.add(PacketLossEntity.builder()
+                        .startDate(startDate)
+                        .endDate(endDate)
+                        .host(mainHost)
+                        .url(url)
+                        .probes(numberOfProbes)
+                        .interval(interval)
+                        .packetLoss(packetLoss)
+                        .build());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        return Optional.empty();
+
+        return toRet;
     }
 
     private Double getMinTime(ArrayList<Double> times) {
