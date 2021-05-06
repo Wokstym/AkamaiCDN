@@ -8,9 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -23,10 +21,8 @@ public class PacketLossService {
 
     public List<PacketLossEntity> savePacketLossEntity(Integer numberOfProbes, Integer interval) {
         return cdnConfig.getSites().stream()
-                .map(CDNConfig.Site::getGeneralHost)
-                .map(host -> tcpingResultsService.execTcpingForPacketLoss(numberOfProbes, interval, host))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .map(site -> tcpingResultsService.execTcpingForPacketLoss(numberOfProbes, interval, site))
+                .flatMap(Collection::stream)
                 .map(repository::save)
                 .collect(Collectors.toList());
     }

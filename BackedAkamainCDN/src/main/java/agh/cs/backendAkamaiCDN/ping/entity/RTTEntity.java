@@ -23,6 +23,7 @@ public class RTTEntity {
     private Date startDate;
     private Date endDate;
     private String host;
+    private String url;
     private Double minTime;
     private Double maxTime;
     private Double averageTime;
