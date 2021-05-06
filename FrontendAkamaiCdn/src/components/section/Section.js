@@ -26,21 +26,49 @@ const Section = (props) => {
         endDate,
     ]);
 
-    const parsedData = groupBy(data, props.groupBy).map(([key, value]) => {
+    const groupedData = groupBy(data, props.groupBy);
+
+    let points = groupedData.flatMap(([, value]) => {
+        let hostPoints = []
+
+        for (let i = 0; i < value.length; i++) {
+            let currentElement = value[i];
+
+            if (i + 1 < value.length) {
+                let nextElement = value[i + 1];
+
+                if ((currentElement.probes !== nextElement.probes) || (currentElement.interval !== nextElement.interval)) {
+                    let firstDate = currentElement.startDate;
+                    let secondDate = nextElement.startDate;
+                    let middleDate = (secondDate + firstDate) / 2
+                    hostPoints.push({
+                        newProbes: nextElement.probes,
+                        newInterval: nextElement.interval,
+                        x: new Date(middleDate),
+                        host: currentElement.host
+                    })
+                }
+            }
+        }
+        return hostPoints
+    })
+    const parsedData = groupedData.map(([key, value]) => {
+
+
         let newValue = [];
         let pointsToTake = (granularity.getHours() * 60 + granularity.getMinutes()) / props.timeIntervals;
-        if(pointsToTake === 0){
+        if (pointsToTake === 0) {
             return [key, value];
         }
-        for(let i = 0; i < value.length; i+= pointsToTake){
+        for (let i = 0; i < value.length; i += pointsToTake) {
             let currentPoints = [];
             let j = i;
-            while (currentPoints.length < pointsToTake && j < value.length){
+            while (currentPoints.length < pointsToTake && j < value.length) {
                 currentPoints.push(value[j]);
                 j++;
             }
             let firstPoint = currentPoints[0];
-            if(currentPoints.length === 1){
+            if (currentPoints.length === 1) {
                 newValue.push(firstPoint);
                 continue;
             }
@@ -65,6 +93,7 @@ const Section = (props) => {
         return [key, value.map(data => ({...data, x: props.getX(data), y: props.getY(data)}))]
     })
 
+
     const GreyTextTypography = withStyles({
         root: {
             color: "#929596",
@@ -88,6 +117,7 @@ const Section = (props) => {
                         onNearestXY={(val) => {
                             setHoveredPoint(val);
                         }}
+                        probeChanges={points}
                     />
                 </div>
                 <div className="grid-item stats">
