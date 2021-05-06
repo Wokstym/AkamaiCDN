@@ -26,27 +26,33 @@ const Section = (props) => {
         endDate,
     ]);
 
-    let points = []
+    const groupedData = groupBy(data, props.groupBy);
 
-    const parsedData = groupBy(data, props.groupBy).map(([key, value]) => {
-        // if()
+    let points = groupedData.flatMap(([, value]) => {
+        let hostPoints = []
 
         for (let i = 0; i < value.length; i++) {
-            if (value[i].probes !== undefined) {
-                if (i + 1 < value.length && ((value[i].probes !== value[i + 1].probes) || (value[i].interval !== value[i + 1].interval))) {
-                    let firstDate = value[i].startDate;
-                    let secondX = value[i + 1].startDate;
-                    let middleX = (secondX + firstDate) / 2
-                    // console.log(value[i])
-                    points.push({
-                        newProbes: value[i + 1].probes,
-                        newInterval: value[i + 1].interval,
-                        x: new Date(middleX),
-                        host:value[i].host
+            let currentElement = value[i];
+
+            if (i + 1 < value.length) {
+                let nextElement = value[i + 1];
+
+                if ((currentElement.probes !== nextElement.probes) || (currentElement.interval !== nextElement.interval)) {
+                    let firstDate = currentElement.startDate;
+                    let secondDate = nextElement.startDate;
+                    let middleDate = (secondDate + firstDate) / 2
+                    hostPoints.push({
+                        newProbes: nextElement.probes,
+                        newInterval: nextElement.interval,
+                        x: new Date(middleDate),
+                        host: currentElement.host
                     })
                 }
             }
         }
+        return hostPoints
+    })
+    const parsedData = groupedData.map(([key, value]) => {
 
 
         let newValue = [];
