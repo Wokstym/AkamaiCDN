@@ -11,22 +11,34 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
 @NoArgsConstructor
 public class TcpingResultsService {
+    public List<RTTEntity> execTcpingForRTT(Integer numberOfProbes, Integer interval, @NonNull CDNConfig.Site site) {
 
-    public Optional<RTTEntity> execTcpingForRTT(Integer numberOfProbes, Integer interval, @NonNull String host) {
+        String mainHost = site.getGeneralHost();
+        log.info("Executing ping for RTT for host : " + mainHost);
+
+        return site.getHosts()
+                .stream()
+                .flatMap(url -> getRttEntity(numberOfProbes, interval, mainHost, url))
+                .collect(Collectors.toList());
+    }
+
+    private Stream<RTTEntity> getRttEntity(Integer numberOfProbes, Integer interval, String mainHost, String url) {
         try {
-            log.info("Executing ping for RTT calling : " + host);
+            log.info("Executing ping for RTT calling url : " + url);
             Date startDate = new Date();
 
             TcpingExecutor executor = TcpingExecutor.builder()
                     .probes(numberOfProbes)
                     .interval(interval)
-                    .host(host)
+                    .host(url)
                     .execute();
 
             ArrayList<Double> times = executor.getRTT();
@@ -37,10 +49,11 @@ public class TcpingResultsService {
             Double avgTime = getAvgTime(times);
             Double stdDivTime = getStandardDiv(times, avgTime);
 
-            return Optional.of(RTTEntity.builder()
+            return Stream.of(RTTEntity.builder()
                     .startDate(startDate)
                     .endDate(endDate)
-                    .host(host)
+                    .host(mainHost)
+                    .url(url)
                     .probes(numberOfProbes)
                     .interval(interval)
                     .minTime(minTime)
@@ -50,44 +63,47 @@ public class TcpingResultsService {
                     .build());
         } catch (Exception e) {
             e.printStackTrace();
+            return Stream.empty();
         }
-        return Optional.empty();
     }
 
-    public ArrayList<PacketLossEntity> execTcpingForPacketLoss(Integer numberOfProbes, Integer interval, @NonNull CDNConfig.Site site) {
+    public List<PacketLossEntity> execTcpingForPacketLoss(Integer numberOfProbes, Integer interval, @NonNull CDNConfig.Site site) {
+
         String mainHost = site.getGeneralHost();
-        ArrayList<String> hosts = (ArrayList<String>) site.getHosts();
         log.info("Executing ping for Packet Loss for host : " + mainHost);
-        ArrayList<PacketLossEntity> toRet = new ArrayList<>();
-        for( String url : hosts){
-            try {
-                log.info("Executing ping for Packet Loss calling url : " + url);
-                Date startDate = new Date();
 
-                TcpingExecutor executor = TcpingExecutor.builder()
-                        .probes(numberOfProbes)
-                        .interval(interval)
-                        .host(url)
-                        .execute();
+        return site.getHosts()
+                .stream()
+                .flatMap(url -> getPacketLossEntities(numberOfProbes, interval, mainHost, url))
+                .collect(Collectors.toList());
+    }
 
-                double packetLoss = executor.getPacketLoss();
-                Date endDate = new Date();
+    private Stream<PacketLossEntity> getPacketLossEntities(Integer numberOfProbes, Integer interval, String mainHost, String url){
+        try {
+            log.info("Executing ping for Packet Loss calling url : " + url);
+            Date startDate = new Date();
 
-                toRet.add(PacketLossEntity.builder()
-                        .startDate(startDate)
-                        .endDate(endDate)
-                        .host(mainHost)
-                        .url(url)
-                        .probes(numberOfProbes)
-                        .interval(interval)
-                        .packetLoss(packetLoss)
-                        .build());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            TcpingExecutor executor = TcpingExecutor.builder()
+                    .probes(numberOfProbes)
+                    .interval(interval)
+                    .host(url)
+                    .execute();
+
+            double packetLoss = executor.getPacketLoss();
+            Date endDate = new Date();
+
+            return Stream.of(PacketLossEntity.builder()
+                    .startDate(startDate)
+                    .endDate(endDate)
+                    .host(mainHost)
+                    .url(url)
+                    .probes(numberOfProbes)
+                    .interval(interval)
+                    .packetLoss(packetLoss)
+                    .build());
+        }catch (Exception e){
+            return Stream.empty();
         }
-
-        return toRet;
     }
 
     private Double getMinTime(ArrayList<Double> times) {
