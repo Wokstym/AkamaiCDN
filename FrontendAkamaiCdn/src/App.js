@@ -1,11 +1,15 @@
 import {Section} from './components';
 import './App.css'
 import ParamsSection from "./components/params-section/ParamsSection";
+import ReportDialog from "./components/reportDialog/ReportDialog";
 
 function App() {
 
     return (
         <main className="main">
+            <ReportDialog title={"Generate Report"}>
+
+            </ReportDialog>
             <Section
                 title={"Throughput"}
                 endpoint={"/throughput"}
