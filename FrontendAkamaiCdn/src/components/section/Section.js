@@ -11,7 +11,10 @@ import {groupBy} from "../../utils";
 const Section = (props) => {
     const granularityStartDate = new Date();
     granularityStartDate.setHours(0, props.timeIntervals);
-    const [startDate, setStartDate] = useState(new Date());
+    const now = new Date();
+    now.setHours(0);
+    now.setMinutes(0);
+    const [startDate, setStartDate] = useState(now);
     const [endDate, setEndDate] = useState(new Date());
     const [granularity, setGranularity] = useState(granularityStartDate);
     const [hoveredPoint, setHoveredPoint] = useState({});
@@ -26,7 +29,9 @@ const Section = (props) => {
         endDate,
     ]);
 
-    const parsedData = groupBy(data, props.groupBy).map(([key, value]) => {
+    const filterData = props.filterFunction ? data.filter( data => props.filterFunction(data)) : data;
+
+    const parsedData = groupBy(filterData, props.groupBy).map(([key, value]) => {
         let newValue = [];
         let pointsToTake = (granularity.getHours() * 60 + granularity.getMinutes()) / props.timeIntervals;
         if(pointsToTake === 0){

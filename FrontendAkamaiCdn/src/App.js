@@ -1,4 +1,4 @@
-import {Section} from './components';
+import {Section, SectionSpecificUrl} from './components';
 import './App.css'
 import ParamsSection from "./components/params-section/ParamsSection";
 
@@ -61,6 +61,9 @@ function App() {
                 }
                 valueFields={["packetLoss"]}
                 timeIntervals={10}
+            />
+            <SectionSpecificUrl
+
             />
         </main>
     );
