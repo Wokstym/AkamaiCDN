@@ -1,4 +1,4 @@
-package agh.cs.backendAkamaiCDN.throughput.utils;
+package agh.cs.backendAkamaiCDN.throughput.application;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

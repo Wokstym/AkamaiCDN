@@ -1,6 +1,6 @@
 package agh.cs.backendAkamaiCDN.throughput.repository;
 
-import agh.cs.backendAkamaiCDN.throughput.entity.ThroughputEntity;
+import agh.cs.backendAkamaiCDN.throughput.domain.ThroughputEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;

@@ -1,7 +1,7 @@
-package agh.cs.backendAkamaiCDN.throughput.controller;
+package agh.cs.backendAkamaiCDN.throughput.web;
 
-import agh.cs.backendAkamaiCDN.throughput.entity.ThroughputEntity;
-import agh.cs.backendAkamaiCDN.throughput.service.ThroughputService;
+import agh.cs.backendAkamaiCDN.throughput.application.ThroughputService;
+import agh.cs.backendAkamaiCDN.throughput.domain.ThroughputEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,18 +23,27 @@ public class ThroughputController {
     @GetMapping("/all")
     public ResponseEntity<List<ThroughputEntity>> getAll() {
         List<ThroughputEntity> entities = service.getAll();
-        if (entities.isEmpty()) return ResponseEntity.badRequest().build();
+        if (entities.isEmpty())
+            return ResponseEntity.notFound().build();
+
         return ResponseEntity.ok(entities);
     }
 
     @GetMapping
     public ResponseEntity<List<ThroughputEntity>> getAllBetweenDates(
-            @RequestParam(name = "start_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date start,
-            @RequestParam(name = "end_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date end
-    ) {
-        if (start.after(end)) return ResponseEntity.badRequest().build();
+            @RequestParam(name = "startDate")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                    Date start,
+            @RequestParam(name = "endDate")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                    Date end) {
+        if (start.after(end))
+            return ResponseEntity.badRequest().build();
+
         List<ThroughputEntity> entities = service.getAllBetweenDates(start, end);
-        if (entities.isEmpty()) return ResponseEntity.badRequest().build();
+        if (entities.isEmpty())
+            return ResponseEntity.notFound().build();
+
         return ResponseEntity.ok(entities);
     }
 }

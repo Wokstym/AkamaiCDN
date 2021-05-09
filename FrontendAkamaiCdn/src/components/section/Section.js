@@ -17,8 +17,8 @@ const Section = (props) => {
     const [hoveredPoint, setHoveredPoint] = useState({});
 
     let queryParams = {
-        start_date: startDate.toJSON(),
-        end_date: endDate.toJSON(),
+        startDate: startDate.toJSON(),
+        endDate: endDate.toJSON(),
     };
 
     const {status, data, setData} = useFetch(props.endpoint, queryParams, [
