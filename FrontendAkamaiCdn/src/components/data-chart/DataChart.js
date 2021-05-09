@@ -11,7 +11,7 @@ import "react-vis/dist/style.css";
 import './DataChart.css'
 import Typography from "@material-ui/core/Typography";
 
-const DataChart = ({width, height, data, ylabel, xlabel, onNearestXY, probeChanges}) => {
+const DataChart = ({width, height, data, ylabel, yformat, xlabel, onNearestXY, probeChanges}) => {
 
     let xLabelComponent = (
         <ChartLabel
@@ -54,14 +54,9 @@ const DataChart = ({width, height, data, ylabel, xlabel, onNearestXY, probeChang
                 <XAxis/>
                 <YAxis
                     tickFormat={(el) => {
-                        if (typeof el.getMonth !== 'function') {
-                            if (el < 512) {
-                                return el + " b"
-                            }
-                            el = Math.round(el / 1024 * 10) / 10
-                            return el + " kb"
-                        }
-                        return el
+                        let format = yformat.find(val => el < val.to) ||
+                            yformat[yformat.length - 1]
+                        return `${Math.round(el / format.divider * 10) / 10}  ${format.unit}`
                     }}
                 />
                 <HorizontalGridLines/>
@@ -71,7 +66,7 @@ const DataChart = ({width, height, data, ylabel, xlabel, onNearestXY, probeChang
                 {
                     probeChanges.map((val, index) => {
                         return (<Crosshair
-                            titleFormat={(d) => (
+                            titleFormat={() => (
                                 {title: "Change", value: ""})}
                             itemsFormat={(d) => {
                                 return [{title: 'Probes', value: d[0].newProbes},

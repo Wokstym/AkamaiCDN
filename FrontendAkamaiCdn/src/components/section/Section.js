@@ -112,7 +112,8 @@ const Section = (props) => {
                         width={800}
                         height={500}
                         data={parsedData}
-                        ylabel="Max"
+                        ylabel={props.yInfo.label}
+                        yformat={props.yInfo.format}
                         xlabel="Time"
                         onNearestXY={(val) => {
                             setHoveredPoint(val);
