@@ -1,4 +1,5 @@
-package agh.cs.backendAkamaiCDN.ping.entity;
+package agh.cs.backendAkamaiCDN.ping.domain;
+
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -14,7 +15,7 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class PacketLossEntity {
+public class RTTEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -23,9 +24,11 @@ public class PacketLossEntity {
     private Date endDate;
     private String host;
     private String url;
-    private Double packetLoss;
+    private Double minTime;
+    private Double maxTime;
+    private Double averageTime;
+    private Double standardDeviationTime;
 
     private int probes;
     private double interval;
 }
-

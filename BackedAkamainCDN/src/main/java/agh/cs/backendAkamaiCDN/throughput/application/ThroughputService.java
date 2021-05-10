@@ -1,6 +1,6 @@
-package agh.cs.backendAkamaiCDN.throughput.service;
+package agh.cs.backendAkamaiCDN.throughput.application;
 
-import agh.cs.backendAkamaiCDN.throughput.entity.ThroughputEntity;
+import agh.cs.backendAkamaiCDN.throughput.domain.ThroughputEntity;
 import agh.cs.backendAkamaiCDN.throughput.repository.ThroughputRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

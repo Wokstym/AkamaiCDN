@@ -1,9 +1,8 @@
-package agh.cs.backendAkamaiCDN.ping.service;
+package agh.cs.backendAkamaiCDN.ping.application;
 
 import agh.cs.backendAkamaiCDN.common.CDNConfig;
-import agh.cs.backendAkamaiCDN.ping.entity.PacketLossEntity;
-import agh.cs.backendAkamaiCDN.ping.entity.RTTEntity;
-import agh.cs.backendAkamaiCDN.ping.utils.TcpingExecutor;
+import agh.cs.backendAkamaiCDN.ping.domain.PacketLossEntity;
+import agh.cs.backendAkamaiCDN.ping.domain.RTTEntity;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;

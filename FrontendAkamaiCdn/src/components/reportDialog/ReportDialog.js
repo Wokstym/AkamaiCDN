@@ -56,16 +56,6 @@ const ReportDialog = (props) => {
     };
 
     const handleGenerateReport = () => {
-        let queryParams = {
-            start_date: startDate.toJSON(),
-            end_date: endDate.toJSON(),
-        };
-
-        /*const {status, data, setData} = useFetch("rtt", queryParams, [
-            startDate,
-            endDate,
-        ]);
-        console.log(data)*/
         alert("Creating PDF")
     }
 

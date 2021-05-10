@@ -1,4 +1,4 @@
-package agh.cs.backendAkamaiCDN.throughput.entity;
+package agh.cs.backendAkamaiCDN.throughput.domain;
 
 import lombok.*;
 
@@ -24,12 +24,8 @@ public class ThroughputEntity {
 
     public Date startDate;
     public Date endDate;
-    public long max;
-    public long min;
-    public long avg;
+    public long maxTime;
+    public long minTime;
+    public long avgTime;
     public String host;
-
-    public boolean isBetween(Date start, Date end){
-        return startDate.after(start) && endDate.before(end);
-    }
 }

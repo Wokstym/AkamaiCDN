@@ -17,8 +17,8 @@ const Section = (props) => {
     const [hoveredPoint, setHoveredPoint] = useState({});
 
     let queryParams = {
-        start_date: startDate.toJSON(),
-        end_date: endDate.toJSON(),
+        startDate: startDate.toJSON(),
+        endDate: endDate.toJSON(),
     };
 
     const {status, data, setData} = useFetch(props.endpoint, queryParams, [
@@ -112,7 +112,8 @@ const Section = (props) => {
                         width={800}
                         height={500}
                         data={parsedData}
-                        ylabel="Max"
+                        ylabel={props.yInfo.label}
+                        yformat={props.yInfo.format}
                         xlabel="Time"
                         onNearestXY={(val) => {
                             setHoveredPoint(val);

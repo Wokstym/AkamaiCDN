@@ -18,3 +18,17 @@ export function buildQs(obj) {
             .join("&")
     );
 }
+
+export class Format {
+    static byte = [
+        {unit: "b", to: 512, divider: 1},
+        {unit: "kb", to: 524288, divider: 1024},
+        {unit: "mb", divider: 1048576}
+    ]
+
+    static millisecond = [
+        {unit: "ms", to: 500, divider: 1},
+        {unit: "s", to: 60000, divider: 1000},
+        {unit: "m", divider: 60000}
+    ]
+}
