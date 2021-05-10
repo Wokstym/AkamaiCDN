@@ -35,9 +35,9 @@ public class ThroughputResultsService {
                         .host(name)
                         .startDate(startStamp)
                         .endDate(endStamp)
-                        .maxTime(getMaxValue(results))
-                        .minTime(getMinValue(results))
-                        .avgTime(getAvgValue(results))
+                        .maxValue(getMaxValue(results))
+                        .minValue(getMinValue(results))
+                        .averageValue(getAvgValue(results))
                         .build());
             }
         } catch (IOException | ExecutionException | InterruptedException e) {

@@ -12,7 +12,6 @@ import './DataChart.css'
 import Typography from "@material-ui/core/Typography";
 
 const DataChart = ({width, height, data, ylabel, yformat, xlabel, onNearestXY, probeChanges}) => {
-
     let xLabelComponent = (
         <ChartLabel
             style={{

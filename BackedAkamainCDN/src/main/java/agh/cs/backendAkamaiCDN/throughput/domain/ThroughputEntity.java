@@ -24,8 +24,8 @@ public class ThroughputEntity {
 
     public Date startDate;
     public Date endDate;
-    public long maxTime;
-    public long minTime;
-    public long avgTime;
+    public long maxValue;
+    public long minValue;
+    public long averageValue;
     public String host;
 }

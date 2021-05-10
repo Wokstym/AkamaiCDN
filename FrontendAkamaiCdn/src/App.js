@@ -14,8 +14,7 @@ function App() {
             <Section
                 title={"Throughput"}
                 endpoint={"/throughput"}
-                getX={(data) => new Date(data.startDate)}
-                getY={(data) => data.max}
+                getX={(data) => new Date(data.startDate)} getY={(data) => data.maxValue}
                 yInfo={{
                     label: "Max",
                     format: Format.byte
@@ -25,12 +24,12 @@ function App() {
                     ["Host", "host"],
                     ["Max", "maxTime"],
                     ["Min", "minTime"],
-                    ["Average", "avgTime"],
+                    ["Average", "averageValue"],
                     ["Start date", "startDate", (startDate) => new Date(startDate).toLocaleString("pol-PL")],
                     ["End date", "endDate", (endDate) => new Date(endDate).toLocaleString("pol-PL")]
                 ]}
                 timeIntervals={5}
-                valueFields={["min", "max", "avg"]}
+                valueFields={["minValue", "maxValue", "averageValue"]}
             />
             <Section
                 title={"Round trip time"}
