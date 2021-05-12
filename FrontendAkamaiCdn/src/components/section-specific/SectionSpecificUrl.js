@@ -25,6 +25,12 @@ const SectionSpecificUrl = (props) => {
         "packet_loss": ["packetLoss"],
     }
 
+    const valToGetYFunction = {
+        "throughput": (data) => data.max,
+        "rtt": (data) => data.averageTime,
+        "packet_loss": (data) => data.packetLoss,
+    }
+
     const [selectedCDN, setSelectedCDN] = useState("youtube.com");
     const [selectedParameter, setSelectedParameter] = useState("rtt");
 
@@ -53,7 +59,7 @@ const SectionSpecificUrl = (props) => {
                 endpoint={"/" + selectedParameter}
 
                 getX={(data) => new Date(data.startDate)}
-                getY={(data) => data.averageTime}
+                getY={valToGetYFunction[selectedParameter]}
                 filterFunction={ (data) => data.host === selectedCDN}
                 groupBy={"url"}
                 stats={[
