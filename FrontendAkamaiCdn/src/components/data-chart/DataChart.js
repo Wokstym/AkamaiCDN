@@ -5,13 +5,17 @@ import {
     XAxis,
     XYPlot,
     YAxis,
-    ChartLabel, DiscreteColorLegend, Crosshair
+    ChartLabel, DiscreteColorLegend, Crosshair, MarkSeries, Hint
 } from "react-vis";
 import "react-vis/dist/style.css";
 import './DataChart.css'
 import Typography from "@material-ui/core/Typography";
+import {useState} from "react";
 
-const DataChart = ({width, height, data, ylabel, yformat, xlabel, onNearestXY, probeChanges}) => {
+const DataChart = ({width, height, data, ylabel, yformat, xlabel, stats, probeChanges}) => {
+    const [hintPoint, setHintPoint] = useState();
+    const [isCursorOnPlot, setIsCursorOnPlot] = useState(false);
+
     let xLabelComponent = (
         <ChartLabel
             style={{
@@ -49,6 +53,8 @@ const DataChart = ({width, height, data, ylabel, yformat, xlabel, onNearestXY, p
                 height={height}
                 xType={"time"}
                 margin={{bottom: 100, left: 100}}
+                onMouseEnter={() => setIsCursorOnPlot(true)}
+                onMouseLeave={() => setIsCursorOnPlot(false)}
             >
                 <XAxis/>
                 <YAxis
@@ -75,17 +81,47 @@ const DataChart = ({width, height, data, ylabel, yformat, xlabel, onNearestXY, p
                             values={[val]}/>)
                     })
                 }
-                {data.map(([key, value], index) => (
-                    <LineMarkSeries
-                        wobbly
-                        curve={'curveMonotoneX'}
-                        key={index}
-                        data={value}
-                        onNearestXY={onNearestXY}
+                {
+                    data.map(([key, value], index) => (
+                        <LineMarkSeries
+                            wobbly
+                            curve={'curveMonotoneX'}
+                            key={index}
+                            data={value}
+                        />
+                    ))
+                }
+                {
+                    <MarkSeries
+                        data={data.flatMap(el => el[1])}
+                        onNearestXY={(val) => setHintPoint(val)}
+                        opacity={0}
                     />
+                }
+                {isCursorOnPlot && hintPoint ?
+                    <Hint value={hintPoint}>
+                        <div style={{
+                            background: 'white',
+                            borderRadius: '25px',
+                            padding: '10px',
+                            paddingTop: '0.1px',
+                            paddingBottom: '0.1px',
+                            color: 'black',
+                            '-webkit-box-shadow': '5px 5px 15px rgba(0,0,0,0.4)'
 
-                    // todo fix onNearest pointing only at one graph, showing only data from one line
-                ))
+                        }}>
+                            <p>{
+                                stats.map(([text, field, fn], index) => {
+                                    return (
+                                        <Typography key={index} display={"block"} gutterBottom>
+
+                                            {text}: {hintPoint[field] && fn ? fn(hintPoint[field]) : hintPoint[field]}
+                                        </Typography>
+                                    )
+                                })
+                            }</p>
+                        </div>
+                    </Hint> : null
                 }
             </XYPlot>
         </div>

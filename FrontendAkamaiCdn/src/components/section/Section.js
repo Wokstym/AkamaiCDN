@@ -1,6 +1,6 @@
 import {DataChart, GranularityPicker} from "../../components";
 import {useFetch} from "../../hooks";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Typography from "@material-ui/core/Typography";
@@ -14,7 +14,6 @@ const Section = (props) => {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [granularity, setGranularity] = useState(granularityStartDate);
-    const [hoveredPoint, setHoveredPoint] = useState({});
 
     let queryParams = {
         startDate: startDate.toJSON(),
@@ -102,12 +101,51 @@ const Section = (props) => {
 
     return (
         <div className="card">
-            <GreyTextTypography variant={"h3"} gutterBottom>
+            <GreyTextTypography variant={"h4"} gutterBottom>
                 {props.title}
             </GreyTextTypography>
             {props.renderParamsSection ? props.renderParamsSection(props.endpoint) : undefined}
+            <div className="grid-item stats">
+                <DatePicker
+                    label={"From"}
+                    selected={startDate}
+                    onChange={(date) => setStartDate(date)}
+                    selectsStart
+                    startDate={startDate}
+                    endDate={endDate}
+                    showTimeSelect
+                    timeFormat={"HH:mm"}
+                    timeIntervals={15}
+                    timeCaption={"time"}
+                    dateFormat={"MMMM d, yyyy HH:mm"}
+                />
+                <DatePicker
+                    label={"To"}
+                    selected={endDate}
+                    onChange={(date) => setEndDate(date)}
+                    selectsEnd
+                    startDate={startDate}
+                    endDate={endDate}
+                    minDate={startDate}
+                    showTimeSelect
+                    timeFormat={"HH:mm"}
+                    timeIntervals={15}
+                    timeCaption={"time"}
+                    dateFormat={"MMMM d, yyyy HH:mm"}
+                />
+                {startDate.getTime() > endDate.getTime() && (
+                    <Typography
+                        color={"error"}
+                        variant={"caption"}
+                        display={"block"}
+                        gutterBottom
+                    >
+                        Error! start datetime is greater than end datetime!
+                    </Typography>
+                )}
+            </div>
+
             <div className="grid-container">
-                <div className="grid-item">
                     <DataChart
                         width={800}
                         height={500}
@@ -115,51 +153,10 @@ const Section = (props) => {
                         ylabel={props.yInfo.label}
                         yformat={props.yInfo.format}
                         xlabel="Time"
-                        onNearestXY={(val) => {
-                            setHoveredPoint(val);
-                        }}
+                        stats={props.stats}
                         probeChanges={points}
                     />
-                </div>
-                <div className="grid-item stats">
-                    <DatePicker
-                        selected={startDate}
-                        onChange={(date) => setStartDate(date)}
-                        showTimeSelect
-                        timeFormat={"HH:mm"}
-                        timeIntervals={15}
-                        timeCaption={"time"}
-                        label={"From"}
-                        dateFormat={"MMMM d, yyyy HH:mm"}
-                    />
-                    <DatePicker
-                        selected={endDate}
-                        label={"To"}
-                        onChange={(date) => setEndDate(date)}
-                        showTimeSelect
-                        timeFormat={"HH:mm"}
-                        timeIntervals={15}
-                        timeCaption={"time"}
-                        dateFormat={"MMMM d, yyyy HH:mm"}
-                    />
-                    {startDate.getTime() > endDate.getTime() && (
-                        <Typography
-                            color={"error"}
-                            variant={"caption"}
-                            display={"block"}
-                            gutterBottom
-                        >
-                            Error! start datetime is greater than end datetime!
-                        </Typography>
-                    )}
-                    {props.stats.map(([text, field, fn], index) => {
-                        return (
-                            <Typography key={index} display={"block"} gutterBottom>
-                                {text}: {hoveredPoint[field] && fn ? fn(hoveredPoint[field]) : hoveredPoint[field]}
-                            </Typography>
-                        )
-                    })}
-                </div>
+
             </div>
             <GranularityPicker
                 time={granularity}
