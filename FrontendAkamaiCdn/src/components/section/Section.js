@@ -8,13 +8,77 @@ import "./Section.css";
 import {withStyles} from "@material-ui/core/styles";
 import {groupBy} from "../../utils";
 
+function getGroupedData(data, whitelist, groupBy) {
+    // Calculate the sums and group data (while tracking count)
+    const reduced = data.reduce(function(m, d) {
+        if (!m[d[groupBy]]) {
+            m[d[groupBy]] = { ...d,
+                count: 1
+            };
+            return m;
+        }
+        whitelist.forEach(function(key) {
+            m[d[groupBy]][key] += d[key];
+        });
+        m[d[groupBy]].count += 1;
+        return m;
+    }, {});
+
+    // Create new array from grouped data and compute the average
+    return Object.keys(reduced).map(function(k) {
+        const item = reduced[k];
+        const itemAverage = whitelist.reduce(function(m, key) {
+            m[key] = item[key] / item.count;
+            return m;
+        }, {})
+        return {
+            ...item, // Preserve any non white-listed keys
+            ...itemAverage // Add computed averege for whitelisted keys
+        }
+    })
+}
+
+function getDataIncludingInterval(data, startIdx, interval){
+    let gathered = []
+    let start = data[startIdx]
+    gathered.push(start)
+    for(let i=startIdx+1; i<data.length; i+=1){
+        if (data[i].startDate < start.startDate+interval) gathered.push(data[i])
+    }
+    return gathered
+}
+
+function getDictionaryPerParameter(data, parameter){
+    let newVal = {}
+    for(let val of data){
+        if(!newVal[val[parameter]]){
+            newVal[val[parameter]] = []
+        }
+        newVal[val[parameter]].push(val)
+    }
+
+    let evenNewerVal = []
+
+    for(const [key, value] of Object.entries(newVal)){
+        evenNewerVal.push([key, value])
+    }
+
+    return evenNewerVal
+}
+
 const Section = (props) => {
+    console.log("Title: ", props.title)
     const granularityStartDate = new Date();
     granularityStartDate.setHours(0, props.timeIntervals);
-    const [startDate, setStartDate] = useState(new Date());
+    const now = new Date();
+    now.setHours(0);
+    now.setMinutes(0);
+    const [startDate, setStartDate] = useState(now);
     const [endDate, setEndDate] = useState(new Date());
     const [granularity, setGranularity] = useState(granularityStartDate);
     const [hoveredPoint, setHoveredPoint] = useState({});
+
+    useEffect(() => {setHoveredPoint({})}, [props.endpoint])
 
     let queryParams = {
         startDate: startDate.toJSON(),
@@ -24,11 +88,35 @@ const Section = (props) => {
     const {status, data, setData} = useFetch(props.endpoint, queryParams, [
         startDate,
         endDate,
+        props.endpoint
     ]);
 
-    const groupedData = groupBy(data, props.groupBy);
+    const filterData = props.filterFunction ? data.filter( data => props.filterFunction(data)) : data;
 
-    let points = groupedData.flatMap(([, value]) => {
+    let interval = granularity.getHours() * 3600000 + granularity.getMinutes() * 60000
+
+    let newValue = [];
+
+    let endpointToParameter = {
+        "/throughput": "maxValue",
+        "/rtt": "averageTime",
+        "/packet_loss": "packetLoss"
+    }
+
+    for(let i = 0; i<filterData.length;i+=1){
+        let portionData = getDataIncludingInterval(filterData, i, interval)
+        let mergedData = getGroupedData(portionData, [endpointToParameter[props.endpoint]], props.groupBy)
+        newValue.push(mergedData)
+        i += portionData.length-1
+    }
+
+    let parsedData = newValue.flat().map((value) => {
+            return {...value, x: props.getX(value), y: props.getY(value)}
+        })
+
+    parsedData = getDictionaryPerParameter(parsedData, props.groupBy)
+
+    let points = parsedData.flatMap(([, value]) => {
         let hostPoints = []
 
         for (let i = 0; i < value.length; i++) {
@@ -52,47 +140,6 @@ const Section = (props) => {
         }
         return hostPoints
     })
-    const parsedData = groupedData.map(([key, value]) => {
-
-
-        let newValue = [];
-        let pointsToTake = (granularity.getHours() * 60 + granularity.getMinutes()) / props.timeIntervals;
-        if (pointsToTake === 0) {
-            return [key, value];
-        }
-        for (let i = 0; i < value.length; i += pointsToTake) {
-            let currentPoints = [];
-            let j = i;
-            while (currentPoints.length < pointsToTake && j < value.length) {
-                currentPoints.push(value[j]);
-                j++;
-            }
-            let firstPoint = currentPoints[0];
-            if (currentPoints.length === 1) {
-                newValue.push(firstPoint);
-                continue;
-            }
-            let startReducer = {}
-            props.valueFields.forEach(field => startReducer[field] = 0);
-
-            let summedValues = currentPoints.reduce((reducer, next) => {
-                let ret = {};
-                props.valueFields.forEach(field => ret[field] = reducer[field] + next[field]);
-                return ret;
-            })
-
-            let finalValues = Object.fromEntries(
-                Object.entries(summedValues)
-                    .map(([key, value]) => ([key, value / currentPoints.length]))
-            );
-            newValue.push({...firstPoint, ...finalValues})
-        }
-
-        return [key, newValue];
-    }).map(([key, value]) => {
-        return [key, value.map(data => ({...data, x: props.getX(data), y: props.getY(data)}))]
-    })
-
 
     const GreyTextTypography = withStyles({
         root: {
