@@ -52,7 +52,7 @@ public class TcpingResultsService {
                     .host(url)
                     .execute();
 
-            ArrayList<Double> times = executor.getTimesArray();
+            ArrayList<Double> times = executor.getTimes();
             if (times.isEmpty()) return Stream.empty();
 
             Date endDate = new Date();
@@ -90,9 +90,7 @@ public class TcpingResultsService {
                     .host(url)
                     .execute();
 
-            ArrayList<Double> times = executor.getTimesArray();
-
-            double packetLoss = (double) ((numberOfProbes - times.size()) / numberOfProbes) * 100;
+            double packetLoss = executor.getPacketLoss();
             Date endDate = new Date();
 
             return Stream.of(PacketLossEntity.builder()

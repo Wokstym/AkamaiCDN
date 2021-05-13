@@ -1,5 +1,6 @@
 package agh.cs.backendAkamaiCDN.ping.application;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.BufferedReader;
@@ -10,28 +11,34 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TcpingExecutor {
+    @Getter
+    private final ArrayList<Double> times;
+    private final int numberOfProbes;
 
-    private final BufferedReader bufferedReader;
 
     public static TcpingExecutorBuilder builder() {
         return new TcpingExecutorBuilder();
     }
 
-    private TcpingExecutor(BufferedReader inputStream) {
-        this.bufferedReader = inputStream;
+    private TcpingExecutor(BufferedReader inputStream, int numberOfProbes) throws IOException {
+        this.numberOfProbes = numberOfProbes;
+        this.times = new ArrayList<>();
+        parseResult(inputStream);
     }
 
-    public ArrayList<Double> getTimesArray() throws IOException {
+    public double getPacketLoss(){
+        return (double) ((numberOfProbes - times.size()) / numberOfProbes) * 100;
+    }
+
+    private void parseResult(BufferedReader inputStream) throws IOException {
         Pattern patternRtt = Pattern.compile("rtt=" + "(.*?)" + " ms", Pattern.DOTALL);
-        ArrayList<Double> times = new ArrayList<>();
         String input;
-        while ((input = bufferedReader.readLine()) != null) {
+        while ((input = inputStream.readLine()) != null) {
             Matcher matcherRtt = patternRtt.matcher(input);
             if (matcherRtt.find()) {
                 times.add(Double.parseDouble(matcherRtt.group(1)));
             }
         }
-        return times;
     }
 
     @RequiredArgsConstructor
@@ -62,7 +69,7 @@ public class TcpingExecutor {
             p.waitFor();
             BufferedReader inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-            return new TcpingExecutor(inputStream);
+            return new TcpingExecutor(inputStream, probes);
         }
 
     }
