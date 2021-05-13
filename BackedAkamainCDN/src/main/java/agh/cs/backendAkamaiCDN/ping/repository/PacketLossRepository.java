@@ -1,6 +1,6 @@
 package agh.cs.backendAkamaiCDN.ping.repository;
 
-import agh.cs.backendAkamaiCDN.ping.entity.PacketLossEntity;
+import agh.cs.backendAkamaiCDN.ping.domain.PacketLossEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;

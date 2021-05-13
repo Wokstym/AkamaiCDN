@@ -79,8 +79,8 @@ const Section = (props) => {
     const [hoveredPoint, setHoveredPoint] = useState({});
 
     let queryParams = {
-        start_date: startDate.toJSON(),
-        end_date: endDate.toJSON(),
+        startDate: startDate.toJSON(),
+        endDate: endDate.toJSON(),
     };
 
     const {status, data, setData} = useFetch(props.endpoint, queryParams, [
@@ -113,6 +113,31 @@ const Section = (props) => {
 
     parsedData = getDictionaryPerParameter(parsedData, props.groupBy)
 
+    let points = parsedData.flatMap(([, value]) => {
+        let hostPoints = []
+
+        for (let i = 0; i < value.length; i++) {
+            let currentElement = value[i];
+
+            if (i + 1 < value.length) {
+                let nextElement = value[i + 1];
+
+                if ((currentElement.probes !== nextElement.probes) || (currentElement.interval !== nextElement.interval)) {
+                    let firstDate = currentElement.startDate;
+                    let secondDate = nextElement.startDate;
+                    let middleDate = (secondDate + firstDate) / 2
+                    hostPoints.push({
+                        newProbes: nextElement.probes,
+                        newInterval: nextElement.interval,
+                        x: new Date(middleDate),
+                        host: currentElement.host
+                    })
+                }
+            }
+        }
+        return hostPoints
+    })
+
     const GreyTextTypography = withStyles({
         root: {
             color: "#929596",
@@ -131,11 +156,13 @@ const Section = (props) => {
                         width={800}
                         height={500}
                         data={parsedData}
-                        ylabel="Max"
+                        ylabel={props.yInfo.label}
+                        yformat={props.yInfo.format}
                         xlabel="Time"
                         onNearestXY={(val) => {
                             setHoveredPoint(val);
                         }}
+                        probeChanges={points}
                     />
                 </div>
                 <div className="grid-item stats">

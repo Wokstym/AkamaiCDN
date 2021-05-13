@@ -1,4 +1,4 @@
-package agh.cs.backendAkamaiCDN.ping.utils;
+package agh.cs.backendAkamaiCDN.ping.application;
 
 import lombok.RequiredArgsConstructor;
 
