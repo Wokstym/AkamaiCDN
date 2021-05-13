@@ -30,6 +30,17 @@ public class TcpingResultsService {
                 .collect(Collectors.toList());
     }
 
+    public List<PacketLossEntity> execTcpingForPacketLoss(Integer numberOfProbes, Integer interval, @NonNull CDNConfig.Site site) {
+
+        String mainHost = site.getGeneralHost();
+        log.info("Executing ping for Packet Loss for host : " + mainHost);
+
+        return site.getHosts()
+                .stream()
+                .flatMap(url -> getPacketLossEntities(numberOfProbes, interval, mainHost, url))
+                .collect(Collectors.toList());
+    }
+
     private Stream<RTTEntity> getRttEntity(Integer numberOfProbes, Integer interval, String mainHost, String url) {
         try {
             log.info("Executing ping for RTT calling url : " + url);
@@ -41,7 +52,8 @@ public class TcpingResultsService {
                     .host(url)
                     .execute();
 
-            ArrayList<Double> times = executor.getRTT();
+            ArrayList<Double> times = executor.getTimes();
+            if (times.isEmpty()) return Stream.empty();
 
             Date endDate = new Date();
             Double minTime = getMinTime(times);
@@ -65,17 +77,6 @@ public class TcpingResultsService {
             e.printStackTrace();
             return Stream.empty();
         }
-    }
-
-    public List<PacketLossEntity> execTcpingForPacketLoss(Integer numberOfProbes, Integer interval, @NonNull CDNConfig.Site site) {
-
-        String mainHost = site.getGeneralHost();
-        log.info("Executing ping for Packet Loss for host : " + mainHost);
-
-        return site.getHosts()
-                .stream()
-                .flatMap(url -> getPacketLossEntities(numberOfProbes, interval, mainHost, url))
-                .collect(Collectors.toList());
     }
 
     private Stream<PacketLossEntity> getPacketLossEntities(Integer numberOfProbes, Integer interval, String mainHost, String url){
