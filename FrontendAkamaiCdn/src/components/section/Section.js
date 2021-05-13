@@ -78,6 +78,8 @@ const Section = (props) => {
     const [granularity, setGranularity] = useState(granularityStartDate);
     const [hoveredPoint, setHoveredPoint] = useState({});
 
+    useEffect(() => {setHoveredPoint({})}, [props.endpoint])
+
     let queryParams = {
         startDate: startDate.toJSON(),
         endDate: endDate.toJSON(),
@@ -86,6 +88,7 @@ const Section = (props) => {
     const {status, data, setData} = useFetch(props.endpoint, queryParams, [
         startDate,
         endDate,
+        props.endpoint
     ]);
 
     const filterData = props.filterFunction ? data.filter( data => props.filterFunction(data)) : data;
@@ -95,7 +98,7 @@ const Section = (props) => {
     let newValue = [];
 
     let endpointToParameter = {
-        "/throughput": "max",
+        "/throughput": "maxTime",
         "/rtt": "averageTime",
         "/packet_loss": "packetLoss"
     }

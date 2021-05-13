@@ -3,6 +3,7 @@ import "./SectionSpecificUrl.css";
 import Section from "../section/Section";
 import React, { useState } from "react";
 import {InputLabel, MenuItem, Select} from "@material-ui/core";
+import {Format} from "../../utils";
 
 const SectionSpecificUrl = (props) => {
 
@@ -14,9 +15,15 @@ const SectionSpecificUrl = (props) => {
     }
 
     const valToNameParameter = {
-        "throughput": "Throughput",
-        "rtt": "Round trip time",
+        "throughput": "Max",
+        "rtt": "Avg time",
         "packet_loss": "Packet loss",
+    }
+
+    const valToFormat = {
+        "throughput": Format.byte,
+        "rtt": Format.millisecond,
+        "packet_loss": Format.byte,
     }
 
     const valToValueFields = {
@@ -24,6 +31,13 @@ const SectionSpecificUrl = (props) => {
         "rtt": ["maxTime", "minTime", "averageTime", "standardDeviationTime"],
         "packet_loss": ["packetLoss"],
     }
+
+    const valToParameter = {
+        "throughput": "max",
+        "rtt": "averageTime",
+        "packet_loss": "packetLoss",
+    }
+
 
     const valToGetYFunction = {
         "throughput": (data) => data.max,
@@ -52,20 +66,19 @@ const SectionSpecificUrl = (props) => {
             </Select>
             <Section
                 title={valToNameCDN[selectedCDN] + " - specific info"}
-
-                // TODO: To możnaby jakoś zmodyfokować tak, żeby przy zmianie endpointa od razu wypisywało
-                // TODO: tak jak obenie zmienia się od razu wykres przy zmianie CDN,
-                // TODO: bo tak to trzeba zmienić datę
                 endpoint={"/" + selectedParameter}
 
                 getX={(data) => new Date(data.startDate)}
                 getY={valToGetYFunction[selectedParameter]}
                 filterFunction={ (data) => data.host === selectedCDN}
                 groupBy={"url"}
+                yInfo={{
+                    label: valToNameParameter[selectedParameter],
+                    format: valToFormat[selectedParameter]
+                }}
                 stats={[
-                    // TODO: To wygląda turbo chujowo, ale jak tak nie jest to się nie odświeża zaraz po zmianie
                     ["Host" , "host"],
-                    ["Parameter: " + selectedParameter,  ""],
+                    ["Parameter",  valToParameter[selectedParameter]],
                     ["Start date", "startDate", (startDate) => new Date(startDate).toLocaleString("pol-PL")],
                     ["End date", "endDate", (endDate) => new Date(endDate).toLocaleString("pol-PL")],
                 ]}
