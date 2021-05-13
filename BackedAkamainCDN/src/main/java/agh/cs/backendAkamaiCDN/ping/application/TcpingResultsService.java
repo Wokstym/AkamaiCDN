@@ -29,6 +29,17 @@ public class TcpingResultsService {
                 .collect(Collectors.toList());
     }
 
+    public List<PacketLossEntity> execTcpingForPacketLoss(Integer numberOfProbes, Integer interval, @NonNull CDNConfig.Site site) {
+
+        String mainHost = site.getGeneralHost();
+        log.info("Executing ping for Packet Loss for host : " + mainHost);
+
+        return site.getHosts()
+                .stream()
+                .flatMap(url -> getPacketLossEntities(numberOfProbes, interval, mainHost, url))
+                .collect(Collectors.toList());
+    }
+
     private Stream<RTTEntity> getRttEntity(Integer numberOfProbes, Integer interval, String mainHost, String url) {
         try {
             log.info("Executing ping for RTT calling url : " + url);
@@ -40,7 +51,8 @@ public class TcpingResultsService {
                     .host(url)
                     .execute();
 
-            ArrayList<Double> times = executor.getRTT();
+            ArrayList<Double> times = executor.getTimesArray();
+            if (times.isEmpty()) return Stream.empty();
 
             Date endDate = new Date();
             Double minTime = getMinTime(times);
@@ -66,17 +78,6 @@ public class TcpingResultsService {
         }
     }
 
-    public List<PacketLossEntity> execTcpingForPacketLoss(Integer numberOfProbes, Integer interval, @NonNull CDNConfig.Site site) {
-
-        String mainHost = site.getGeneralHost();
-        log.info("Executing ping for Packet Loss for host : " + mainHost);
-
-        return site.getHosts()
-                .stream()
-                .flatMap(url -> getPacketLossEntities(numberOfProbes, interval, mainHost, url))
-                .collect(Collectors.toList());
-    }
-
     private Stream<PacketLossEntity> getPacketLossEntities(Integer numberOfProbes, Integer interval, String mainHost, String url){
         try {
             log.info("Executing ping for Packet Loss calling url : " + url);
@@ -88,7 +89,9 @@ public class TcpingResultsService {
                     .host(url)
                     .execute();
 
-            double packetLoss = executor.getPacketLoss();
+            ArrayList<Double> times = executor.getTimesArray();
+
+            double packetLoss = (double) ((numberOfProbes - times.size()) / numberOfProbes) * 100;
             Date endDate = new Date();
 
             return Stream.of(PacketLossEntity.builder()

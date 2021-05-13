@@ -21,7 +21,7 @@ public class TcpingExecutor {
         this.bufferedReader = inputStream;
     }
 
-    public ArrayList<Double> getRTT() throws IOException {
+    public ArrayList<Double> getTimesArray() throws IOException {
         Pattern patternRtt = Pattern.compile("rtt=" + "(.*?)" + " ms", Pattern.DOTALL);
         ArrayList<Double> times = new ArrayList<>();
         String input;
@@ -32,20 +32,6 @@ public class TcpingExecutor {
             }
         }
         return times;
-    }
-
-    public double getPacketLoss() throws IOException {
-        Pattern patternPacketLoss = Pattern.compile("received, " + "(.*?)" + "% packet loss", Pattern.DOTALL);
-
-        double packetLoss = 0;
-        String input;
-        while ((input = bufferedReader.readLine()) != null) {
-            Matcher matcherPacketLoss = patternPacketLoss.matcher(input);
-            if (matcherPacketLoss.find()) {
-                packetLoss = Double.parseDouble(matcherPacketLoss.group(1));
-            }
-        }
-        return packetLoss;
     }
 
     @RequiredArgsConstructor
@@ -69,10 +55,11 @@ public class TcpingExecutor {
             return this;
         }
 
-        public TcpingExecutor execute() throws IOException {
+        public TcpingExecutor execute() throws IOException, InterruptedException {
             String command = String.format("sudo hping3 -c %s -V -S -p 80 -i u%s %s", probes, interval, siteName);
 
             Process p = Runtime.getRuntime().exec(command);
+            p.waitFor();
             BufferedReader inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
             return new TcpingExecutor(inputStream);
