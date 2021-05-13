@@ -98,7 +98,7 @@ const Section = (props) => {
     let newValue = [];
 
     let endpointToParameter = {
-        "/throughput": "maxTime",
+        "/throughput": "maxValue",
         "/rtt": "averageTime",
         "/packet_loss": "packetLoss"
     }

@@ -27,20 +27,20 @@ const SectionSpecificUrl = (props) => {
     }
 
     const valToValueFields = {
-        "throughput": ["min", "max", "avg"],
+        "throughput": ["minValue", "maxValue", "averageValue"],
         "rtt": ["maxTime", "minTime", "averageTime", "standardDeviationTime"],
         "packet_loss": ["packetLoss"],
     }
 
     const valToParameter = {
-        "throughput": "max",
+        "throughput": "maxValue",
         "rtt": "averageTime",
         "packet_loss": "packetLoss",
     }
 
 
     const valToGetYFunction = {
-        "throughput": (data) => data.max,
+        "throughput": (data) => data.maxValue,
         "rtt": (data) => data.averageTime,
         "packet_loss": (data) => data.packetLoss,
     }
