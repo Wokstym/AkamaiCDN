@@ -2,3 +2,4 @@
 export { default as DataChart } from './data-chart/DataChart';
 export { default as Section } from './section/Section';
 export { default as GranularityPicker } from './granularity-picker/GranularityPicker';
+export { default as SectionSpecificUrl } from './section-specific/SectionSpecificUrl';
