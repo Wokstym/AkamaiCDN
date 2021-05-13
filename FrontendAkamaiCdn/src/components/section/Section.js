@@ -77,8 +77,6 @@ const Section = (props) => {
     const [endDate, setEndDate] = useState(new Date());
     const [granularity, setGranularity] = useState(granularityStartDate);
 
-    useEffect(() => {setHoveredPoint({})}, [props.endpoint])
-
     let queryParams = {
         startDate: startDate.toJSON(),
         endDate: endDate.toJSON(),
