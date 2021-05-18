@@ -64,10 +64,10 @@ const DataChart = ({width, height, data, ylabel, yformat, xlabel, stats, probeCh
                         return `${Math.round(el / format.divider * 10) / 10}  ${format.unit}`
                     }}
                 />
-                <HorizontalGridLines/>
-                <VerticalGridLines/>
                 {xLabelComponent}
                 {yLabelComponent}
+                <HorizontalGridLines/>
+                <VerticalGridLines/>
                 {
                     probeChanges.map((val, index) => {
                         return (<Crosshair

@@ -9,7 +9,6 @@ function App() {
     return (
         <main className="main">
             <ReportDialog title={"Generate Report"}>
-
             </ReportDialog>
             <Section
                 title={"Throughput"}

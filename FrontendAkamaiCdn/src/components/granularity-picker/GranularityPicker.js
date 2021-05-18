@@ -1,12 +1,12 @@
 import DatePicker from "react-datepicker";
-import {Typography} from "@material-ui/core";
+import {InputLabel, Typography} from "@material-ui/core";
 
 const GranularityPicker = (props) => {
     return (
         <div>
-        <Typography gutterBottom>
-            Granularity:
-        </Typography>
+        <InputLabel gutterBottom>
+            Granularity
+        </InputLabel>
         <DatePicker
             selected={props.time}
             onChange={date => props.onTimeSelected(date)}
