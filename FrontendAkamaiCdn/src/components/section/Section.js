@@ -6,7 +6,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import Typography from "@material-ui/core/Typography";
 import "./Section.css";
 import {withStyles} from "@material-ui/core/styles";
-import {groupBy} from "../../utils";
 
 function getGroupedData(data, whitelist, groupBy) {
     // Calculate the sums and group data (while tracking count)
@@ -127,11 +126,14 @@ const Section = (props) => {
                     let secondDate = nextElement.startDate;
                     let middleDate = (secondDate + firstDate) / 2
                     hostPoints.push({
+                        oldProbes: currentElement.probes,
+                        oldInterval: currentElement.interval,
                         newProbes: nextElement.probes,
                         newInterval: nextElement.interval,
                         x: new Date(middleDate),
                         host: currentElement.host
                     })
+                    i++; // dont compare same elements twice
                 }
             }
         }
