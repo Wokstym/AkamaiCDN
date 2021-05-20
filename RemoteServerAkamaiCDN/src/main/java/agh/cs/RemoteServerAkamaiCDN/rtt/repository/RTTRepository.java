@@ -1,6 +1,6 @@
-package agh.cs.backendAkamaiCDN.ping.repository;
+package agh.cs.RemoteServerAkamaiCDN.rtt.repository;
 
-import agh.cs.backendAkamaiCDN.ping.domain.RTTEntity;
+import agh.cs.RemoteServerAkamaiCDN.rtt.domain.RTTEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;

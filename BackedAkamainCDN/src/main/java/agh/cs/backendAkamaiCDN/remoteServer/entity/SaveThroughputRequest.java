@@ -1,4 +1,4 @@
-package agh.cs.backendAkamaiCDN.throughput.domain;
+package agh.cs.backendAkamaiCDN.remoteServer.entity;
 
 import lombok.*;
 
@@ -10,11 +10,7 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class ThroughputEntity {
-    @EqualsAndHashCode.Include
-    private Long id;
-
+public class SaveThroughputRequest {
     private Date startDate;
     private Date endDate;
     private long maxValue;

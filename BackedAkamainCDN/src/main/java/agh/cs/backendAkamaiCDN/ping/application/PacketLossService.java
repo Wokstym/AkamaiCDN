@@ -1,8 +1,11 @@
 package agh.cs.backendAkamaiCDN.ping.application;
 
 import agh.cs.backendAkamaiCDN.common.CDNConfig;
+import agh.cs.backendAkamaiCDN.common.RemoteServerException;
 import agh.cs.backendAkamaiCDN.ping.domain.PacketLossEntity;
-import agh.cs.backendAkamaiCDN.ping.repository.PacketLossRepository;
+import agh.cs.backendAkamaiCDN.remoteServer.RemoteServerClient;
+import agh.cs.backendAkamaiCDN.remoteServer.entity.SavePacketLossRequest;
+import agh.cs.backendAkamaiCDN.remoteServer.entity.SavePacketLossRequest.PacketLossDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,23 +18,40 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class PacketLossService {
-    private final PacketLossRepository repository;
+    private final RemoteServerClient client;
     private final TcpingResultsService tcpingResultsService;
     private final CDNConfig cdnConfig;
 
     public List<PacketLossEntity> savePacketLossEntity(Integer numberOfProbes, Integer interval) {
-        return cdnConfig.getSites().stream()
+        List<PacketLossDto> dtos = cdnConfig.getSites().stream()
                 .map(site -> tcpingResultsService.execTcpingForPacketLoss(numberOfProbes, interval, site))
                 .flatMap(Collection::stream)
-                .map(repository::save)
+                .map(e -> PacketLossDto.builder()
+                        .startDate(e.getStartDate())
+                        .endDate(e.getEndDate())
+                        .host(e.getHost())
+                        .url(e.getUrl())
+                        .packetLoss(e.getPacketLoss())
+                        .probes(e.getProbes())
+                        .interval(e.getInterval())
+                        .build())
                 .collect(Collectors.toList());
+        SavePacketLossRequest request = SavePacketLossRequest.builder()
+                .entities(dtos)
+                .build();
+
+        return client.savePacketLoss(request)
+                .orElseThrow(RemoteServerException::new);
+
     }
 
     public List<PacketLossEntity> getAll() {
-        return repository.findAll();
+        return client.getAllPacketLoss()
+                .orElseThrow(RemoteServerException::new);
     }
 
     public List<PacketLossEntity> getAllBetweenDates(Date start, Date end) {
-        return repository.getAllByStartDateIsAfterAndEndDateIsBeforeOrderByStartDate(start, end);
+        return client.getAllBetweenDatesPacketLoss(start, end)
+                .orElseThrow(RemoteServerException::new);
     }
 }
