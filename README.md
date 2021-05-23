@@ -14,6 +14,8 @@ Project for measuring RTT, Packet Loss and Throughput of most popular CDN's - Co
 * netflix.com
 * facebook.com
 
+# [Swagger](https://akamai-cdn.herokuapp.com/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config)
+
 # Ping endpoints
 ### Measure and save results of RTT and Packet Loss for 4 CDN's
 ```http
