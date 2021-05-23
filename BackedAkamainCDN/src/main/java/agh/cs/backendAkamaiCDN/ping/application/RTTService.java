@@ -4,7 +4,6 @@ import agh.cs.backendAkamaiCDN.common.CDNConfig;
 import agh.cs.backendAkamaiCDN.common.RemoteServerException;
 import agh.cs.backendAkamaiCDN.ping.domain.RTTEntity;
 import agh.cs.backendAkamaiCDN.remoteServer.RemoteServerClient;
-import agh.cs.backendAkamaiCDN.remoteServer.entity.SavePacketLossRequest;
 import agh.cs.backendAkamaiCDN.remoteServer.entity.SaveRTTRequest;
 import agh.cs.backendAkamaiCDN.remoteServer.entity.SaveRTTRequest.RTTDto;
 import lombok.AllArgsConstructor;
@@ -12,8 +11,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,7 +55,7 @@ public class RTTService {
                 .orElseThrow(RemoteServerException::new);
     }
 
-    public List<RTTEntity> getAllBetweenDates(Date start, Date end) {
+    public List<RTTEntity> getAllBetweenDates(LocalDateTime start, LocalDateTime end) {
         return client.getAllBetweenDatesRTT(start, end)
                 .orElseThrow(RemoteServerException::new);
     }

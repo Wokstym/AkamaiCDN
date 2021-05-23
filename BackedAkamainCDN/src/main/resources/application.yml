@@ -4,7 +4,7 @@ remote:
   server:
 #    replace for development
 #    url: 'http://host.docker.internal:8070/'
-    url: 'https://akamai-cdn.herokuapp.com'
+    url: 'https://akamai-cdn.herokuapp.com/'
 
 cdn:
   sites:

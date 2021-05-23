@@ -11,7 +11,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -50,7 +52,7 @@ public class PacketLossService {
                 .orElseThrow(RemoteServerException::new);
     }
 
-    public List<PacketLossEntity> getAllBetweenDates(Date start, Date end) {
+    public List<PacketLossEntity> getAllBetweenDates(LocalDateTime start, LocalDateTime end) {
         return client.getAllBetweenDatesPacketLoss(start, end)
                 .orElseThrow(RemoteServerException::new);
     }

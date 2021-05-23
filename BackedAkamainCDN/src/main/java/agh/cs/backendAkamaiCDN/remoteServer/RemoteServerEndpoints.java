@@ -2,7 +2,6 @@ package agh.cs.backendAkamaiCDN.remoteServer;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -22,9 +21,11 @@ public class RemoteServerEndpoints {
 
     private final String remoteServerUrl;
 
-    public URI getPacketLossEndpoint() {
+    public URI getPacketLossEndpoint(String start, String end) {
         return UriComponentsBuilder.fromUriString(remoteServerUrl)
                 .path(PACKET_LOSS_ENDPOINT)
+                .queryParam("startDate", start)
+                .queryParam("endDate", end)
                 .build()
                 .toUri();
     }
@@ -45,9 +46,11 @@ public class RemoteServerEndpoints {
                 .toUri();
     }
 
-    public URI getRTTEndpoint() {
+    public URI getRTTEndpoint(String start, String end) {
         return UriComponentsBuilder.fromUriString(remoteServerUrl)
                 .path(RTT_ENDPOINT)
+                .queryParam("startDate", start)
+                .queryParam("endDate", end)
                 .build()
                 .toUri();
     }
@@ -68,9 +71,11 @@ public class RemoteServerEndpoints {
                 .toUri();
     }
 
-    public URI getThroughputEndpoint() {
+    public URI getThroughputEndpoint(String start, String end) {
         return UriComponentsBuilder.fromUriString(remoteServerUrl)
                 .path(THROUGHPUT_ENDPOINT)
+                .queryParam("startDate", start)
+                .queryParam("endDate", end)
                 .build()
                 .toUri();
     }

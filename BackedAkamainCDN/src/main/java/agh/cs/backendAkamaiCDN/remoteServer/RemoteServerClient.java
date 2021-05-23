@@ -10,18 +10,16 @@ import agh.cs.backendAkamaiCDN.throughput.domain.ThroughputEntity;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +27,8 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class RemoteServerClient {
+
+    private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     private final RestTemplate restTemplate;
     private final RemoteServerEndpoints endpoints;
@@ -42,11 +42,10 @@ public class RemoteServerClient {
         return execute(endpoints.getPacketLossAllEndpoint(), HttpMethod.GET, null, PacketLossEntity[].class).map(Arrays::asList);
     }
 
-    public Optional<List<PacketLossEntity>> getAllBetweenDatesPacketLoss(Date start, Date end) {
-        MultiValueMap<String, Object> headers = new LinkedMultiValueMap<>();
-        headers.add("startDate", start);
-        headers.add("endDate", end);
-        return execute(endpoints.getPacketLossEndpoint(), HttpMethod.GET, new HttpEntity<>(headers), PacketLossEntity[].class).map(Arrays::asList);
+    public Optional<List<PacketLossEntity>> getAllBetweenDatesPacketLoss(LocalDateTime start, LocalDateTime end) {
+        String startDate = start.format(ISO_FORMATTER);
+        String endDate = end.format(ISO_FORMATTER);
+        return execute(endpoints.getPacketLossEndpoint(startDate, endDate), HttpMethod.GET, null, PacketLossEntity[].class).map(Arrays::asList);
     }
 
     public Optional<List<RTTEntity>> saveRTT(SaveRTTRequest request) {
@@ -57,11 +56,10 @@ public class RemoteServerClient {
         return execute(endpoints.getRTTAllEndpoint(), HttpMethod.GET, null, RTTEntity[].class).map(Arrays::asList);
     }
 
-    public Optional<List<RTTEntity>> getAllBetweenDatesRTT(Date start, Date end) {
-        MultiValueMap<String, Object> headers = new LinkedMultiValueMap<>();
-        headers.add("startDate", start);
-        headers.add("endDate", end);
-        return execute(endpoints.getRTTEndpoint(), HttpMethod.GET, new HttpEntity<>(headers), RTTEntity[].class).map(Arrays::asList);
+    public Optional<List<RTTEntity>> getAllBetweenDatesRTT(LocalDateTime start, LocalDateTime end) {
+        String startDate = start.format(ISO_FORMATTER);
+        String endDate = end.format(ISO_FORMATTER);
+        return execute(endpoints.getRTTEndpoint(startDate, endDate), HttpMethod.GET, null, RTTEntity[].class).map(Arrays::asList);
     }
 
     public Optional<ThroughputEntity> saveThroughput(SaveThroughputRequest request) {
@@ -72,11 +70,10 @@ public class RemoteServerClient {
         return execute(endpoints.getThroughputAllEndpoint(), HttpMethod.GET, null, ThroughputEntity[].class).map(Arrays::asList);
     }
 
-    public Optional<List<ThroughputEntity>> getAllBetweenDatesThroughput(Date start, Date end) {
-        MultiValueMap<String, Object> headers = new LinkedMultiValueMap<>();
-        headers.add("startDate", start);
-        headers.add("endDate", end);
-        return execute(endpoints.getThroughputEndpoint(), HttpMethod.GET, new HttpEntity<>(headers), ThroughputEntity[].class).map(Arrays::asList);
+    public Optional<List<ThroughputEntity>> getAllBetweenDatesThroughput(LocalDateTime start, LocalDateTime end) {
+        String startDate = start.format(ISO_FORMATTER);
+        String endDate = end.format(ISO_FORMATTER);
+        return execute(endpoints.getThroughputEndpoint(startDate, endDate), HttpMethod.GET, null, ThroughputEntity[].class).map(Arrays::asList);
     }
 
     private <T> Optional<T> execute(URI uri, HttpMethod method, HttpEntity<?> requestEntity, Class<T> responseClass) {

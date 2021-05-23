@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -33,11 +33,11 @@ public class ThroughputController {
     public ResponseEntity<List<ThroughputEntity>> getAllBetweenDates(
             @RequestParam(name = "startDate")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                    Date start,
+                    LocalDateTime start,
             @RequestParam(name = "endDate")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                    Date end) {
-        if (start.after(end))
+                    LocalDateTime end) {
+        if (start.isAfter(end))
             return ResponseEntity.badRequest().build();
 
         List<ThroughputEntity> entities = service.getAllBetweenDates(start, end);

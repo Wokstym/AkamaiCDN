@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Positive;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Log4j2
@@ -51,11 +51,11 @@ public class RTTController {
     public ResponseEntity<List<RTTEntity>> getAllBetweenDates(
             @RequestParam(name = "startDate")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                    Date start,
+                    LocalDateTime start,
             @RequestParam(name = "endDate")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                    Date end) {
-        if (start.after(end))
+                    LocalDateTime end) {
+        if (start.isAfter(end))
             return ResponseEntity.badRequest().build();
 
         List<RTTEntity> entities = service.getAllBetweenDates(start, end);
