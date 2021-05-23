@@ -1,7 +1,6 @@
 package agh.cs.backendAkamaiCDN.ping.application;
 
 import agh.cs.backendAkamaiCDN.common.CDNConfig;
-import agh.cs.backendAkamaiCDN.common.RemoteServerException;
 import agh.cs.backendAkamaiCDN.ping.domain.PacketLossEntity;
 import agh.cs.backendAkamaiCDN.remoteServer.RemoteServerClient;
 import agh.cs.backendAkamaiCDN.remoteServer.entity.SavePacketLossRequest;
@@ -42,18 +41,15 @@ public class PacketLossService {
                 .entities(dtos)
                 .build();
 
-        return client.savePacketLoss(request)
-                .orElseThrow(RemoteServerException::new);
+        return client.savePacketLoss(request);
 
     }
 
     public List<PacketLossEntity> getAll() {
-        return client.getAllPacketLoss()
-                .orElseThrow(RemoteServerException::new);
+        return client.getAllPacketLoss();
     }
 
     public List<PacketLossEntity> getAllBetweenDates(LocalDateTime start, LocalDateTime end) {
-        return client.getAllBetweenDatesPacketLoss(start, end)
-                .orElseThrow(RemoteServerException::new);
+        return client.getAllBetweenDatesPacketLoss(start, end);
     }
 }

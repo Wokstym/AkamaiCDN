@@ -1,6 +1,5 @@
 package agh.cs.backendAkamaiCDN.throughput.application;
 
-import agh.cs.backendAkamaiCDN.common.RemoteServerException;
 import agh.cs.backendAkamaiCDN.remoteServer.RemoteServerClient;
 import agh.cs.backendAkamaiCDN.remoteServer.entity.SaveThroughputRequest;
 import agh.cs.backendAkamaiCDN.throughput.domain.ThroughputEntity;
@@ -39,12 +38,10 @@ public class ThroughputService {
     public List<ThroughputEntity> getAllBetweenDates(LocalDateTime start, LocalDateTime end) {
         log.info(start.toString());
         log.info(end.toString());
-        return client.getAllBetweenDatesThroughput(start, end)
-                .orElseThrow(RemoteServerException::new);
+        return client.getAllBetweenDatesThroughput(start, end);
     }
 
     public List<ThroughputEntity> getAll() {
-        return client.getAllThroughput()
-                .orElseThrow(RemoteServerException::new);
+        return client.getAllThroughput();
     }
 }

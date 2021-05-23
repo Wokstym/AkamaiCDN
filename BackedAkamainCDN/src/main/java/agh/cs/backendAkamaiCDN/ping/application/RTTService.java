@@ -1,7 +1,6 @@
 package agh.cs.backendAkamaiCDN.ping.application;
 
 import agh.cs.backendAkamaiCDN.common.CDNConfig;
-import agh.cs.backendAkamaiCDN.common.RemoteServerException;
 import agh.cs.backendAkamaiCDN.ping.domain.RTTEntity;
 import agh.cs.backendAkamaiCDN.remoteServer.RemoteServerClient;
 import agh.cs.backendAkamaiCDN.remoteServer.entity.SaveRTTRequest;
@@ -46,17 +45,14 @@ public class RTTService {
                 .entities(dtos)
                 .build();
 
-        return client.saveRTT(request)
-                .orElseThrow(RemoteServerException::new);
+        return client.saveRTT(request);
     }
 
     public List<RTTEntity> getAll() {
-        return client.getAllRTT()
-                .orElseThrow(RemoteServerException::new);
+        return client.getAllRTT();
     }
 
     public List<RTTEntity> getAllBetweenDates(LocalDateTime start, LocalDateTime end) {
-        return client.getAllBetweenDatesRTT(start, end)
-                .orElseThrow(RemoteServerException::new);
+        return client.getAllBetweenDatesRTT(start, end);
     }
 }
