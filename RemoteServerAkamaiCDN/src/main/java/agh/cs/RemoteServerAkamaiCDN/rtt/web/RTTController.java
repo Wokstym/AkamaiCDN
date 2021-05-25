@@ -1,20 +1,20 @@
-package agh.cs.backendAkamaiCDN.ping.web;
+package agh.cs.RemoteServerAkamaiCDN.rtt.web;
 
-import agh.cs.backendAkamaiCDN.ping.application.RTTService;
-import agh.cs.backendAkamaiCDN.ping.domain.RTTEntity;
+import agh.cs.RemoteServerAkamaiCDN.packetLoss.domain.PacketLossEntity;
+import agh.cs.RemoteServerAkamaiCDN.packetLoss.domain.PacketLossService;
+import agh.cs.RemoteServerAkamaiCDN.packetLoss.domain.rest.SavePacketLossRequest;
+import agh.cs.RemoteServerAkamaiCDN.rtt.domain.RTTEntity;
+import agh.cs.RemoteServerAkamaiCDN.rtt.domain.RTTService;
+import agh.cs.RemoteServerAkamaiCDN.rtt.domain.rest.SaveRTTRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Positive;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Log4j2
@@ -26,16 +26,10 @@ public class RTTController {
 
     private final RTTService service;
 
-    @GetMapping("/save")
-    public ResponseEntity<List<RTTEntity>> pingSite(
-            @RequestParam(name = "numberOfProbes", defaultValue = "100")
-            @Positive
-                    Integer numberOfProbes,
-            @RequestParam(name = "interval", defaultValue = "1000")
-            @Positive
-                    Integer interval) {
-        log.info("RTT request");
-        return ResponseEntity.ok(service.saveRTTEntity(numberOfProbes, interval));
+    @PostMapping("/save")
+    public ResponseEntity<List<RTTEntity>> save(@RequestBody SaveRTTRequest request) {
+        log.info("Packet Loss request");
+        return ResponseEntity.ok(service.save(request.getEntities()));
     }
 
     @GetMapping("/all")
@@ -51,11 +45,11 @@ public class RTTController {
     public ResponseEntity<List<RTTEntity>> getAllBetweenDates(
             @RequestParam(name = "startDate")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                    LocalDateTime start,
+                    Date start,
             @RequestParam(name = "endDate")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                    LocalDateTime end) {
-        if (start.isAfter(end))
+                    Date end) {
+        if (start.after(end))
             return ResponseEntity.badRequest().build();
 
         List<RTTEntity> entities = service.getAllBetweenDates(start, end);
@@ -65,4 +59,3 @@ public class RTTController {
         return ResponseEntity.ok(entities);
     }
 }
-

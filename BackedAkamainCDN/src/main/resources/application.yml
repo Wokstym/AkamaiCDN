@@ -1,13 +1,10 @@
 server.port: 8090
 
-spring:
-  datasource:
-    url: jdbc:postgresql://host.docker.internal:2173/postgres
-    username: postgres
-    password: postgres
-  jpa:
-    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
-    hibernate.ddl-auto: update
+remote:
+  server:
+#    replace for development
+#    url: 'http://host.docker.internal:8070/'
+    url: 'https://akamai-cdn.herokuapp.com/'
 
 cdn:
   sites:
