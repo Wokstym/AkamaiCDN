@@ -1,6 +1,6 @@
 import {DataChart, GranularityPicker} from "../../components";
 import {useFetch, useSelectButtons} from "../../hooks";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Typography from "@material-ui/core/Typography";
@@ -8,6 +8,13 @@ import "./Section.css";
 import {withStyles} from "@material-ui/core/styles";
 import {groupBy} from "../../utils";
 import {InputLabel} from "@material-ui/core";
+
+
+const GreyTextTypography = withStyles({
+    root: {
+        color: "#929596",
+    },
+})(Typography);
 
 function getGroupedData(data, whitelist, groupBy) {
     // Calculate the sums and group data (while tracking count)
@@ -68,7 +75,7 @@ function getDictionaryPerParameter(data, parameter){
 }
 
 const Section = (props) => {
-    console.log("Title: ", props.title)
+    //console.log("Title: ", props.title)
     const granularityStartDate = new Date();
     granularityStartDate.setHours(0, props.timeIntervals);
     const now = new Date();
@@ -129,7 +136,6 @@ const Section = (props) => {
 
             if (i + 1 < value.length) {
                 let nextElement = value[i + 1];
-
                 if ((currentElement.probes !== nextElement.probes) || (currentElement.interval !== nextElement.interval)) {
                     let firstDate = currentElement.startDate;
                     let secondDate = nextElement.startDate;
@@ -146,11 +152,12 @@ const Section = (props) => {
         return hostPoints
     })
 
-    const GreyTextTypography = withStyles({
-        root: {
-            color: "#929596",
-        },
-    })(Typography);
+    parsedData = parsedData.filter(([key, value]) => selectedValues[key]);
+
+    useEffect(() => {
+        //console.log(parsedData);
+        props.setter(parsedData);
+    }, [data, selectedValues])
 
     return (
         <div className="card">
@@ -222,14 +229,13 @@ const Section = (props) => {
                     <DataChart
                         width={800}
                         height={500}
-                        data={parsedData.filter(([key, value]) => selectedValues[key])}
+                        data={parsedData}
                         ylabel={props.yInfo.label}
                         yformat={props.yInfo.format}
                         xlabel="Time"
                         stats={props.stats}
                         probeChanges={points}
                     />
-
             </div>
         </div>
     );

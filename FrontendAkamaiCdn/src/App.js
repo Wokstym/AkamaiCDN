@@ -1,16 +1,27 @@
 import {Section, SectionSpecificUrl} from './components';
 import './App.css'
 import ParamsSection from "./components/params-section/ParamsSection";
-import ReportDialog from "./components/reportDialog/ReportDialog";
+import ReportDialog from "./components/report-dialog/ReportDialog";
 import {Format} from "./utils";
+import {useState} from "react";
 
 function App() {
+    const [currentTputData, setCurrentTputData] = useState([]);
+    const [currentRttData, setCurrentRttData] = useState([]);
+    const [currentPacketLossData, setCurrentPacketLossData] = useState([]);
+    const [currentSpecificData, setCurrentSpecificData] = useState([]);
 
     return (
         <main className="main">
-            <ReportDialog title={"Generate Report"}>
+            <ReportDialog
+                tputData={currentTputData}
+                rttData={currentRttData}
+                packetLossData={currentPacketLossData}
+                specificData={currentSpecificData}
+            >
             </ReportDialog>
             <Section
+                setter={setCurrentTputData}
                 title={"Throughput"}
                 endpoint={"/throughput"}
                 getX={(data) => new Date(data.startDate)} getY={(data) => data.maxValue}
@@ -31,6 +42,7 @@ function App() {
                 valueFields={["minValue", "maxValue", "averageValue"]}
             />
             <Section
+                setter={setCurrentRttData}
                 title={"Round trip time"}
                 endpoint={"/rtt"}
                 getX={(data) => new Date(data.startDate)}
@@ -56,6 +68,7 @@ function App() {
                 timeIntervals={10}
             />
             <Section
+                setter={setCurrentPacketLossData}
                 title={"Packet loss"}
                 endpoint={"/packet_loss"}
                 getX={(data) => new Date(data.startDate)}
@@ -78,7 +91,7 @@ function App() {
                 timeIntervals={10}
             />
             <SectionSpecificUrl
-
+            setter={setCurrentSpecificData}
             />
         </main>
     );

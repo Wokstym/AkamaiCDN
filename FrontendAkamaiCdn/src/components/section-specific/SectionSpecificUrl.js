@@ -65,9 +65,9 @@ const SectionSpecificUrl = (props) => {
                 <MenuItem value="packet_loss">Packet loss</MenuItem>
             </Select>
             <Section
+                setter={props.setter}
                 title={valToNameCDN[selectedCDN] + " - specific info"}
                 endpoint={"/" + selectedParameter}
-
                 getX={(data) => new Date(data.startDate)}
                 getY={valToGetYFunction[selectedParameter]}
                 filterFunction={ (data) => data.host === selectedCDN}
