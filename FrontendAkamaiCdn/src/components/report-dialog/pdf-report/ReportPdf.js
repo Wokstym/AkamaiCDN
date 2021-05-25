@@ -1,145 +1,169 @@
 import React from 'react';
-import { Document, Page, View, Text } from "@react-pdf/renderer";
-import { Table, TableHeader, TableBody, TableCell, DataTableCell } from "@david.kucsai/react-pdf-table";
+import {Document, Page, View, Text, StyleSheet} from "@react-pdf/renderer";
+import { Table, TableCellHeader, TableRow, TableCell } from "../table";
+
+const BASE_WIDTH = 100;
+
+const styles = StyleSheet.create({
+    body: {
+        padding: 10
+    }
+});
+
 
 const ReportPdf = ({tputData, rttData, packetLossData, specificData}) => {
-
     return (
         <Document>
-            <Page>
-                <Text>
-                    Throughput Data
-                </Text>
+            <Page style={styles.body}>
+                {tputData.length > 0 && <Text>Throughput data</Text>}
                 {tputData.map(([key, values]) => {
-                    console.log(values);
                     return(
                         <View key={key}>
-                            <Text>
-                                {key}
-                            </Text>
-                            <Table data={values}>
-                                <TableHeader>
-                                    <TableCell>
+                            <Text>{key}</Text>
+                            <Table>
+                                <TableRow>
+                                    <TableCellHeader width={20}>
                                         Start date
-                                    </TableCell>
-                                    <TableCell>
+                                    </TableCellHeader>
+                                    <TableCellHeader width={20}>
                                         End date
-                                    </TableCell>
-                                    <TableCell>
+                                    </TableCellHeader>
+                                    <TableCellHeader width={20}>
                                         Min value
-                                    </TableCell>
-                                    <TableCell>
-                                        Max value
-                                    </TableCell>
-                                    <TableCell>
+                                    </TableCellHeader>
+                                    <TableCellHeader width={20}>
+                                    Max value
+                                    </TableCellHeader>
+                                    <TableCellHeader width={20}>
                                         Average
-                                    </TableCell>
-                                </TableHeader>
-                                <TableBody>
-                                    <DataTableCell getContent={(r) => new Date(r.startDate).toLocaleString()}/>
-                                    <DataTableCell getContent={(r) => new Date(r.endDate).toLocaleString()}/>
-                                    <DataTableCell getContent={(r) => r.minValue.toString()}/>
-                                    <DataTableCell getContent={(r) => r.maxValue.toString()}/>
-                                    <DataTableCell getContent={(r) => r.averageValue.toString()}/>
-                                </TableBody>
+                                    </TableCellHeader>
+                                </TableRow>
+                                {values.map(r => {
+                                    let width = BASE_WIDTH / 5
+                                    return (
+                                        <TableRow>
+                                            <TableCell width={width}>
+                                                {new Date(r.startDate).toLocaleString()}
+                                            </TableCell>
+                                            <TableCell width={width}>
+                                                {new Date(r.endDate).toLocaleString()}
+                                            </TableCell>
+                                            <TableCell width={width}>
+                                                {r.minValue.toFixed(4)}
+                                            </TableCell>
+                                            <TableCell width={width}>
+                                                {r.maxValue.toFixed(4)}
+                                            </TableCell>
+                                            <TableCell width={width}>
+                                                {r.averageValue.toFixed(4)}
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })}
                             </Table>
                         </View>
                     )
-                })}}
-            </Page>
-            <Page>
-                <Text>
-                    Round Trip Time Data
-                </Text>
+                })}
+                {rttData.length > 0 && <Text>Round trip time data</Text>}
                 {rttData.map(([key, values]) => {
-                    console.log(values)
                     return (
                         <View key={key}>
-                            <Text>
-                                {key}
-                            </Text>
-                            <Table data={values}>
-                                <TableHeader>
-                                    <TableCell>
+                            <Text>{key}</Text>
+                            <Table>
+                                <TableRow>
+                                    <TableCellHeader width={12.5}>
                                         Start date
-                                    </TableCell>
-                                    <TableCell>
+                                    </TableCellHeader>
+                                    <TableCellHeader width={12.5}>
                                         End date
-                                    </TableCell>
-                                    <TableCell>
+                                    </TableCellHeader>
+                                    <TableCellHeader width={12.5}>
                                         Min time
-                                    </TableCell>
-                                    <TableCell>
+                                    </TableCellHeader>
+                                    <TableCellHeader width={12.5}>
                                         Max time
-                                    </TableCell>
-                                    <TableCell>
+                                    </TableCellHeader>
+                                    <TableCellHeader width={12.5}>
                                         Average
-                                    </TableCell>
-                                    <TableCell>
+                                    </TableCellHeader>
+                                    <TableCellHeader width={12.5}>
                                         Standard deviation
-                                    </TableCell>
-                                    <TableCell>
+                                    </TableCellHeader>
+                                    <TableCellHeader width={12.5}>
                                         Interval
-                                    </TableCell>
-                                    <TableCell>
+                                    </TableCellHeader>
+                                    <TableCellHeader width={12.5}>
                                         Probes
-                                    </TableCell>
-                                </TableHeader>
-                                <TableBody>
-                                    <DataTableCell getContent={(r) => new Date(r.startDate).toLocaleString()}/>
-                                    <DataTableCell getContent={(r) => new Date(r.endDate).toLocaleString()}/>
-                                    <DataTableCell getContent={(r) => r.minTime.toString()}/>
-                                    <DataTableCell getContent={(r) => r.maxTime.toString()}/>
-                                    <DataTableCell getContent={(r) => r.averageTime.toString()}/>
-                                    <DataTableCell getContent={(r) => r.standardDeviationTime.toString()}/>
-                                    <DataTableCell getContent={(r) => r.interval.toString()}/>
-                                    <DataTableCell getContent={(r) => r.probes.toString()}/>
-                                </TableBody>
+                                    </TableCellHeader>
+                                </TableRow>
+                                {values.map(r => {
+                                    let width = BASE_WIDTH / 8;
+                                    return(
+                                        <TableRow>
+                                            <TableCell width={width}>{new Date(r.startDate).toLocaleString()}</TableCell>
+                                            <TableCell width={width}>{new Date(r.endDate).toLocaleString()}</TableCell>
+                                            <TableCell width={width}>{r.minTime.toFixed(4)}</TableCell>
+                                            <TableCell width={width}>{r.maxTime.toFixed(4)}</TableCell>
+                                            <TableCell width={width}>{r.averageTime.toFixed(4)}</TableCell>
+                                            <TableCell width={width}>{r.standardDeviationTime.toFixed(4)}</TableCell>
+                                            <TableCell width={width}>{r.interval.toFixed(4)}</TableCell>
+                                            <TableCell width={width}>{r.probes.toFixed(4)}</TableCell>
+                                        </TableRow>
+                                    )
+                                })}
                             </Table>
                         </View>
                     )
-                })}}
-            </Page>
-            <Page>
-                <Text>
-                    Packet Loss Data
-                </Text>
+                })}
+                {packetLossData.length > 0 && <Text>Packet loss data</Text>}
                 {packetLossData.map(([key, values]) => {
-                    console.log(values)
                     return (
                         <View key={key}>
-                            <Text>
-                                {key}
-                            </Text>
-                            <Table data={values}>
-                                <TableHeader>
-                                    <TableCell>
+                            <Text>{key}</Text>
+                        <Table>
+                                <TableRow>
+                                    <TableCellHeader width={20}>
                                         Start date
-                                    </TableCell>
-                                    <TableCell>
+                                    </TableCellHeader>
+                                    <TableCellHeader width={20}>
                                         End date
-                                    </TableCell>
-                                    <TableCell>
+                                    </TableCellHeader>
+                                    <TableCellHeader width={20}>
                                         Packet Loss
-                                    </TableCell>
-                                    <TableCell>
+                                    </TableCellHeader>
+                                    <TableCellHeader width={20}>
                                         Interval
-                                    </TableCell>
-                                    <TableCell>
+                                    </TableCellHeader>
+                                    <TableCellHeader width={20}>
                                         Probes
-                                    </TableCell>
-                                </TableHeader>
-                                <TableBody>
-                                    <DataTableCell getContent={(r) => new Date(r.startDate).toLocaleString()}/>
-                                    <DataTableCell getContent={(r) => new Date(r.endDate).toLocaleString()}/>
-                                    <DataTableCell getContent={(r) => r.packetLoss.toString()}/>
-                                    <DataTableCell getContent={(r) => r.interval.toString()}/>
-                                    <DataTableCell getContent={(r) => r.probes.toString()}/>
-                                </TableBody>
+                                    </TableCellHeader>
+                                </TableRow>
+                                {values.map(r => {
+                                    let width = BASE_WIDTH / 5;
+                                    return (
+                                        <TableRow>
+                                            <TableCell width={width}>
+                                                {new Date(r.startDate).toLocaleString()}
+                                            </TableCell>
+                                            <TableCell width={width}>
+                                                {new Date(r.endDate).toLocaleString()}
+                                            </TableCell>
+                                            <TableCell width={width}>
+                                                {r.packetLoss.toFixed(4)}
+                                            </TableCell>
+                                            <TableCell width={width}>
+                                                {r.interval.toFixed(4)}
+                                            </TableCell>
+                                            <TableCell width={width}>
+                                                {r.probes.toFixed(4)}
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })}
                             </Table>
-                        </View>
+                </View>
                     )
-                })}}
+                })}
             </Page>
         </Document>
         )
