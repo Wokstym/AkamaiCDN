@@ -10,6 +10,7 @@ function App() {
     const [currentRttData, setCurrentRttData] = useState([]);
     const [currentPacketLossData, setCurrentPacketLossData] = useState([]);
     const [currentSpecificData, setCurrentSpecificData] = useState([]);
+    const [specificDataType, setSpecificDataType] = useState("rtt");
 
     return (
         <main className="main">
@@ -18,6 +19,7 @@ function App() {
                 rttData={currentRttData}
                 packetLossData={currentPacketLossData}
                 specificData={currentSpecificData}
+                specificDataType={specificDataType}
             >
             </ReportDialog>
             <Section
@@ -92,6 +94,7 @@ function App() {
             />
             <SectionSpecificUrl
             setter={setCurrentSpecificData}
+            typeSetter={setSpecificDataType}
             />
         </main>
     );

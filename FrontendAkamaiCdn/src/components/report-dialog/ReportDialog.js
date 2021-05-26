@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ReportDialog = ({tputData, rttData, packetLossData, specificData}) => {
+const ReportDialog = ({tputData, rttData, packetLossData, specificData, specificDataType}) => {
 
     const classes = useStyles();
     const [open, setOpen] = useState(false);
@@ -68,7 +68,9 @@ const ReportDialog = ({tputData, rttData, packetLossData, specificData}) => {
                         tputData={checkboxesOpen["Throughput"] ? tputData : []}
                         rttData={checkboxesOpen["Round Trip Time"] ? rttData : []}
                         packetLossData={checkboxesOpen["Packet Loss"] ? packetLossData : []}
-                        specificData={checkboxesOpen["Specific Data"] ? specificData : []} />} fileName={`report-${new Date().toDateString()}.pdf`}>
+                        specificData={checkboxesOpen["Specific Data"] ? specificData : []}
+                        specificDataType={specificDataType}
+                    />} fileName={`report-${new Date().toDateString()}.pdf`}>
                     {({ blob, url, loading, error }) =>
                         loading ? 'Loading document...' : 'Download now!'
                     }

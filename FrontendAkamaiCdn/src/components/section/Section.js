@@ -1,6 +1,6 @@
 import {DataChart, GranularityPicker} from "../../components";
 import {useFetch, useSelectButtons} from "../../hooks";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Typography from "@material-ui/core/Typography";
@@ -75,7 +75,7 @@ function getDictionaryPerParameter(data, parameter){
 }
 
 const Section = (props) => {
-    //console.log("Title: ", props.title)
+    console.log("section " + props.title + " rendered");
     const granularityStartDate = new Date();
     granularityStartDate.setHours(0, props.timeIntervals);
     const now = new Date();
@@ -241,4 +241,6 @@ const Section = (props) => {
     );
 };
 
-export default Section;
+export default React.memo(Section, (prevProps, nextProps) => {
+    return prevProps.title === nextProps.title && prevProps.endpoint === nextProps.endpoint
+});
