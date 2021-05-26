@@ -1,5 +1,6 @@
 package agh.cs.RemoteServerAkamaiCDN.rtt.domain;
 
+import agh.cs.RemoteServerAkamaiCDN.common.Util;
 import agh.cs.RemoteServerAkamaiCDN.packetLoss.domain.PacketLossEntity;
 import agh.cs.RemoteServerAkamaiCDN.rtt.domain.rest.SaveRTTRequest;
 import agh.cs.RemoteServerAkamaiCDN.rtt.repository.RTTRepository;
@@ -22,14 +23,6 @@ public class RTTService {
     private final RTTRepository repository;
 
     public List<RTTEntity> save(List<SaveRTTRequest.RTTDto> dtos) {
-
-
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                .getRequest();
-
-        log.info(request.getRemoteAddr());
-        log.info(request.getHeader("X-FORWARDED-FOR"));
-
         List<RTTEntity> entities = dtos.stream()
                 .map(e -> RTTEntity.builder()
                         .startDate(e.getStartDate())
@@ -42,8 +35,7 @@ public class RTTService {
                         .standardDeviationTime(e.getStandardDeviationTime())
                         .probes(e.getProbes())
                         .interval(e.getInterval())
-                        .ipAddress(((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                                .getRequest().getRemoteAddr())
+                        .ipAddress(Util.getIpAddress())
                         .build())
                 .collect(Collectors.toList());
 

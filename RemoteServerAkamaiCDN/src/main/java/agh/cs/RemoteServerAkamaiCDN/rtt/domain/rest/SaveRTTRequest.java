@@ -30,8 +30,6 @@ public class SaveRTTRequest {
         private Double averageTime;
         private Double standardDeviationTime;
 
-        private String ipAddress;
-
         private int probes;
         private double interval;
     }

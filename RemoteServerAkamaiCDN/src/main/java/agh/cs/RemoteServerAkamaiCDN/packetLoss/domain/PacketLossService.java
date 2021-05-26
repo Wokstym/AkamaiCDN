@@ -1,5 +1,6 @@
 package agh.cs.RemoteServerAkamaiCDN.packetLoss.domain;
 
+import agh.cs.RemoteServerAkamaiCDN.common.Util;
 import agh.cs.RemoteServerAkamaiCDN.packetLoss.domain.rest.SavePacketLossRequest;
 import agh.cs.RemoteServerAkamaiCDN.packetLoss.repository.PacketLossRepository;
 import lombok.AllArgsConstructor;
@@ -21,15 +22,6 @@ public class PacketLossService {
     private PacketLossRepository repository;
 
     public List<PacketLossEntity> save(List<SavePacketLossRequest.PacketLossDto> dtos) {
-
-
-
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                .getRequest();
-
-        log.info(request.getRemoteAddr());
-        log.info(request.getHeader("X-FORWARDED-FOR"));
-
         List<PacketLossEntity> entities = dtos.stream()
                 .map(e -> PacketLossEntity.builder()
                         .startDate(e.getStartDate())
@@ -39,7 +31,7 @@ public class PacketLossService {
                         .packetLoss(e.getPacketLoss())
                         .probes(e.getProbes())
                         .interval(e.getInterval())
-                        .ipAddress(e.getIpAddress())
+                        .ipAddress(Util.getIpAddress())
                         .build())
                 .collect(Collectors.toList());
 

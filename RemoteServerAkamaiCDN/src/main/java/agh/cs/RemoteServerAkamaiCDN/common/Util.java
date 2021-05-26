@@ -1,4 +1,4 @@
-package agh.cs.backendAkamaiCDN.common;
+package agh.cs.RemoteServerAkamaiCDN.common;
 
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

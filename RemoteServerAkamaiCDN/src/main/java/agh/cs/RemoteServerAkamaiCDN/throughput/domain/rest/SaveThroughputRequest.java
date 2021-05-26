@@ -18,6 +18,4 @@ public class SaveThroughputRequest {
     private long minValue;
     private long averageValue;
     private String host;
-
-    private String ipAddress;
 }

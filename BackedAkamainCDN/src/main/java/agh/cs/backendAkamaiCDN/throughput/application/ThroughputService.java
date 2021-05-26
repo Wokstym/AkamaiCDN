@@ -29,7 +29,6 @@ public class ThroughputService {
                         .maxValue(entity.getMaxValue())
                         .minValue(entity.getMinValue())
                         .host(entity.getHost())
-                        .ipAddress(Util.getIpAddress())
                         .build())
                 .map(client::saveThroughput)
                 .ifPresentOrElse(

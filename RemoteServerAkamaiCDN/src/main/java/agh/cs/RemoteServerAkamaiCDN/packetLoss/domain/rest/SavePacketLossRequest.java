@@ -28,8 +28,6 @@ public class SavePacketLossRequest {
         private String url;
         private Double packetLoss;
 
-        private String ipAddress;
-
         private int probes;
         private double interval;
     }

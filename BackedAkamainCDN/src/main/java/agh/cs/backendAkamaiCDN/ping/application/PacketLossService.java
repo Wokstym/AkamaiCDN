@@ -36,7 +36,6 @@ public class PacketLossService {
                         .packetLoss(e.getPacketLoss())
                         .probes(e.getProbes())
                         .interval(e.getInterval())
-                        .ipAddress(Util.getIpAddress())
                         .build())
                 .collect(Collectors.toList());
         SavePacketLossRequest request = SavePacketLossRequest.builder()
