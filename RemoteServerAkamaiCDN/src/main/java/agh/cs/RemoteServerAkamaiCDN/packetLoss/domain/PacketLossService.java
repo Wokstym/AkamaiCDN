@@ -22,6 +22,12 @@ public class PacketLossService {
 
 
 
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                .getRequest();
+
+        log.info(request.getRemoteAddr());
+        log.info(request.getHeader("X-FORWARDED-FOR"));
+
         List<PacketLossEntity> entities = dtos.stream()
                 .map(e -> PacketLossEntity.builder()
                         .startDate(e.getStartDate())
