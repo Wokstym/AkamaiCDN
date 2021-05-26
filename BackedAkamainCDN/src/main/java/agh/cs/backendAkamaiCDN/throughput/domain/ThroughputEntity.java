@@ -3,6 +3,7 @@ package agh.cs.backendAkamaiCDN.throughput.domain;
 import lombok.*;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -10,10 +11,9 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode
 public class ThroughputEntity {
-    @EqualsAndHashCode.Include
-    private Long id;
+    private UUID id;
 
     private Date startDate;
     private Date endDate;
