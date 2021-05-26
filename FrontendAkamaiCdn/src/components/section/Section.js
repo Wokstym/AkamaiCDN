@@ -74,8 +74,36 @@ function getDictionaryPerParameter(data, parameter){
     return evenNewerVal
 }
 
+function getBreakingPoints(value){
+    let hostPoints = []
+
+    for (let i = 0; i < value.length; i++) {
+        let currentElement = value[i];
+
+        if (i + 1 < value.length) {
+            let nextElement = value[i + 1];
+
+            if ((currentElement.probes !== nextElement.probes) || (currentElement.interval !== nextElement.interval)) {
+                let firstDate = currentElement.startDate;
+                let secondDate = nextElement.startDate;
+                let middleDate = (secondDate + firstDate) / 2
+                hostPoints.push({
+                    oldProbes: currentElement.probes,
+                    oldInterval: currentElement.interval,
+                    newProbes: nextElement.probes,
+                    newInterval: nextElement.interval,
+                    x: new Date(middleDate),
+                    host: currentElement.host
+                })
+                i++; // dont compare same elements twice
+            }
+        }
+    }
+    return hostPoints
+}
+
 const Section = (props) => {
-    console.log("section " + props.title + " rendered");
+    console.log("Title: ", props.title)
     const granularityStartDate = new Date();
     granularityStartDate.setHours(0, props.timeIntervals);
     const now = new Date();
@@ -84,6 +112,7 @@ const Section = (props) => {
     const [startDate, setStartDate] = useState(now);
     const [endDate, setEndDate] = useState(new Date());
     const [granularity, setGranularity] = useState(granularityStartDate);
+
     let queryParams = {
         startDate: startDate.toJSON(),
         endDate: endDate.toJSON(),
@@ -92,7 +121,8 @@ const Section = (props) => {
     const {status, data, setData} = useFetch(props.endpoint, queryParams, [
         startDate,
         endDate,
-        props.endpoint
+        props.endpoint,
+        granularity
     ]);
 
     const [selectedValues, checkboxes] = useSelectButtons(
@@ -115,6 +145,8 @@ const Section = (props) => {
         "/packet_loss": "packetLoss"
     }
 
+    let points = getBreakingPoints(filterData)
+
     for(let i = 0; i<filterData.length;i+=1){
         let portionData = getDataIncludingInterval(filterData, i, interval)
         let mergedData = getGroupedData(portionData, [endpointToParameter[props.endpoint]], props.groupBy)
@@ -127,37 +159,6 @@ const Section = (props) => {
         })
 
     parsedData = getDictionaryPerParameter(parsedData, props.groupBy)
-
-    let points = parsedData.flatMap(([, value]) => {
-        let hostPoints = []
-
-        for (let i = 0; i < value.length; i++) {
-            let currentElement = value[i];
-
-            if (i + 1 < value.length) {
-                let nextElement = value[i + 1];
-                if ((currentElement.probes !== nextElement.probes) || (currentElement.interval !== nextElement.interval)) {
-                    let firstDate = currentElement.startDate;
-                    let secondDate = nextElement.startDate;
-                    let middleDate = (secondDate + firstDate) / 2
-                    hostPoints.push({
-                        newProbes: nextElement.probes,
-                        newInterval: nextElement.interval,
-                        x: new Date(middleDate),
-                        host: currentElement.host
-                    })
-                }
-            }
-        }
-        return hostPoints
-    })
-
-    parsedData = parsedData.filter(([key, value]) => selectedValues[key]);
-
-    useEffect(() => {
-        //console.log(parsedData);
-        props.setter(parsedData);
-    }, [data, selectedValues])
 
     return (
         <div className="card">
@@ -236,6 +237,7 @@ const Section = (props) => {
                         stats={props.stats}
                         probeChanges={points}
                     />
+
             </div>
         </div>
     );

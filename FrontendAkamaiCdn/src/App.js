@@ -77,7 +77,7 @@ function App() {
                 getY={(data) => data.packetLoss}
                 yInfo={{
                     label: "Packet loss",
-                    format: Format.byte
+                    format: Format.percent
                 }}
                 groupBy={"host"}
                 stats={[

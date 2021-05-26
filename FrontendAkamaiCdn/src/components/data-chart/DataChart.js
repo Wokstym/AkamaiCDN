@@ -1,11 +1,15 @@
 import {
+    ChartLabel,
+    Crosshair,
+    DiscreteColorLegend,
+    Hint,
     HorizontalGridLines,
     LineMarkSeries,
+    MarkSeries,
     VerticalGridLines,
     XAxis,
     XYPlot,
-    YAxis,
-    ChartLabel, DiscreteColorLegend, Crosshair, MarkSeries, Hint
+    YAxis
 } from "react-vis";
 import "react-vis/dist/style.css";
 import './DataChart.css'
@@ -74,8 +78,12 @@ const DataChart = ({width, height, data, ylabel, yformat, xlabel, stats, probeCh
                             titleFormat={() => (
                                 {title: "Change", value: ""})}
                             itemsFormat={(d) => {
-                                return [{title: 'Probes', value: d[0].newProbes},
-                                    {title: 'Interval', value: d[0].newInterval}]
+                                return [
+                                    {title: 'Old Probes', value: d[0].oldProbes},
+                                    {title: 'New Probes', value: d[0].newProbes},
+                                    {title: 'Old Interval', value: d[0].oldInterval},
+                                    {title: 'New Interval', value: d[0].newInterval}
+                            ]
                             }}
                             key={index}
                             values={[val]}/>)
