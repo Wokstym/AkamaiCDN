@@ -1,15 +1,21 @@
 package agh.cs.RemoteServerAkamaiCDN.rtt.domain;
 
+import agh.cs.RemoteServerAkamaiCDN.common.Util;
 import agh.cs.RemoteServerAkamaiCDN.packetLoss.domain.PacketLossEntity;
 import agh.cs.RemoteServerAkamaiCDN.rtt.domain.rest.SaveRTTRequest;
 import agh.cs.RemoteServerAkamaiCDN.rtt.repository.RTTRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class RTTService {
@@ -29,6 +35,7 @@ public class RTTService {
                         .standardDeviationTime(e.getStandardDeviationTime())
                         .probes(e.getProbes())
                         .interval(e.getInterval())
+                        .ipAddress(Util.getIpAddress())
                         .build())
                 .collect(Collectors.toList());
 

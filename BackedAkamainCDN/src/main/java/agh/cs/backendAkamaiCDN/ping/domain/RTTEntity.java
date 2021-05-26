@@ -3,6 +3,7 @@ package agh.cs.backendAkamaiCDN.ping.domain;
 import lombok.*;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -11,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RTTEntity {
-    private Long id;
+    private UUID id;
 
     private Date startDate;
     private Date endDate;

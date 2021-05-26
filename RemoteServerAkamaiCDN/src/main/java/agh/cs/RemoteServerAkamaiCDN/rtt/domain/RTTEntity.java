@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Date;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -18,7 +19,7 @@ import java.util.Date;
 public class RTTEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private UUID id;
 
     private Date startDate;
     private Date endDate;
@@ -28,6 +29,8 @@ public class RTTEntity {
     private Double maxTime;
     private Double averageTime;
     private Double standardDeviationTime;
+
+    private String ipAddress;
 
     private int probes;
     private double interval;
