@@ -1,8 +1,6 @@
 package agh.cs.RemoteServerAkamaiCDN.throughput.web;
 
-import agh.cs.RemoteServerAkamaiCDN.rtt.domain.RTTEntity;
-import agh.cs.RemoteServerAkamaiCDN.rtt.domain.rest.SaveRTTRequest;
-import agh.cs.RemoteServerAkamaiCDN.throughput.application.ThroughputService;
+import agh.cs.RemoteServerAkamaiCDN.throughput.domain.ThroughputService;
 import agh.cs.RemoteServerAkamaiCDN.throughput.domain.ThroughputEntity;
 import agh.cs.RemoteServerAkamaiCDN.throughput.domain.rest.SaveThroughputRequest;
 import lombok.AllArgsConstructor;

@@ -29,6 +29,7 @@ public class RTTService {
                         .standardDeviationTime(e.getStandardDeviationTime())
                         .probes(e.getProbes())
                         .interval(e.getInterval())
+                        .ipAddress(e.getIpAddress())
                         .build())
                 .collect(Collectors.toList());
 

@@ -1,6 +1,5 @@
-package agh.cs.RemoteServerAkamaiCDN.throughput.application;
+package agh.cs.RemoteServerAkamaiCDN.throughput.domain;
 
-import agh.cs.RemoteServerAkamaiCDN.throughput.domain.ThroughputEntity;
 import agh.cs.RemoteServerAkamaiCDN.throughput.domain.rest.SaveThroughputRequest;
 import agh.cs.RemoteServerAkamaiCDN.throughput.repository.ThroughputRepository;
 import lombok.AllArgsConstructor;
@@ -26,6 +25,7 @@ public class ThroughputService {
                 .minValue(dto.getMinValue())
                 .averageValue(dto.getAverageValue())
                 .host(dto.getHost())
+                .ipAddress(dto.getIpAddress())
                 .build());
     }
 

@@ -18,6 +18,8 @@ public class PacketLossEntity {
     private String url;
     private Double packetLoss;
 
+    private String ipAddress;
+
     private int probes;
     private double interval;
 }

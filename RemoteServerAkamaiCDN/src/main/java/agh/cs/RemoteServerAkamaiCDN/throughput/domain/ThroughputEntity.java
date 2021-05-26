@@ -28,4 +28,6 @@ public class ThroughputEntity {
     public long minValue;
     public long averageValue;
     public String host;
+
+    private String ipAddress;
 }

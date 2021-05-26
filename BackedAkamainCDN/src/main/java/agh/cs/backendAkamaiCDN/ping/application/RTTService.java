@@ -1,6 +1,7 @@
 package agh.cs.backendAkamaiCDN.ping.application;
 
 import agh.cs.backendAkamaiCDN.common.CDNConfig;
+import agh.cs.backendAkamaiCDN.common.Util;
 import agh.cs.backendAkamaiCDN.ping.domain.RTTEntity;
 import agh.cs.backendAkamaiCDN.remoteServer.RemoteServerClient;
 import agh.cs.backendAkamaiCDN.remoteServer.entity.SaveRTTRequest;
@@ -38,6 +39,7 @@ public class RTTService {
                         .standardDeviationTime(e.getStandardDeviationTime())
                         .probes(e.getProbes())
                         .interval(e.getInterval())
+                        .ipAddress(Util.getIpAddress())
                         .build())
                 .collect(Collectors.toList());
 
