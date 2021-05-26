@@ -65,6 +65,34 @@ function getDictionaryPerParameter(data, parameter){
     return evenNewerVal
 }
 
+function getBreakingPoints(value){
+    let hostPoints = []
+
+    for (let i = 0; i < value.length; i++) {
+        let currentElement = value[i];
+
+        if (i + 1 < value.length) {
+            let nextElement = value[i + 1];
+
+            if ((currentElement.probes !== nextElement.probes) || (currentElement.interval !== nextElement.interval)) {
+                let firstDate = currentElement.startDate;
+                let secondDate = nextElement.startDate;
+                let middleDate = (secondDate + firstDate) / 2
+                hostPoints.push({
+                    oldProbes: currentElement.probes,
+                    oldInterval: currentElement.interval,
+                    newProbes: nextElement.probes,
+                    newInterval: nextElement.interval,
+                    x: new Date(middleDate),
+                    host: currentElement.host
+                })
+                i++; // dont compare same elements twice
+            }
+        }
+    }
+    return hostPoints
+}
+
 const Section = (props) => {
     console.log("Title: ", props.title)
     const granularityStartDate = new Date();
@@ -84,7 +112,8 @@ const Section = (props) => {
     const {status, data, setData} = useFetch(props.endpoint, queryParams, [
         startDate,
         endDate,
-        props.endpoint
+        props.endpoint,
+        granularity
     ]);
 
     const filterData = props.filterFunction ? data.filter( data => props.filterFunction(data)) : data;
@@ -99,6 +128,8 @@ const Section = (props) => {
         "/packet_loss": "packetLoss"
     }
 
+    let points = getBreakingPoints(filterData)
+
     for(let i = 0; i<filterData.length;i+=1){
         let portionData = getDataIncludingInterval(filterData, i, interval)
         let mergedData = getGroupedData(portionData, [endpointToParameter[props.endpoint]], props.groupBy)
@@ -111,34 +142,6 @@ const Section = (props) => {
         })
 
     parsedData = getDictionaryPerParameter(parsedData, props.groupBy)
-
-    let points = parsedData.flatMap(([, value]) => {
-        let hostPoints = []
-
-        for (let i = 0; i < value.length; i++) {
-            let currentElement = value[i];
-
-            if (i + 1 < value.length) {
-                let nextElement = value[i + 1];
-
-                if ((currentElement.probes !== nextElement.probes) || (currentElement.interval !== nextElement.interval)) {
-                    let firstDate = currentElement.startDate;
-                    let secondDate = nextElement.startDate;
-                    let middleDate = (secondDate + firstDate) / 2
-                    hostPoints.push({
-                        oldProbes: currentElement.probes,
-                        oldInterval: currentElement.interval,
-                        newProbes: nextElement.probes,
-                        newInterval: nextElement.interval,
-                        x: new Date(middleDate),
-                        host: currentElement.host
-                    })
-                    i++; // dont compare same elements twice
-                }
-            }
-        }
-        return hostPoints
-    })
 
     const GreyTextTypography = withStyles({
         root: {
