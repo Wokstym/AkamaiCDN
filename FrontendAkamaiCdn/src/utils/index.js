@@ -26,6 +26,10 @@ export class Format {
         {unit: "mb", divider: 1048576}
     ]
 
+    static percent = [
+        {unit: "%",  divider: 1},
+    ]
+
     static millisecond = [
         {unit: "ms", to: 500, divider: 1},
         {unit: "s", to: 60000, divider: 1000},
