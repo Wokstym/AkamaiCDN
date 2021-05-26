@@ -1,7 +1,6 @@
 package agh.cs.backendAkamaiCDN.ping.application;
 
 import agh.cs.backendAkamaiCDN.common.CDNConfig;
-import agh.cs.backendAkamaiCDN.common.Util;
 import agh.cs.backendAkamaiCDN.ping.domain.RTTEntity;
 import agh.cs.backendAkamaiCDN.remoteServer.RemoteServerClient;
 import agh.cs.backendAkamaiCDN.remoteServer.entity.SaveRTTRequest;

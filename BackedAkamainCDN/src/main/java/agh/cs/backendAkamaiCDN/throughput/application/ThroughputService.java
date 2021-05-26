@@ -1,6 +1,5 @@
 package agh.cs.backendAkamaiCDN.throughput.application;
 
-import agh.cs.backendAkamaiCDN.common.Util;
 import agh.cs.backendAkamaiCDN.remoteServer.RemoteServerClient;
 import agh.cs.backendAkamaiCDN.remoteServer.entity.SaveThroughputRequest;
 import agh.cs.backendAkamaiCDN.throughput.domain.ThroughputEntity;
