@@ -4,7 +4,10 @@ import agh.cs.RemoteServerAkamaiCDN.packetLoss.domain.rest.SavePacketLossRequest
 import agh.cs.RemoteServerAkamaiCDN.packetLoss.repository.PacketLossRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +19,8 @@ public class PacketLossService {
     private PacketLossRepository repository;
 
     public List<PacketLossEntity> save(List<SavePacketLossRequest.PacketLossDto> dtos) {
+
+
 
         List<PacketLossEntity> entities = dtos.stream()
                 .map(e -> PacketLossEntity.builder()
