@@ -16,7 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class PacketLossEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Date startDate;
