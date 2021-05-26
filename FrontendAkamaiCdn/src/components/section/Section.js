@@ -160,6 +160,11 @@ const Section = (props) => {
 
     parsedData = getDictionaryPerParameter(parsedData, props.groupBy)
 
+    useEffect(() => {
+        //console.log(parsedData);
+        props.setter(parsedData);
+    }, [data, selectedValues])
+
     return (
         <div className="card">
             <GreyTextTypography variant={"h4"} gutterBottom>
