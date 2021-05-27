@@ -16,7 +16,18 @@ import './DataChart.css'
 import Typography from "@material-ui/core/Typography";
 import {useState} from "react";
 
-const DataChart = ({width, height, data, ylabel, yformat, xlabel, stats, probeChanges}) => {
+const DataChart = ({
+                       width,
+                       height,
+                       data,
+                       ylabel,
+                       yformat,
+                       xlabel,
+                       stats,
+                       probeChanges,
+                       badPoints,
+                       shouldShowDeviations
+                   }) => {
     const [hintPoint, setHintPoint] = useState();
     const [isCursorOnPlot, setIsCursorOnPlot] = useState(false);
 
@@ -72,6 +83,13 @@ const DataChart = ({width, height, data, ylabel, yformat, xlabel, stats, probeCh
                 {yLabelComponent}
                 <HorizontalGridLines/>
                 <VerticalGridLines/>
+                {shouldShowDeviations ?
+                    <MarkSeries
+                        data={badPoints}
+                        color={"#FF0000"}
+                        size={10}
+                    /> : null
+                }
                 {
                     probeChanges.map((val, index) => {
                         return (<Crosshair
@@ -83,7 +101,7 @@ const DataChart = ({width, height, data, ylabel, yformat, xlabel, stats, probeCh
                                     {title: 'New Probes', value: d[0].newProbes},
                                     {title: 'Old Interval', value: d[0].oldInterval},
                                     {title: 'New Interval', value: d[0].newInterval}
-                            ]
+                                ]
                             }}
                             key={index}
                             values={[val]}/>)

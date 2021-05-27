@@ -3,11 +3,11 @@ import {useFetch, useSelectButtons} from "../../hooks";
 import React, {useEffect, useState} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Switch from '@material-ui/core/Switch';
 import Typography from "@material-ui/core/Typography";
 import "./Section.css";
 import {withStyles} from "@material-ui/core/styles";
-import {groupBy} from "../../utils";
-import {InputLabel} from "@material-ui/core";
+import {FormControlLabel, InputLabel} from "@material-ui/core";
 
 
 const GreyTextTypography = withStyles({
@@ -18,14 +18,15 @@ const GreyTextTypography = withStyles({
 
 function getGroupedData(data, whitelist, groupBy) {
     // Calculate the sums and group data (while tracking count)
-    const reduced = data.reduce(function(m, d) {
+    const reduced = data.reduce(function (m, d) {
         if (!m[d[groupBy]]) {
-            m[d[groupBy]] = { ...d,
+            m[d[groupBy]] = {
+                ...d,
                 count: 1
             };
             return m;
         }
-        whitelist.forEach(function(key) {
+        whitelist.forEach(function (key) {
             m[d[groupBy]][key] += d[key];
         });
         m[d[groupBy]].count += 1;
@@ -33,9 +34,9 @@ function getGroupedData(data, whitelist, groupBy) {
     }, {});
 
     // Create new array from grouped data and compute the average
-    return Object.keys(reduced).map(function(k) {
+    return Object.keys(reduced).map(function (k) {
         const item = reduced[k];
-        const itemAverage = whitelist.reduce(function(m, key) {
+        const itemAverage = whitelist.reduce(function (m, key) {
             m[key] = item[key] / item.count;
             return m;
         }, {})
@@ -46,20 +47,20 @@ function getGroupedData(data, whitelist, groupBy) {
     })
 }
 
-function getDataIncludingInterval(data, startIdx, interval){
+function getDataIncludingInterval(data, startIdx, interval) {
     let gathered = []
     let start = data[startIdx]
     gathered.push(start)
-    for(let i=startIdx+1; i<data.length; i+=1){
-        if (data[i].startDate < start.startDate+interval) gathered.push(data[i])
+    for (let i = startIdx + 1; i < data.length; i += 1) {
+        if (data[i].startDate < start.startDate + interval) gathered.push(data[i])
     }
     return gathered
 }
 
-function getDictionaryPerParameter(data, parameter){
+function getDictionaryPerParameter(data, parameter) {
     let newVal = {}
-    for(let val of data){
-        if(!newVal[val[parameter]]){
+    for (let val of data) {
+        if (!newVal[val[parameter]]) {
             newVal[val[parameter]] = []
         }
         newVal[val[parameter]].push(val)
@@ -67,14 +68,14 @@ function getDictionaryPerParameter(data, parameter){
 
     let evenNewerVal = []
 
-    for(const [key, value] of Object.entries(newVal)){
+    for (const [key, value] of Object.entries(newVal)) {
         evenNewerVal.push([key, value])
     }
 
     return evenNewerVal
 }
 
-function getBreakingPoints(value){
+function getBreakingPoints(value) {
     let hostPoints = []
 
     for (let i = 0; i < value.length; i++) {
@@ -102,6 +103,20 @@ function getBreakingPoints(value){
     return hostPoints
 }
 
+function findBadPoints(points) {
+    let result = []
+    for (let i = 1; i < points.length; i += 1) {
+        let element = points[i].y;
+        let prevElement = points[i - 1].y
+
+        if (prevElement * 0.2 > element || prevElement * 1.8 < element) {
+            result.push(points[i])
+        }
+    }
+
+    return result;
+}
+
 const Section = (props) => {
     console.log("Title: ", props.title)
     const granularityStartDate = new Date();
@@ -112,6 +127,7 @@ const Section = (props) => {
     const [startDate, setStartDate] = useState(now);
     const [endDate, setEndDate] = useState(new Date());
     const [granularity, setGranularity] = useState(granularityStartDate);
+    const [shouldShowDeviations, setShouldShowDeviations] = useState(false);
 
     let queryParams = {
         startDate: startDate.toJSON(),
@@ -133,7 +149,7 @@ const Section = (props) => {
         [props.endpoint, props.title]
     );
 
-    const filterData = props.filterFunction ? data.filter( data => props.filterFunction(data)) : data;
+    const filterData = props.filterFunction ? data.filter(data => props.filterFunction(data)) : data;
 
     let interval = granularity.getHours() * 3600000 + granularity.getMinutes() * 60000
 
@@ -147,18 +163,20 @@ const Section = (props) => {
 
     let points = getBreakingPoints(filterData)
 
-    for(let i = 0; i<filterData.length;i+=1){
+    for (let i = 0; i < filterData.length; i += 1) {
         let portionData = getDataIncludingInterval(filterData, i, interval)
         let mergedData = getGroupedData(portionData, [endpointToParameter[props.endpoint]], props.groupBy)
         newValue.push(mergedData)
-        i += portionData.length-1
+        i += portionData.length - 1
     }
 
     let parsedData = newValue.flat().map((value) => {
-            return {...value, x: props.getX(value), y: props.getY(value)}
-        })
+        return {...value, x: props.getX(value), y: props.getY(value)}
+    })
 
     parsedData = getDictionaryPerParameter(parsedData, props.groupBy)
+
+    let badPoints = parsedData.flatMap(e => findBadPoints(e[1]))
 
     useEffect(() => {
         //console.log(parsedData);
@@ -176,38 +194,38 @@ const Section = (props) => {
                     <InputLabel gutterBottom>
                         From
                     </InputLabel>
-                <DatePicker
-                    label={"From"}
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    selectsStart
-                    startDate={startDate}
-                    endDate={endDate}
-                    showTimeSelect
-                    timeFormat={"HH:mm"}
-                    timeIntervals={15}
-                    timeCaption={"time"}
-                    dateFormat={"MMMM d, yyyy HH:mm"}
-                />
+                    <DatePicker
+                        label={"From"}
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                        selectsStart
+                        startDate={startDate}
+                        endDate={endDate}
+                        showTimeSelect
+                        timeFormat={"HH:mm"}
+                        timeIntervals={15}
+                        timeCaption={"time"}
+                        dateFormat={"MMMM d, yyyy HH:mm"}
+                    />
                 </div>
                 <div>
                     <InputLabel gutterBottom>
                         To
                     </InputLabel>
-                <DatePicker
-                    label={"To"}
-                    selected={endDate}
-                    onChange={(date) => setEndDate(date)}
-                    selectsEnd
-                    startDate={startDate}
-                    endDate={endDate}
-                    minDate={startDate}
-                    showTimeSelect
-                    timeFormat={"HH:mm"}
-                    timeIntervals={15}
-                    timeCaption={"time"}
-                    dateFormat={"MMMM d, yyyy HH:mm"}
-                />
+                    <DatePicker
+                        label={"To"}
+                        selected={endDate}
+                        onChange={(date) => setEndDate(date)}
+                        selectsEnd
+                        startDate={startDate}
+                        endDate={endDate}
+                        minDate={startDate}
+                        showTimeSelect
+                        timeFormat={"HH:mm"}
+                        timeIntervals={15}
+                        timeCaption={"time"}
+                        dateFormat={"MMMM d, yyyy HH:mm"}
+                    />
                 </div>
                 <GranularityPicker
                     time={granularity}
@@ -217,6 +235,11 @@ const Section = (props) => {
                         setGranularity(newTime);
                     }}
                     timeIntervals={props.timeIntervals}
+                />
+                <FormControlLabel
+                    control={<Switch size="small" checked={shouldShowDeviations}
+                                     onChange={(event) => setShouldShowDeviations(event.target.checked)}/>}
+                    label="Show deviations"
                 />
                 {checkboxes}
                 {startDate.getTime() > endDate.getTime() && (
@@ -232,16 +255,18 @@ const Section = (props) => {
             </div>
 
             <div className="grid-container">
-                    <DataChart
-                        width={800}
-                        height={500}
-                        data={parsedData}
-                        ylabel={props.yInfo.label}
-                        yformat={props.yInfo.format}
-                        xlabel="Time"
-                        stats={props.stats}
-                        probeChanges={points}
-                    />
+                <DataChart
+                    width={800}
+                    height={500}
+                    data={parsedData}
+                    ylabel={props.yInfo.label}
+                    yformat={props.yInfo.format}
+                    xlabel="Time"
+                    stats={props.stats}
+                    probeChanges={points}
+                    badPoints={badPoints}
+                    shouldShowDeviations={shouldShowDeviations}
+                />
 
             </div>
         </div>
