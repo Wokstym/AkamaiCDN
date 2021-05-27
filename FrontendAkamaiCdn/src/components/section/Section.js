@@ -180,6 +180,8 @@ const Section = (props) => {
 
     parsedData = getDictionaryPerParameter(parsedData, props.groupBy)
 
+    parsedData = parsedData.filter(([key, value]) => selectedValues[key]);
+
     let badPoints = parsedData.flatMap(e => findBadPoints(e[1]))
 
     useEffect(() => {
@@ -267,7 +269,7 @@ const Section = (props) => {
                 <DataChart
                     width={800}
                     height={500}
-                    data={parsedData.filter(([key, value]) => selectedValues[key] )}
+                    data={parsedData}
                     ylabel={props.yInfo.label}
                     yformat={props.yInfo.format}
                     xlabel="Time"
