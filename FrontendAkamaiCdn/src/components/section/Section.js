@@ -267,7 +267,7 @@ const Section = (props) => {
                 <DataChart
                     width={800}
                     height={500}
-                    data={parsedData}
+                    data={parsedData.filter(([key, value]) => selectedValues[key] )}
                     ylabel={props.yInfo.label}
                     yformat={props.yInfo.format}
                     xlabel="Time"
