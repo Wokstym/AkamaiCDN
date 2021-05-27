@@ -1,11 +1,20 @@
 import {DataChart, GranularityPicker} from "../../components";
-import {useFetch} from "../../hooks";
-import {useState} from "react";
+import {useFetch, useSelectButtons} from "../../hooks";
+import React, {useEffect, useState} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Typography from "@material-ui/core/Typography";
 import "./Section.css";
 import {withStyles} from "@material-ui/core/styles";
+import {groupBy} from "../../utils";
+import {InputLabel} from "@material-ui/core";
+
+
+const GreyTextTypography = withStyles({
+    root: {
+        color: "#929596",
+    },
+})(Typography);
 
 function getGroupedData(data, whitelist, groupBy) {
     // Calculate the sums and group data (while tracking count)
@@ -116,6 +125,14 @@ const Section = (props) => {
         granularity
     ]);
 
+    const [selectedValues, checkboxes] = useSelectButtons(
+        [],
+        data,
+        props.groupBy,
+        props.filterFunction,
+        [props.endpoint, props.title]
+    );
+
     const filterData = props.filterFunction ? data.filter( data => props.filterFunction(data)) : data;
 
     let interval = granularity.getHours() * 3600000 + granularity.getMinutes() * 60000
@@ -143,11 +160,10 @@ const Section = (props) => {
 
     parsedData = getDictionaryPerParameter(parsedData, props.groupBy)
 
-    const GreyTextTypography = withStyles({
-        root: {
-            color: "#929596",
-        },
-    })(Typography);
+    useEffect(() => {
+        //console.log(parsedData);
+        props.setter(parsedData);
+    }, [data, selectedValues])
 
     return (
         <div className="card">
@@ -156,6 +172,10 @@ const Section = (props) => {
             </GreyTextTypography>
             {props.renderParamsSection ? props.renderParamsSection(props.endpoint) : undefined}
             <div className="grid-item stats">
+                <div>
+                    <InputLabel gutterBottom>
+                        From
+                    </InputLabel>
                 <DatePicker
                     label={"From"}
                     selected={startDate}
@@ -169,6 +189,11 @@ const Section = (props) => {
                     timeCaption={"time"}
                     dateFormat={"MMMM d, yyyy HH:mm"}
                 />
+                </div>
+                <div>
+                    <InputLabel gutterBottom>
+                        To
+                    </InputLabel>
                 <DatePicker
                     label={"To"}
                     selected={endDate}
@@ -183,6 +208,17 @@ const Section = (props) => {
                     timeCaption={"time"}
                     dateFormat={"MMMM d, yyyy HH:mm"}
                 />
+                </div>
+                <GranularityPicker
+                    time={granularity}
+                    onTimeSelected={(time) => {
+                        let newTime = granularityStartDate;
+                        newTime.setHours(time.getHours(), time.getMinutes())
+                        setGranularity(newTime);
+                    }}
+                    timeIntervals={props.timeIntervals}
+                />
+                {checkboxes}
                 {startDate.getTime() > endDate.getTime() && (
                     <Typography
                         color={"error"}
@@ -208,17 +244,10 @@ const Section = (props) => {
                     />
 
             </div>
-            <GranularityPicker
-                time={granularity}
-                onTimeSelected={(time) => {
-                    let newTime = granularityStartDate;
-                    newTime.setHours(time.getHours(), time.getMinutes())
-                    setGranularity(newTime);
-                }}
-                timeIntervals={props.timeIntervals}
-            />
         </div>
     );
 };
 
-export default Section;
+export default React.memo(Section, (prevProps, nextProps) => {
+    return prevProps.title === nextProps.title && prevProps.endpoint === nextProps.endpoint
+});

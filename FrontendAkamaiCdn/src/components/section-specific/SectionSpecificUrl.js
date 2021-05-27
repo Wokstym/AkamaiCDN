@@ -1,7 +1,7 @@
 import "react-datepicker/dist/react-datepicker.css";
 import "./SectionSpecificUrl.css";
 import Section from "../section/Section";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {InputLabel, MenuItem, Select} from "@material-ui/core";
 import {Format} from "../../utils";
 
@@ -48,6 +48,10 @@ const SectionSpecificUrl = (props) => {
     const [selectedCDN, setSelectedCDN] = useState("youtube.com");
     const [selectedParameter, setSelectedParameter] = useState("rtt");
 
+    useEffect(() => {
+        props.typeSetter(selectedParameter);
+    }, [selectedParameter])
+
     return (
         <div className="card">
             <InputLabel id="label">CDN</InputLabel>
@@ -65,9 +69,9 @@ const SectionSpecificUrl = (props) => {
                 <MenuItem value="packet_loss">Packet loss</MenuItem>
             </Select>
             <Section
+                setter={props.setter}
                 title={valToNameCDN[selectedCDN] + " - specific info"}
                 endpoint={"/" + selectedParameter}
-
                 getX={(data) => new Date(data.startDate)}
                 getY={valToGetYFunction[selectedParameter]}
                 filterFunction={ (data) => data.host === selectedCDN}

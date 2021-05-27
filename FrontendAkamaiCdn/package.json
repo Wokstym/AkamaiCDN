@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@david.kucsai/react-pdf-table": "^0.3.0",
     "@material-ui/core": "^4.11.3",
-    "@react-pdf/renderer": "^2.0.12",
+    "@react-pdf/renderer": "^2.0.13",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.3",
