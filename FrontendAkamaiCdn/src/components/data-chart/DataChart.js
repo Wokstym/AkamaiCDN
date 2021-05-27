@@ -26,7 +26,8 @@ const DataChart = ({
                        stats,
                        probeChanges,
                        badPoints,
-                       shouldShowDeviations
+                       shouldShowDeviations,
+                       showChangeInParameters
                    }) => {
     const [hintPoint, setHintPoint] = useState();
     const [isCursorOnPlot, setIsCursorOnPlot] = useState(false);
@@ -90,7 +91,7 @@ const DataChart = ({
                         size={10}
                     /> : null
                 }
-                {
+                {showChangeInParameters?
                     probeChanges.map((val, index) => {
                         return (<Crosshair
                             titleFormat={() => (
@@ -105,7 +106,7 @@ const DataChart = ({
                             }}
                             key={index}
                             values={[val]}/>)
-                    })
+                    }): null
                 }
                 {
                     data.map(([key, value], index) => (

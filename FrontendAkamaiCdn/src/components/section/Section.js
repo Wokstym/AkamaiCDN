@@ -105,11 +105,14 @@ function getBreakingPoints(value) {
 
 function findBadPoints(points) {
     let result = []
-    for (let i = 1; i < points.length; i += 1) {
+    for (let i = 1; i < points.length - 1; i += 1) {
+        let nextElement = points[i + 1].y;
         let element = points[i].y;
         let prevElement = points[i - 1].y
 
-        if (prevElement * 0.2 > element || prevElement * 1.8 < element) {
+        let avgNeighb = (nextElement + prevElement) / 2.0
+
+        if (avgNeighb * 0.2 > element || avgNeighb * 1.8 < element) {
             result.push(points[i])
         }
     }
@@ -128,6 +131,7 @@ const Section = (props) => {
     const [endDate, setEndDate] = useState(new Date());
     const [granularity, setGranularity] = useState(granularityStartDate);
     const [shouldShowDeviations, setShouldShowDeviations] = useState(false);
+    const [showChangeInParameters, setShowChangeInParameters] = useState(false);
 
     let queryParams = {
         startDate: startDate.toJSON(),
@@ -241,6 +245,11 @@ const Section = (props) => {
                                      onChange={(event) => setShouldShowDeviations(event.target.checked)}/>}
                     label="Show deviations"
                 />
+                <FormControlLabel
+                    control={<Switch size="small" checked={showChangeInParameters}
+                                     onChange={(event) => setShowChangeInParameters(event.target.checked)}/>}
+                    label="Show change in parameters"
+                />
                 {checkboxes}
                 {startDate.getTime() > endDate.getTime() && (
                     <Typography
@@ -266,6 +275,7 @@ const Section = (props) => {
                     probeChanges={points}
                     badPoints={badPoints}
                     shouldShowDeviations={shouldShowDeviations}
+                    showChangeInParameters={showChangeInParameters}
                 />
 
             </div>
