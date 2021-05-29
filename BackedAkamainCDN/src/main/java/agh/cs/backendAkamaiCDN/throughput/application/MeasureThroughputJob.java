@@ -29,7 +29,10 @@ public class MeasureThroughputJob {
     private void run() {
         log.info("Post construct init");
         config.getSites().stream()
-                .map(site -> ThroughputTaskComponent.from(applicationContext, site.getHosts(), site.getGeneralHost()))
+                .flatMap(site -> site.getHosts()
+                        .stream()
+                        .map(host -> ThroughputTaskComponent
+                                .from(applicationContext, host, site.getGeneralHost())))
                 .forEach(executor::execute);
 
     }
@@ -40,14 +43,14 @@ public class MeasureThroughputJob {
     @RequiredArgsConstructor(onConstructor = @__(@Autowired), access = AccessLevel.PRIVATE)
     public static class ThroughputTaskComponent implements Runnable {
         private final ThroughputService service;
-        private List<String> hosts;
+        private String host;
         private String name;
 
         public static ThroughputTaskComponent from(ApplicationContext applicationContext,
-                                                   List<String> hosts,
+                                                   String host,
                                                    String name) {
             ThroughputTaskComponent task = applicationContext.getBean(ThroughputTaskComponent.class);
-            task.hosts = hosts;
+            task.host = host;
             task.name = name;
             return task;
         }
@@ -56,7 +59,7 @@ public class MeasureThroughputJob {
         public void run() {
             log.info("Starting task for host: " + name);
             while (true) {
-                service.measureAndSaveThroughput(hosts, name);
+                service.measureAndSaveThroughput(host, name);
             }
         }
     }

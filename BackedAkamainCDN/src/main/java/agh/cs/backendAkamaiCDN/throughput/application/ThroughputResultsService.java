@@ -19,20 +19,21 @@ public class ThroughputResultsService {
     private static final int DURATION = 5 * 60000;
     private static final int STEP = 1000;
 
-    public Optional<ThroughputEntity> measureThroughput(List<String> hosts, String name) {
+    public Optional<ThroughputEntity> measureThroughput(String url, String name) {
         Date startStamp = new Date();
         try {
-            TcpdumpExecutor executor = TcpdumpExecutor.builder(hosts)
+            TcpdumpExecutor executor = TcpdumpExecutor.builder(url)
                     .duration(DURATION)
                     .step(STEP)
                     .execute();
 
             Date endStamp = new Date();
             List<Long> results = executor.getResults();
-            log.info(hosts.toString());
+            log.info(url);
             if (getMaxValue(results) > 0) {
                 return Optional.of(ThroughputEntity.builder()
                         .host(name)
+                        .url(url)
                         .startDate(startStamp)
                         .endDate(endStamp)
                         .maxValue(getMaxValue(results))
