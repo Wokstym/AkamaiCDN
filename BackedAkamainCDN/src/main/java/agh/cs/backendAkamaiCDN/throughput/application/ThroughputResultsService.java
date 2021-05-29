@@ -29,7 +29,6 @@ public class ThroughputResultsService {
 
             Date endStamp = new Date();
             List<Long> results = executor.getResults();
-            log.info(url);
             if (getMaxValue(results) > 0) {
                 return Optional.of(ThroughputEntity.builder()
                         .host(name)

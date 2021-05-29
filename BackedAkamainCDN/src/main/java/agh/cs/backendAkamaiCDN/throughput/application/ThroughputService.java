@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -19,17 +20,16 @@ public class ThroughputService {
     private final RemoteServerClient client;
 
     public void measureAndSaveThroughput(String host, String name) {
-        log.info("Starting measuring for: " + name);
-        service.measureThroughput(host, name)
-                .map(entity -> SaveThroughputRequest.builder()
-                        .averageValue(entity.getAverageValue())
-                        .startDate(entity.getStartDate())
-                        .endDate(entity.getEndDate())
-                        .maxValue(entity.getMaxValue())
-                        .minValue(entity.getMinValue())
-                        .url(entity.getUrl())
-                        .host(entity.getHost())
-                        .build())
+        Optional<ThroughputEntity> optional = service.measureThroughput(host, name);
+        optional.map(entity -> SaveThroughputRequest.builder()
+                .averageValue(entity.getAverageValue())
+                .startDate(entity.getStartDate())
+                .endDate(entity.getEndDate())
+                .maxValue(entity.getMaxValue())
+                .minValue(entity.getMinValue())
+                .url(entity.getUrl())
+                .host(entity.getHost())
+                .build())
                 .map(client::saveThroughput)
                 .ifPresentOrElse(
                         entity -> log.info("Saving throughput: " + entity),
