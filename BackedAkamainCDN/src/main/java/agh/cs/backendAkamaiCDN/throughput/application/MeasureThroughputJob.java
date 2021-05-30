@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
@@ -28,9 +29,14 @@ public class MeasureThroughputJob {
     @PostConstruct
     private void run() {
         log.info("Post construct init");
-        config.getSites().stream()
-                .map(site -> ThroughputTaskComponent.from(applicationContext, site.getHosts(), site.getGeneralHost()))
-                .forEach(executor::execute);
+        List<ThroughputTaskComponent> tasks = config.getSites().stream()
+                .flatMap(site -> site.getHosts()
+                        .stream()
+                        .map(host -> ThroughputTaskComponent
+                                .from(applicationContext, host, site.getGeneralHost())))
+                .collect(Collectors.toList());
+        tasks.forEach(task -> log.info(task.host));
+        tasks.forEach(executor::execute);
 
     }
 
@@ -40,23 +46,24 @@ public class MeasureThroughputJob {
     @RequiredArgsConstructor(onConstructor = @__(@Autowired), access = AccessLevel.PRIVATE)
     public static class ThroughputTaskComponent implements Runnable {
         private final ThroughputService service;
-        private List<String> hosts;
+        private String host;
         private String name;
 
         public static ThroughputTaskComponent from(ApplicationContext applicationContext,
-                                                   List<String> hosts,
+                                                   String host,
                                                    String name) {
             ThroughputTaskComponent task = applicationContext.getBean(ThroughputTaskComponent.class);
-            task.hosts = hosts;
+            task.host = host;
             task.name = name;
             return task;
         }
 
         @Override
         public void run() {
-            log.info("Starting task for host: " + name);
+            log.info("Starting task for host: " + host);
             while (true) {
-                service.measureAndSaveThroughput(hosts, name);
+                log.info("Measuring host: " + host);
+                service.measureAndSaveThroughput(host, name);
             }
         }
     }

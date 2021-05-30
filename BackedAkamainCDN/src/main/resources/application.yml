@@ -41,3 +41,8 @@ cdn:
         - scontent.xx.fbcdn.net
         - scontent-waw1-1.xx.fbcdn.net
         - video-waw1-1.xx.fbcdn.net
+spring:
+  task:
+    execution:
+      pool:
+        core-size: 50

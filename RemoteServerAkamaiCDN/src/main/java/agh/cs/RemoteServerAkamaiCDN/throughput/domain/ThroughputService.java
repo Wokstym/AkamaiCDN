@@ -26,6 +26,7 @@ public class ThroughputService {
                 .minValue(dto.getMinValue())
                 .averageValue(dto.getAverageValue())
                 .host(dto.getHost())
+                .url(dto.getUrl())
                 .ipAddress(Util.getIpAddress())
                 .build());
     }
