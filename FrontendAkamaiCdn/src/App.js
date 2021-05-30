@@ -44,8 +44,8 @@ function App() {
                 groupBy={"host"}
                 stats={[
                     ["Host", "host"],
-                    ["Max", "maxTime"],
-                    ["Min", "minTime"],
+                    ["Max", "maxValue"],
+                    ["Min", "minValue"],
                     ["Average", "averageValue"],
                     ["Start date", "startDate", (startDate) => new Date(startDate).toLocaleString("pol-PL")],
                     ["End date", "endDate", (endDate) => new Date(endDate).toLocaleString("pol-PL")]

@@ -133,7 +133,7 @@ const DataChart = ({
                             paddingTop: '0.1px',
                             paddingBottom: '0.1px',
                             color: 'black',
-                            '-webkit-box-shadow': '5px 5px 15px rgba(0,0,0,0.4)'
+                            WebkitBoxShadow: '5px 5px 15px rgba(0,0,0,0.4)'
 
                         }}>
                             <p>{
