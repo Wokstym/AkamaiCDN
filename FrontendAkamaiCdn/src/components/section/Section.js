@@ -265,9 +265,8 @@ const Section = (props) => {
                 )}
             </div>
 
-            <div className="grid-container">
+            <div>
                 <DataChart
-                    width={800}
                     height={500}
                     data={parsedData}
                     ylabel={props.yInfo.label}
@@ -279,7 +278,6 @@ const Section = (props) => {
                     shouldShowDeviations={shouldShowDeviations}
                     showChangeInParameters={showChangeInParameters}
                 />
-
             </div>
         </div>
     );

@@ -8,7 +8,7 @@ import {
     MarkSeries,
     VerticalGridLines,
     XAxis,
-    XYPlot,
+    FlexibleWidthXYPlot,
     YAxis
 } from "react-vis";
 import "react-vis/dist/style.css";
@@ -17,7 +17,6 @@ import Typography from "@material-ui/core/Typography";
 import {useState} from "react";
 
 const DataChart = ({
-                       width,
                        height,
                        data,
                        ylabel,
@@ -64,8 +63,8 @@ const DataChart = ({
             <DiscreteColorLegend className="legend" height={200} width={300} items={data.map(([key,]) => {
                 return key
             })}/>
-            <XYPlot
-                width={width}
+            <div className={"chart-container"}>
+            <FlexibleWidthXYPlot
                 height={height}
                 xType={"time"}
                 margin={{bottom: 100, left: 100}}
@@ -150,15 +149,16 @@ const DataChart = ({
                         </div>
                     </Hint> : null
                 }
-            </XYPlot>
+            </FlexibleWidthXYPlot>
+            </div>
         </div>
     ) : (
         <div id="container">
             <Typography className="error" display={"block"} gutterBottom>
                 No data for chosen date range!
             </Typography>
-            <XYPlot
-                width={width}
+            <div className={"chart-container"}>
+            <FlexibleWidthXYPlot
                 height={height}
                 xType={"time"}
                 xDomain={[new Date(Date.now() - 86400000), Date()]}
@@ -172,7 +172,8 @@ const DataChart = ({
                 <VerticalGridLines/>
                 {xLabelComponent}
                 {yLabelComponent}
-            </XYPlot>
+            </FlexibleWidthXYPlot>
+        </div>
         </div>
     );
     return render;
