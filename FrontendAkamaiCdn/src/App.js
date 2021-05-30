@@ -14,7 +14,7 @@ function App() {
     const [currentSpecificData, setCurrentSpecificData] = useState([]);
     const [specificDataType, setSpecificDataType] = useState("rtt");
 
-    const [isServerMode, setServerMode] = useState(false)
+    const [isServerMode, setServerMode] = useState(true)
 
     return (
         <main className="main">
