@@ -12,6 +12,7 @@ export function useFetch(host, endpoint, queryParams = {}, deps) {
             setStatus("fetching");
             try {
                 const url = host + endpoint + buildQs(queryParams);
+                console.log(url)
                 const response = await fetch(url);
                 if (response.ok) {
                     const data = await response.json();
