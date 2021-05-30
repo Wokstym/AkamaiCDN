@@ -27,8 +27,8 @@ public class TcpdumpExecutor {
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
-    public static TcpdumpExecutorBuilder builder(@NonNull List<String> hosts) {
-        return new TcpdumpExecutorBuilder(hosts);
+    public static TcpdumpExecutorBuilder builder(@NonNull String host) {
+        return new TcpdumpExecutorBuilder(host);
     }
 
     public TcpdumpExecutor(int duration, int interval, InputStream stream) throws InterruptedException, ExecutionException {
@@ -88,7 +88,7 @@ public class TcpdumpExecutor {
 
     @RequiredArgsConstructor
     public static class TcpdumpExecutorBuilder {
-        private final List<String> hosts;
+        private final String host;
         private int duration = 5 * 60000;
         private int step = 1000;
 
@@ -104,9 +104,8 @@ public class TcpdumpExecutor {
 
         public TcpdumpExecutor execute() throws IOException, ExecutionException, InterruptedException {
 
-            List<String> addresses = this.hosts.stream()
-                    .map(this::getInetAddresses)
-                    .flatMap(Collection::stream)
+            List<String> addresses = this.getInetAddresses(this.host)
+                    .stream()
                     .map(InetAddress::getHostAddress)
                     .collect(Collectors.toList());
 
