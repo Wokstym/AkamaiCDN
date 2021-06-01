@@ -2,6 +2,7 @@ package agh.cs.backendAkamaiCDN.ping.application;
 
 import agh.cs.backendAkamaiCDN.common.CDNConfig;
 import agh.cs.backendAkamaiCDN.ping.domain.PacketLossEntity;
+import agh.cs.backendAkamaiCDN.ping.domain.PacketLossRepository;
 import agh.cs.backendAkamaiCDN.remoteServer.RemoteServerClient;
 import agh.cs.backendAkamaiCDN.remoteServer.entity.SavePacketLossRequest;
 import agh.cs.backendAkamaiCDN.remoteServer.entity.SavePacketLossRequest.PacketLossDto;
@@ -10,8 +11,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,11 +23,15 @@ public class PacketLossService {
     private final RemoteServerClient client;
     private final TcpingResultsService tcpingResultsService;
     private final CDNConfig cdnConfig;
+    private final PacketLossRepository repository;
 
     public List<PacketLossEntity> savePacketLossEntity(Integer numberOfProbes, Integer interval) {
-        List<PacketLossDto> dtos = cdnConfig.getSites().stream()
+        List<PacketLossEntity> packetLossEntities = cdnConfig.getSites().stream()
                 .map(site -> tcpingResultsService.execTcpingForPacketLoss(numberOfProbes, interval, site))
                 .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+
+        List<PacketLossDto> dtos = packetLossEntities.stream()
                 .map(e -> PacketLossDto.builder()
                         .startDate(e.getStartDate())
                         .endDate(e.getEndDate())
@@ -41,15 +46,17 @@ public class PacketLossService {
                 .entities(dtos)
                 .build();
 
-        return client.savePacketLoss(request);
+        client.savePacketLoss(request);
+
+        return repository.saveAll(packetLossEntities);
 
     }
 
     public List<PacketLossEntity> getAll() {
-        return client.getAllPacketLoss();
+        return repository.findAll();
     }
 
-    public List<PacketLossEntity> getAllBetweenDates(LocalDateTime start, LocalDateTime end) {
-        return client.getAllBetweenDatesPacketLoss(start, end);
+    public List<PacketLossEntity> getAllBetweenDates(Date start, Date end) {
+        return repository.getAllByStartDateIsAfterAndEndDateIsBefore(start, end);
     }
 }

@@ -289,5 +289,5 @@ const Section = (props) => {
 };
 
 export default React.memo(Section, (prevProps, nextProps) => {
-    return prevProps.title === nextProps.title && prevProps.endpoint === nextProps.endpoint && prevProps.isServerMode === nextProps.isServerMode
+    return prevProps.title === nextProps.title && prevProps.endpoint === nextProps.endpoint
 });

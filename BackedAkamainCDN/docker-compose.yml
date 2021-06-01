@@ -2,15 +2,18 @@ version: '3.5'
 
 services:
   akamai_cdn:
-    network_mode: host
+    # network_mode: host
     container_name: akamai_cdn
     build:
       context: .
     # uncomment 2 lines below on linux, requires 20.04< version od docker engine
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    ports:
+      - 8090:8090
+      - 8091:8091
     environment:
       - TZ=Europe/Warsaw
       - spring.profiles.active=development
       - spring.liquibase.contexts=development
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:2173/postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:2174/postgres

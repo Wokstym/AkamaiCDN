@@ -15,7 +15,6 @@ function App() {
     const [specificDataType, setSpecificDataType] = useState("rtt");
 
     const isServerMode = process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION'
-    console.log(isServerMode)
 
     return (
         <main className="main">
