@@ -17,9 +17,7 @@
     "web-vitals": "^1.1.1"
   },
   "scripts": {
-    "win-start": "set \"REACT_APP_ENVIRONMENT=LOCAL\" && react-scripts start",
-    "start": "REACT_APP_ENVIRONMENT=LOCAL react-scripts start",
-    "prod-start": "REACT_APP_ENVIRONMENT=PRODUCTION react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

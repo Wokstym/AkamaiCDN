@@ -14,10 +14,8 @@ function App() {
     const [currentSpecificData, setCurrentSpecificData] = useState([]);
     const [specificDataType, setSpecificDataType] = useState("rtt");
 
-    const [isServerMode, setServerMode] = useState(true)
-
-    console.log(process.env.REACT_APP_ENVIRONMENT)
-
+    const isServerMode = process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION'
+    console.log(isServerMode)
 
     return (
         <main className="main">
@@ -29,11 +27,6 @@ function App() {
                 specificDataType={specificDataType}
             >
             </ReportDialog>
-            <FormControlLabel
-                control={<Switch size="small" checked={isServerMode}
-                                 onChange={(event) => setServerMode(event.target.checked)}/>}
-                label="Server mode"
-            />
             <Section
                 setter={setCurrentTputData}
                 isServerMode={isServerMode}
