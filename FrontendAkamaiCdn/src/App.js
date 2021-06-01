@@ -18,6 +18,7 @@ function App() {
 
     console.log(process.env.REACT_APP_ENVIRONMENT)
 
+
     return (
         <main className="main">
             <ReportDialog
