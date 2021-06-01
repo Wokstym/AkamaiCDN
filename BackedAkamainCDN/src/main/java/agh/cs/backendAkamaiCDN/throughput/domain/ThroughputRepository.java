@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ThroughputRepository extends JpaRepository<ThroughputEntity, UUID> {
-    List<ThroughputEntity> getAllByStartDateIsAfterAndEndDateIsBefore(Date startDate, Date endDate);
+    List<ThroughputEntity> findAllByStartDateIsAfterAndEndDateIsBeforeOrderByStartDate(Date startDate, Date endDate);
 }

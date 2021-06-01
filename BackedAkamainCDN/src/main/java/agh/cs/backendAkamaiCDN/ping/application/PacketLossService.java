@@ -57,6 +57,6 @@ public class PacketLossService {
     }
 
     public List<PacketLossEntity> getAllBetweenDates(Date start, Date end) {
-        return repository.getAllByStartDateIsAfterAndEndDateIsBefore(start, end);
+        return repository.getAllByStartDateIsAfterAndEndDateIsBeforeOrderByStartDate(start, end);
     }
 }

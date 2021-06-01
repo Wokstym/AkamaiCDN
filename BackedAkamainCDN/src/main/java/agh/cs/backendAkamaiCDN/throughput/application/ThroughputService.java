@@ -45,7 +45,7 @@ public class ThroughputService {
     public List<ThroughputEntity> getAllBetweenDates(Date start, Date end) {
         log.info(start.toString());
         log.info(end.toString());
-        return repository.getAllByStartDateIsAfterAndEndDateIsBefore(start, end);
+        return repository.findAllByStartDateIsAfterAndEndDateIsBeforeOrderByStartDate(start, end);
     }
 
     public List<ThroughputEntity> getAll() {

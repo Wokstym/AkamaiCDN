@@ -58,6 +58,6 @@ public class RTTService {
     }
 
     public List<RTTEntity> getAllBetweenDates(Date start, Date end) {
-        return repository.getAllByStartDateIsAfterAndEndDateIsBefore(start, end);
+        return repository.getAllByStartDateIsAfterAndEndDateIsBeforeOrderByStartDate(start, end);
     }
 }

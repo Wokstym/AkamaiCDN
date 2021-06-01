@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PacketLossRepository extends JpaRepository<PacketLossEntity, UUID> {
-    List<PacketLossEntity> getAllByStartDateIsAfterAndEndDateIsBefore(Date startDate, Date endDate);
+    List<PacketLossEntity> getAllByStartDateIsAfterAndEndDateIsBeforeOrderByStartDate(Date startDate, Date endDate);
 }

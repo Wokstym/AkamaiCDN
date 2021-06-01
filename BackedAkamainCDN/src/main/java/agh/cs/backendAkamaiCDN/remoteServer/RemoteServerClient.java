@@ -1,7 +1,6 @@
 package agh.cs.backendAkamaiCDN.remoteServer;
 
 
-import agh.cs.backendAkamaiCDN.common.GeneralRemoteServerException;
 import agh.cs.backendAkamaiCDN.ping.domain.PacketLossEntity;
 import agh.cs.backendAkamaiCDN.ping.domain.RTTEntity;
 import agh.cs.backendAkamaiCDN.remoteServer.entity.SavePacketLossRequest;
@@ -15,7 +14,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -48,10 +46,9 @@ public class RemoteServerClient {
             ResponseEntity<T> response = restTemplate.exchange(uri, HttpMethod.POST, requestEntity, responseClass);
             log.info(response);
             return response.getBody();
-        } catch (HttpClientErrorException e) {
-            throw e;
         } catch (Exception e) {
-            throw new GeneralRemoteServerException(e);
+            log.error(e);
+            return null;
         }
     }
 }
