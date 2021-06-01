@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
 
 @Log4j2
 @Service
@@ -29,26 +27,25 @@ public class RemoteServerClient {
     private final RemoteServerEndpoints endpoints;
 
 
-    public List<PacketLossEntity> savePacketLoss(SavePacketLossRequest request) {
-        return Arrays.asList(executePost(endpoints.getPacketLossSaveEndpoint(), new HttpEntity<>(request), PacketLossEntity[].class));
+    public void savePacketLoss(SavePacketLossRequest request) {
+        executePost(endpoints.getPacketLossSaveEndpoint(), new HttpEntity<>(request), PacketLossEntity[].class);
     }
 
-    public List<RTTEntity> saveRTT(SaveRTTRequest request) {
-        return Arrays.asList(executePost(endpoints.getRTTSaveEndpoint(), new HttpEntity<>(request), RTTEntity[].class));
+    public void saveRTT(SaveRTTRequest request) {
+        executePost(endpoints.getRTTSaveEndpoint(), new HttpEntity<>(request), RTTEntity[].class);
     }
 
-    public ThroughputEntity saveThroughput(SaveThroughputRequest request) {
-        return executePost(endpoints.getThroughputSaveEndpoint(), new HttpEntity<>(request), ThroughputEntity.class);
+    public void saveThroughput(SaveThroughputRequest request) {
+        executePost(endpoints.getThroughputSaveEndpoint(), new HttpEntity<>(request), ThroughputEntity.class);
     }
 
-    private <T> T executePost(URI uri, HttpEntity<?> requestEntity, Class<T> responseClass) {
+    private <T> void executePost(URI uri, HttpEntity<?> requestEntity, Class<T> responseClass) {
         try {
             ResponseEntity<T> response = restTemplate.exchange(uri, HttpMethod.POST, requestEntity, responseClass);
             log.info(response);
-            return response.getBody();
+            response.getBody();
         } catch (Exception e) {
             log.error(e);
-            return null;
         }
     }
 }
