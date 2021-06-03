@@ -55,7 +55,9 @@ const SectionSpecificUrl = (props) => {
     return (
         <div className="card">
             <InputLabel id="label">CDN</InputLabel>
-            <Select labelId="label" id="select" value={selectedCDN} onChange={ event => {setSelectedCDN(event.target.value)}}>
+            <Select labelId="label" id="select" value={selectedCDN} onChange={event => {
+                setSelectedCDN(event.target.value)
+            }}>
                 <MenuItem value="youtube.com">Youtube</MenuItem>
                 <MenuItem value="akamai.com">Akamai</MenuItem>
                 <MenuItem value="netflix.com">Netflix</MenuItem>
@@ -63,7 +65,9 @@ const SectionSpecificUrl = (props) => {
             </Select>
 
             <InputLabel id="label">Parameter</InputLabel>
-            <Select labelId="label" id="select" value={selectedParameter} onChange={ event => {setSelectedParameter(event.target.value)}}>
+            <Select labelId="label" id="select" value={selectedParameter} onChange={event => {
+                setSelectedParameter(event.target.value)
+            }}>
                 <MenuItem value="rtt">Round trip time</MenuItem>
                 <MenuItem value="throughput">Throughput</MenuItem>
                 <MenuItem value="packet_loss">Packet loss</MenuItem>
@@ -74,15 +78,16 @@ const SectionSpecificUrl = (props) => {
                 endpoint={"/" + selectedParameter}
                 getX={(data) => new Date(data.startDate)}
                 getY={valToGetYFunction[selectedParameter]}
-                filterFunction={ (data) => data.host === selectedCDN}
+                filterFunction={(data) => data.host === selectedCDN}
+                isServerMode={props.isServerMode}
                 groupBy={"url"}
                 yInfo={{
                     label: valToNameParameter[selectedParameter],
                     format: valToFormat[selectedParameter]
                 }}
                 stats={[
-                    ["Host" , "host"],
-                    ["Parameter",  valToParameter[selectedParameter]],
+                    ["Host", "host"],
+                    ["Parameter", valToParameter[selectedParameter]],
                     ["Start date", "startDate", (startDate) => new Date(startDate).toLocaleString("pol-PL")],
                     ["End date", "endDate", (endDate) => new Date(endDate).toLocaleString("pol-PL")],
                 ]}

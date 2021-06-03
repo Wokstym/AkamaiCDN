@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {buildQs} from "../utils";
 import {Checkbox, FormControlLabel} from "@material-ui/core";
 
-export function useFetch(endpoint, queryParams = {}, deps) {
+export function useFetch(host, endpoint, queryParams = {}, deps) {
     const [status, setStatus] = useState("idle");
     const [data, setData] = useState([]);
 
@@ -11,7 +11,8 @@ export function useFetch(endpoint, queryParams = {}, deps) {
         const fetchData = async () => {
             setStatus("fetching");
             try {
-                const url = `http://localhost:8090` + endpoint + buildQs(queryParams);
+                const url = host + endpoint + buildQs(queryParams);
+                console.log(url)
                 const response = await fetch(url);
                 if (response.ok) {
                     const data = await response.json();

@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Input, TextField, Typography} from "@material-ui/core";
+import {TextField, Typography} from "@material-ui/core";
 import {buildQs} from "../../utils";
 
 const ParamsSection = (props) => {
@@ -11,7 +11,7 @@ const ParamsSection = (props) => {
             let url = "http://localhost:8090" + props.endpoint + '/save';
             let params = {numberOfProbes : numberOfProbes, interval : intervalBetweenProbes};
             url += buildQs(params);
-            fetch(url).then(res => console.log(props.endpoint + " saved"));
+            fetch(url).then(() => console.log(props.endpoint + " saved"));
         }, 600000);
         return () => clearInterval(interval);
     }, [numberOfProbes, intervalBetweenProbes, props]);

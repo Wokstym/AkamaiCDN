@@ -46,3 +46,10 @@ spring:
     execution:
       pool:
         core-size: 50
+  datasource:
+    url: jdbc:postgresql://host.docker.internal:2174/postgres
+    username: postgres
+    password: postgres
+  jpa:
+    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate.ddl-auto: update

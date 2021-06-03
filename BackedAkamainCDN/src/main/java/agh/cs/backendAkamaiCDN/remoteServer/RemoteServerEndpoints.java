@@ -16,41 +16,14 @@ public class RemoteServerEndpoints {
     private static final String THROUGHPUT_ENDPOINT = "/throughput";
 
     private static final String SAVE_ENDPOINT = "/save";
-    private static final String ALL_ENDPOINT = "/all";
 
 
     private final String remoteServerUrl;
-
-    public URI getPacketLossEndpoint(String start, String end) {
-        return UriComponentsBuilder.fromUriString(remoteServerUrl)
-                .path(PACKET_LOSS_ENDPOINT)
-                .queryParam("startDate", start)
-                .queryParam("endDate", end)
-                .build()
-                .toUri();
-    }
 
     public URI getPacketLossSaveEndpoint() {
         return UriComponentsBuilder.fromUriString(remoteServerUrl)
                 .path(PACKET_LOSS_ENDPOINT)
                 .path(SAVE_ENDPOINT)
-                .build()
-                .toUri();
-    }
-
-    public URI getPacketLossAllEndpoint() {
-        return UriComponentsBuilder.fromUriString(remoteServerUrl)
-                .path(PACKET_LOSS_ENDPOINT)
-                .path(ALL_ENDPOINT)
-                .build()
-                .toUri();
-    }
-
-    public URI getRTTEndpoint(String start, String end) {
-        return UriComponentsBuilder.fromUriString(remoteServerUrl)
-                .path(RTT_ENDPOINT)
-                .queryParam("startDate", start)
-                .queryParam("endDate", end)
                 .build()
                 .toUri();
     }
@@ -63,35 +36,10 @@ public class RemoteServerEndpoints {
                 .toUri();
     }
 
-    public URI getRTTAllEndpoint() {
-        return UriComponentsBuilder.fromUriString(remoteServerUrl)
-                .path(RTT_ENDPOINT)
-                .path(ALL_ENDPOINT)
-                .build()
-                .toUri();
-    }
-
-    public URI getThroughputEndpoint(String start, String end) {
-        return UriComponentsBuilder.fromUriString(remoteServerUrl)
-                .path(THROUGHPUT_ENDPOINT)
-                .queryParam("startDate", start)
-                .queryParam("endDate", end)
-                .build()
-                .toUri();
-    }
-
     public URI getThroughputSaveEndpoint() {
         return UriComponentsBuilder.fromUriString(remoteServerUrl)
                 .path(THROUGHPUT_ENDPOINT)
                 .path(SAVE_ENDPOINT)
-                .build()
-                .toUri();
-    }
-
-    public URI getThroughputAllEndpoint() {
-        return UriComponentsBuilder.fromUriString(remoteServerUrl)
-                .path(THROUGHPUT_ENDPOINT)
-                .path(ALL_ENDPOINT)
                 .build()
                 .toUri();
     }

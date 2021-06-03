@@ -138,11 +138,16 @@ const Section = (props) => {
         endDate: endDate.toJSON(),
     };
 
-    const {status, data, setData} = useFetch(props.endpoint, queryParams, [
+    const host = props.isServerMode
+        ? `https://akamai-cdn.herokuapp.com`
+        : `http://localhost:8090`;
+
+    const {status, data, setData} = useFetch(host, props.endpoint, queryParams, [
         startDate,
         endDate,
         props.endpoint,
-        granularity
+        granularity,
+        host
     ]);
 
     const [selectedValues, checkboxes] = useSelectButtons(

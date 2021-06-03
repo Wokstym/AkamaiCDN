@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Positive;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Log4j2
@@ -51,11 +51,11 @@ public class PacketLossController {
     public ResponseEntity<List<PacketLossEntity>> getAllBetweenDates(
             @RequestParam(name = "startDate")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                    LocalDateTime start,
+                    Date start,
             @RequestParam(name = "endDate")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-                    LocalDateTime end) {
-        if (start.isAfter(end))
+                    Date end) {
+        if (start.after(end))
             return ResponseEntity.badRequest().build();
 
         List<PacketLossEntity> entities = service.getAllBetweenDates(start, end);
