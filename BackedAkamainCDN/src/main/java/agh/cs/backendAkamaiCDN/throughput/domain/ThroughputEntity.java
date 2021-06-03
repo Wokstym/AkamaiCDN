@@ -19,7 +19,7 @@ import java.util.UUID;
 @EqualsAndHashCode
 public class ThroughputEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @EqualsAndHashCode.Include
     private UUID id;
 
