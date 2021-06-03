@@ -36,10 +36,7 @@ public class ThroughputService {
                 .url(entity.getUrl())
                 .host(entity.getHost())
                 .build())
-                .map(client::saveThroughput)
-                .ifPresentOrElse(
-                        entity -> log.info("Send throughput to remote server: " + entity),
-                        () -> log.error("Remote server error"));
+                .ifPresent(client::saveThroughput);
     }
 
     public List<ThroughputEntity> getAllBetweenDates(Date start, Date end) {
