@@ -1,11 +1,11 @@
 import "react-datepicker/dist/react-datepicker.css";
-import "./SectionSpecificUrl.css";
+import "./SectionSpecific.css";
 import Section from "../section/Section";
 import React, {useEffect, useState} from "react";
 import {InputLabel, MenuItem, Select} from "@material-ui/core";
 import {Format} from "../../utils";
 
-const SectionSpecificUrl = (props) => {
+const SectionSpecific = (props) => {
 
     const valToNameCDN = {
         "youtube.com": "Youtube",
@@ -74,13 +74,13 @@ const SectionSpecificUrl = (props) => {
             </Select>
             <Section
                 setter={props.setter}
-                title={valToNameCDN[selectedCDN] + " - specific info"}
+                title={valToNameCDN[selectedCDN] + ` - ${props.titleDesc}`}
                 endpoint={"/" + selectedParameter}
                 getX={(data) => new Date(data.startDate)}
                 getY={valToGetYFunction[selectedParameter]}
                 filterFunction={(data) => data.host === selectedCDN}
                 isServerMode={props.isServerMode}
-                groupBy={"url"}
+                groupBy={props.groupBy}
                 yInfo={{
                     label: valToNameParameter[selectedParameter],
                     format: valToFormat[selectedParameter]
@@ -98,4 +98,4 @@ const SectionSpecificUrl = (props) => {
     );
 };
 
-export default SectionSpecificUrl;
+export default SectionSpecific;

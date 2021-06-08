@@ -22,7 +22,7 @@ const headerMap = {
     "packetLoss": "Packet loss"
 }
 
-const ReportPdf = ({tputData, rttData, packetLossData, specificData, specificDataType}) => {
+const ReportPdf = ({tputData, rttData, packetLossData, specificUrlData, specificUrlDataType, specificIpData, specificIpDataType}) => {
     return (
         <Document>
             <Page style={styles.body}>
@@ -32,9 +32,12 @@ const ReportPdf = ({tputData, rttData, packetLossData, specificData, specificDat
                 {rttData.map(RttSection)}
                 {packetLossData.length > 0 && <Text>Packet loss data</Text>}
                 {packetLossData.map(PacketLossSection)}
-                {specificData.length > 0 && <Text>Specific data</Text>}
-                {specificData.length > 0 && <Text>{headerMap[specificDataType]}</Text>}
-                {specificData.map(typeMap[specificDataType])}
+                {specificUrlData.length > 0 && <Text>Specific Url data</Text>}
+                {specificUrlData.length > 0 && <Text>{headerMap[specificUrlDataType]}</Text>}
+                {specificUrlData.map(typeMap[specificUrlDataType])}
+                {specificIpData.length > 0 && <Text>Specific IP data</Text>}
+                {specificIpData.length > 0 && <Text>{headerMap[specificIpDataType]}</Text>}
+                {specificIpData.map(typeMap[specificIpDataType])}
             </Page>
         </Document>
         )
