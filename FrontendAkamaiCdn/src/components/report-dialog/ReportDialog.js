@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ReportDialog = ({tputData, rttData, packetLossData, specificData, specificDataType}) => {
+const ReportDialog = ({tputData, rttData, packetLossData, specificUrlData, specificUrlDataType,  specificIpData, specificIpDataType, isServerMode}) => {
 
     const classes = useStyles();
     const [open, setOpen] = useState(false);
@@ -27,7 +27,8 @@ const ReportDialog = ({tputData, rttData, packetLossData, specificData, specific
         "Throughput": true,
         "Round Trip Time": true,
         "Packet Loss": true,
-        "Specific Data": true
+        "Specific Data": true,
+        "Specific IP Data": true
     })
 
     const handleClick = () => {
@@ -38,8 +39,13 @@ const ReportDialog = ({tputData, rttData, packetLossData, specificData, specific
         setCheckboxesOpen(prevState => ({...prevState, [e.target.name]: e.target.checked}));
     }
 
-    const values = ["Throughput", "Round Trip Time", "Packet Loss", "Specific Data"];
+    const values = ["Throughput", "Round Trip Time", "Packet Loss", "Specific Data", "Specific IP Data"];
 
+    console.log(values);
+    if(!isServerMode){
+        values.pop();
+    }
+    console.log(values)
     return (
         <div>
             <Button variant="contained" color={'primary'} onClick={handleClick}>Generate Report</Button>
@@ -68,8 +74,11 @@ const ReportDialog = ({tputData, rttData, packetLossData, specificData, specific
                         tputData={checkboxesOpen["Throughput"] ? tputData : []}
                         rttData={checkboxesOpen["Round Trip Time"] ? rttData : []}
                         packetLossData={checkboxesOpen["Packet Loss"] ? packetLossData : []}
-                        specificData={checkboxesOpen["Specific Data"] ? specificData : []}
-                        specificDataType={specificDataType}
+                        specificUrlData={checkboxesOpen["Specific Data"] ? specificUrlData : []}
+                        specificUrlDataType={specificUrlDataType}
+                        specificIpData={checkboxesOpen["Specific IP Data"] && isServerMode ? specificIpData : []}
+                        specificIpDataType={specificIpDataType}
+                        isServerMode={isServerMode}
                     />} fileName={`report-${new Date().toDateString()}.pdf`}>
                     {({ blob, url, loading, error }) =>
                         loading ? 'Loading document...' : 'Download now!'

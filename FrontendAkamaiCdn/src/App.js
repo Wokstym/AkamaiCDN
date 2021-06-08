@@ -1,4 +1,4 @@
-import {Section, SectionSpecificUrl} from './components';
+import {Section, SectionSpecific} from './components';
 import './App.css'
 import ParamsSection from "./components/params-section/ParamsSection";
 import ReportDialog from "./components/report-dialog/ReportDialog";
@@ -11,8 +11,11 @@ function App() {
     const [currentTputData, setCurrentTputData] = useState([]);
     const [currentRttData, setCurrentRttData] = useState([]);
     const [currentPacketLossData, setCurrentPacketLossData] = useState([]);
-    const [currentSpecificData, setCurrentSpecificData] = useState([]);
-    const [specificDataType, setSpecificDataType] = useState("rtt");
+    const [currentUrlSpecificData, setCurrentUrlSpecificData] = useState([]);
+    const [specificUrlDataType, setSpecificUrlDataType] = useState("rtt");
+    const [currentIpSpecificData, setCurrentIpSpecificData] = useState([]);
+    const [specificIpDataType, setSpecificIpDataType] = useState("rtt");
+
 
     const isServerMode = process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION'
 
@@ -22,8 +25,11 @@ function App() {
                 tputData={currentTputData}
                 rttData={currentRttData}
                 packetLossData={currentPacketLossData}
-                specificData={currentSpecificData}
-                specificDataType={specificDataType}
+                specificUrlData={currentUrlSpecificData}
+                specificUrlDataType={specificUrlDataType}
+                specificIpData={currentIpSpecificData}
+                specificIpDataType={specificIpDataType}
+                isServerMode={isServerMode}
             >
             </ReportDialog>
             <Section
@@ -103,11 +109,22 @@ function App() {
                 valueFields={["packetLoss"]}
                 timeIntervals={10}
             />
-            <SectionSpecificUrl
+            <SectionSpecific
                 isServerMode={isServerMode}
-                setter={setCurrentSpecificData}
-                typeSetter={setSpecificDataType}
+                setter={setCurrentUrlSpecificData}
+                typeSetter={setSpecificUrlDataType}
+                groupBy={"url"}
+                titleDesc={"specific info"}
             />
+            {isServerMode &&
+                <SectionSpecific
+                    isServerMode={isServerMode}
+                    setter={setCurrentIpSpecificData}
+                    typeSetter={setSpecificIpDataType}
+                    groupBy={"ipAddress"}
+                    titleDesc={"data by IP"}
+                />
+            }
         </main>
     );
 }
