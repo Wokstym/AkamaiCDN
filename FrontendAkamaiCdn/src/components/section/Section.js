@@ -188,10 +188,6 @@ const Section = (props) => {
 
     let badPoints = parsedData.flatMap(e => findBadPoints(e[1]))
 
-    useEffect(() => {
-        props.setter(parsedData);
-    }, [data, selectedValues])
-
     const uniqueIP = [...new Set(parsedData
         .flatMap(([key, value]) => value)
         .map(array => array['ipAddress']))];
@@ -206,6 +202,10 @@ const Section = (props) => {
         .map( ([key, value]) => {
             return [key, value.filter(item => item.ipAddress === selectedIP)]
         });
+
+    useEffect(() => {
+        props.setter(filteredByIPData);
+    }, [data, selectedValues, selectedIP])
 
     return (
         <div className="card">
