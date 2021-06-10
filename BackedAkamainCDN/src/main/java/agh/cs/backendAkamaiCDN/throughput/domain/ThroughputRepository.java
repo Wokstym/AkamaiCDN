@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface ThroughputRepository extends JpaRepository<ThroughputEntity, UUID> {
     List<ThroughputEntity> findAllByStartDateIsAfterAndEndDateIsBeforeOrderByStartDate(Date startDate, Date endDate);
+
+    List<ThroughputEntity> findAllBySentToServer(boolean sentToServer);
 }

@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface RttRepository extends JpaRepository<RTTEntity, UUID> {
     List<RTTEntity> getAllByStartDateIsAfterAndEndDateIsBeforeOrderByStartDate(Date startDate, Date endDate);
+
+    List<RTTEntity> findAllBySentToServer(boolean sentToServer);
 }

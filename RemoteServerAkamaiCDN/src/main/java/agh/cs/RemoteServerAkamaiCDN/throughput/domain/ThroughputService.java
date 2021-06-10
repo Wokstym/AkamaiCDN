@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -19,7 +20,25 @@ public class ThroughputService {
     private final ThroughputRepository repository;
 
     public ThroughputEntity save(SaveThroughputRequest dto) {
-        return repository.save(ThroughputEntity.builder()
+        return repository.save(map(dto));
+    }
+
+    public List<ThroughputEntity> getAllBetweenDates(Date start, Date end) {
+        log.info(start.toString());
+        log.info(end.toString());
+        return repository.findAllByStartDateIsAfterAndEndDateIsBeforeOrderByStartDate(start, end);
+    }
+
+    public List<ThroughputEntity> getAll() {
+        return repository.findAll();
+    }
+
+    public void save(List<SaveThroughputRequest> throughputRequests) {
+        repository.saveAll(throughputRequests.stream().map(this::map).collect(Collectors.toList()));
+    }
+
+    private ThroughputEntity map(SaveThroughputRequest dto) {
+        return ThroughputEntity.builder()
                 .startDate(dto.getStartDate())
                 .endDate(dto.getEndDate())
                 .maxValue(dto.getMaxValue())
@@ -28,16 +47,6 @@ public class ThroughputService {
                 .host(dto.getHost())
                 .url(dto.getUrl())
                 .ipAddress(Util.getIpAddress())
-                .build());
-    }
-
-    public List<ThroughputEntity> getAllBetweenDates(Date start, Date end){
-        log.info(start.toString());
-        log.info(end.toString());
-        return repository.findAllByStartDateIsAfterAndEndDateIsBeforeOrderByStartDate(start, end);
-    }
-
-    public List<ThroughputEntity> getAll() {
-        return repository.findAll();
+                .build();
     }
 }

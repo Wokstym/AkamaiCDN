@@ -30,4 +30,5 @@ public class ThroughputEntity {
     private long averageValue;
     private String url;
     private String host;
+    private boolean isSentToServer;
 }

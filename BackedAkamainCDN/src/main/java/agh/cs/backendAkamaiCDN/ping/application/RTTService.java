@@ -32,25 +32,34 @@ public class RTTService {
                 .collect(Collectors.toList());
 
         List<RTTDto> dtos = rttEntities.stream()
-                .map(e -> RTTDto.builder()
-                        .startDate(e.getStartDate())
-                        .endDate(e.getEndDate())
-                        .host(e.getHost())
-                        .url(e.getUrl())
-                        .maxTime(e.getMaxTime())
-                        .minTime(e.getMinTime())
-                        .averageTime(e.getAverageTime())
-                        .standardDeviationTime(e.getStandardDeviationTime())
-                        .probes(e.getProbes())
-                        .interval(e.getInterval())
-                        .build())
+                .map(this::mapRTT)
                 .collect(Collectors.toList());
 
         SaveRTTRequest request = SaveRTTRequest.builder()
                 .entities(dtos)
                 .build();
-        client.saveRTT(request);
+        boolean success = client.saveRTT(request);
+
+        if (success) {
+            rttEntities = rttEntities.stream().peek(e -> e.setSentToServer(true)).collect(Collectors.toList());
+        }
+
         return repository.saveAll(rttEntities);
+    }
+
+    private RTTDto mapRTT(RTTEntity e) {
+        return RTTDto.builder()
+                .startDate(e.getStartDate())
+                .endDate(e.getEndDate())
+                .host(e.getHost())
+                .url(e.getUrl())
+                .maxTime(e.getMaxTime())
+                .minTime(e.getMinTime())
+                .averageTime(e.getAverageTime())
+                .standardDeviationTime(e.getStandardDeviationTime())
+                .probes(e.getProbes())
+                .interval(e.getInterval())
+                .build();
     }
 
     public List<RTTEntity> getAll() {
@@ -59,5 +68,19 @@ public class RTTService {
 
     public List<RTTEntity> getAllBetweenDates(Date start, Date end) {
         return repository.getAllByStartDateIsAfterAndEndDateIsBeforeOrderByStartDate(start, end);
+    }
+
+    public List<RTTEntity> findAllBySentToServer() {
+        return repository.findAllBySentToServer(false);
+    }
+
+    public List<RTTDto> mapEntities(List<RTTEntity> rttEntities) {
+        return rttEntities.stream().map(this::mapRTT).collect(Collectors.toList());
+
+    }
+
+    public void saveAll(List<RTTEntity> rttEntities) {
+        repository.saveAll(rttEntities);
+
     }
 }

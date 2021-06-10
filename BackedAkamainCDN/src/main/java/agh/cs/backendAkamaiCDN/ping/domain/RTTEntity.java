@@ -33,4 +33,5 @@ public class RTTEntity {
 
     private int probes;
     private double interval;
+    private boolean isSentToServer;
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -23,11 +24,19 @@ public class ThroughputService {
 
     public void measureAndSaveThroughput(String host, String name) {
         Optional<ThroughputEntity> e = service.measureThroughput(host, name);
+        boolean success = e.map(this::map)
+                .map(client::saveThroughput)
+                .orElse(false);
+
         e.ifPresent(s -> {
+            s.setSentToServer(success);
             repository.save(s);
             log.info("Saving throughput");
         });
-        e.map(entity -> SaveThroughputRequest.builder()
+    }
+
+    private SaveThroughputRequest map(ThroughputEntity entity) {
+        return SaveThroughputRequest.builder()
                 .averageValue(entity.getAverageValue())
                 .startDate(entity.getStartDate())
                 .endDate(entity.getEndDate())
@@ -35,8 +44,7 @@ public class ThroughputService {
                 .minValue(entity.getMinValue())
                 .url(entity.getUrl())
                 .host(entity.getHost())
-                .build())
-                .ifPresent(client::saveThroughput);
+                .build();
     }
 
     public List<ThroughputEntity> getAllBetweenDates(Date start, Date end) {
@@ -47,5 +55,17 @@ public class ThroughputService {
 
     public List<ThroughputEntity> getAll() {
         return repository.findAll();
+    }
+
+    public List<ThroughputEntity> findAllBySentToServer() {
+        return repository.findAllBySentToServer(false);
+    }
+
+    public List<SaveThroughputRequest> mapEntities(List<ThroughputEntity> throughputEntities) {
+        return throughputEntities.stream().map(this::map).collect(Collectors.toList());
+    }
+
+    public void saveAll(List<ThroughputEntity> throughputEntities) {
+        repository.saveAll(throughputEntities);
     }
 }

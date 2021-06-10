@@ -29,5 +29,6 @@ public class PacketLossEntity {
 
     private int probes;
     private double interval;
+    private boolean isSentToServer;
 }
 

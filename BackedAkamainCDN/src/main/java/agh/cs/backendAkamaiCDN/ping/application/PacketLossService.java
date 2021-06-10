@@ -31,7 +31,23 @@ public class PacketLossService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
-        List<PacketLossDto> dtos = packetLossEntities.stream()
+        List<PacketLossDto> dtos = mapEntities(packetLossEntities);
+        SavePacketLossRequest request = SavePacketLossRequest.builder()
+                .entities(dtos)
+                .build();
+
+        boolean success = client.savePacketLoss(request);
+
+        if (success) {
+            packetLossEntities = packetLossEntities.stream().peek(e -> e.setSentToServer(true)).collect(Collectors.toList());
+        }
+
+        return repository.saveAll(packetLossEntities);
+
+    }
+
+    public List<PacketLossDto> mapEntities(List<PacketLossEntity> packetLossEntities) {
+        return packetLossEntities.stream()
                 .map(e -> PacketLossDto.builder()
                         .startDate(e.getStartDate())
                         .endDate(e.getEndDate())
@@ -42,14 +58,6 @@ public class PacketLossService {
                         .interval(e.getInterval())
                         .build())
                 .collect(Collectors.toList());
-        SavePacketLossRequest request = SavePacketLossRequest.builder()
-                .entities(dtos)
-                .build();
-
-        client.savePacketLoss(request);
-
-        return repository.saveAll(packetLossEntities);
-
     }
 
     public List<PacketLossEntity> getAll() {
@@ -58,5 +66,14 @@ public class PacketLossService {
 
     public List<PacketLossEntity> getAllBetweenDates(Date start, Date end) {
         return repository.getAllByStartDateIsAfterAndEndDateIsBeforeOrderByStartDate(start, end);
+    }
+
+    public List<PacketLossEntity> findAllBySentToServer() {
+        return repository.findAllBySentToServer(false);
+    }
+
+    public void saveAll(List<PacketLossEntity> packetLossEntities) {
+        repository.saveAll(packetLossEntities);
+
     }
 }

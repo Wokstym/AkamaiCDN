@@ -38,6 +38,7 @@ public class ThroughputResultsService {
                         .maxValue(getMaxValue(results))
                         .minValue(getMinValue(results))
                         .averageValue(getAvgValue(results))
+                        .isSentToServer(false)
                         .build());
             }
         } catch (IOException | ExecutionException | InterruptedException e) {
