@@ -65,6 +65,7 @@ const DataChart = ({
             })}/>
             <div className={"chart-container"}>
             <FlexibleWidthXYPlot
+                animation
                 height={height}
                 xType={"time"}
                 margin={{bottom: 100, left: 100}}
@@ -159,6 +160,7 @@ const DataChart = ({
             </Typography>
             <div className={"chart-container"}>
             <FlexibleWidthXYPlot
+                animation
                 height={height}
                 xType={"time"}
                 xDomain={[new Date(Date.now() - 86400000), Date()]}

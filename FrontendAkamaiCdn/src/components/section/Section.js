@@ -271,22 +271,24 @@ const Section = (props) => {
                     label="Show change in parameters"
                 />
                 {checkboxes}
-                <FormControl>
-                    <InputLabel id="chooseable-IP">IP</InputLabel>
-                    <Select
-                        labelId="chooseable-IP"
-                        id="chooseable-IP"
-                        value={selectedIP}
-                        onChange={(event) => {
-                            setSelectedIP(event.target.value);
-                        }}
-                    >
-                        <MenuItem value="ALL">
-                            <em>ALL</em>
-                        </MenuItem>
-                        {unigueIPMenuItem}
-                    </Select>
-                </FormControl>
+                { props.isServerMode &&
+                    <FormControl>
+                        <InputLabel id="chooseable-IP">IP</InputLabel>
+                        <Select
+                            labelId="chooseable-IP"
+                            id="chooseable-IP"
+                            value={selectedIP}
+                            onChange={(event) => {
+                                setSelectedIP(event.target.value);
+                            }}
+                        >
+                            <MenuItem value="ALL">
+                                <em>ALL</em>
+                            </MenuItem>
+                            {unigueIPMenuItem}
+                        </Select>
+                    </FormControl>
+                }
                 {startDate.getTime() > endDate.getTime() && (
                     <Typography
                         color={"error"}
