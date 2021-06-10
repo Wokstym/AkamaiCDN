@@ -7,7 +7,7 @@ import Switch from '@material-ui/core/Switch';
 import Typography from "@material-ui/core/Typography";
 import "./Section.css";
 import {withStyles} from "@material-ui/core/styles";
-import {FormControlLabel, InputLabel} from "@material-ui/core";
+import {FormControl, FormControlLabel, InputLabel, MenuItem, Select} from "@material-ui/core";
 
 
 const GreyTextTypography = withStyles({
@@ -121,7 +121,6 @@ function findBadPoints(points) {
 }
 
 const Section = (props) => {
-    console.log("Title: ", props.title)
     const granularityStartDate = new Date();
     granularityStartDate.setHours(0, props.timeIntervals);
     const now = new Date();
@@ -189,10 +188,24 @@ const Section = (props) => {
 
     let badPoints = parsedData.flatMap(e => findBadPoints(e[1]))
 
+    const uniqueIP = [...new Set(parsedData
+        .flatMap(([key, value]) => value)
+        .map(array => array['ipAddress']))];
+
+    const unigueIPMenuItem = uniqueIP.map(item => (
+        <MenuItem value={item}>{item}</MenuItem>
+    ))
+
+    const [selectedIP, setSelectedIP] = useState("ALL");
+    let filteredByIPData =
+        selectedIP === "ALL" ? parsedData : parsedData
+        .map( ([key, value]) => {
+            return [key, value.filter(item => item.ipAddress === selectedIP)]
+        });
+
     useEffect(() => {
-        //console.log(parsedData);
-        props.setter(parsedData);
-    }, [data, selectedValues])
+        props.setter(filteredByIPData);
+    }, [data, selectedValues, selectedIP])
 
     return (
         <div className="card">
@@ -258,6 +271,22 @@ const Section = (props) => {
                     label="Show change in parameters"
                 />
                 {checkboxes}
+                <FormControl>
+                    <InputLabel id="chooseable-IP">IP</InputLabel>
+                    <Select
+                        labelId="chooseable-IP"
+                        id="chooseable-IP"
+                        value={selectedIP}
+                        onChange={(event) => {
+                            setSelectedIP(event.target.value);
+                        }}
+                    >
+                        <MenuItem value="ALL">
+                            <em>ALL</em>
+                        </MenuItem>
+                        {unigueIPMenuItem}
+                    </Select>
+                </FormControl>
                 {startDate.getTime() > endDate.getTime() && (
                     <Typography
                         color={"error"}
@@ -273,7 +302,7 @@ const Section = (props) => {
             <div>
                 <DataChart
                     height={500}
-                    data={parsedData}
+                    data={filteredByIPData}
                     ylabel={props.yInfo.label}
                     yformat={props.yInfo.format}
                     xlabel="Time"
